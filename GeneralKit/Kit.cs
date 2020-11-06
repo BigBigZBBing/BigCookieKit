@@ -19,7 +19,11 @@ namespace GeneralKit
         /// <returns></returns>
         public static Boolean IsNull(this object obj)
         {
-            if (obj.GetType() == typeof(string))
+            if (obj == null)
+            {
+                return true;
+            }
+            else if (obj.GetType() == typeof(string))
             {
                 return string.IsNullOrEmpty(obj.ToString());
             }
@@ -88,10 +92,6 @@ namespace GeneralKit
                 if (obj == null || ((TimeSpan)obj) == default(TimeSpan))
                     return true;
             }
-            else if (obj == null)
-            {
-                return true;
-            }
             return false;
         }
 
@@ -150,11 +150,11 @@ namespace GeneralKit
                             Type Type = propertie.PropertyType;
                             string Name = propertie.Name;
                             object Value = propertie.GetValue(Entity);
-                            decimal @decimal;
+                            double @double;
                             RuleAttribute Attr_properties = Attributes as RuleAttribute;
                             if (Attr_properties.Error.NotNull())
                             {
-                                if (Attr_properties.maxLength.NotNull() && Type == typeof(string))
+                                if (Attr_properties.maxLength.NotNull() && Value.NotNull() && Type == typeof(string))
                                 {
                                     if (Value.ToString().Length > Attr_properties.MaxLength)
                                     {
@@ -162,7 +162,7 @@ namespace GeneralKit
                                         break;
                                     }
                                 }
-                                if (Attr_properties.minLength.NotNull() && Type == typeof(string))
+                                if (Attr_properties.minLength.NotNull() && Value.NotNull() && Type == typeof(string))
                                 {
                                     if (Value.ToString().Length < Attr_properties.MinLength)
                                     {
@@ -178,41 +178,41 @@ namespace GeneralKit
                                         break;
                                     }
                                 }
-                                if (Attr_properties.greater.NotNull() && decimal.TryParse(Value.ToString(), out @decimal))
+                                if (Attr_properties.greater.NotNull() && Value.NotNull() && double.TryParse(Value.ToString(), out @double))
                                 {
-                                    if (@decimal > Attr_properties.Greater)
+                                    if (@double > Attr_properties.Greater)
                                     {
                                         strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
                                         break;
                                     }
                                 }
-                                if (Attr_properties.less.NotNull() && decimal.TryParse(Value.ToString(), out @decimal))
+                                if (Attr_properties.less.NotNull() && Value.NotNull() && double.TryParse(Value.ToString(), out @double))
                                 {
-                                    if (@decimal < Attr_properties.Less)
+                                    if (@double < Attr_properties.Less)
                                     {
                                         strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
                                         break;
                                     }
                                 }
-                                if (Attr_properties.equal.NotNull() && decimal.TryParse(Value.ToString(), out @decimal))
+                                if (Attr_properties.equal.NotNull() && Value.NotNull() && double.TryParse(Value.ToString(), out @double))
                                 {
-                                    if (@decimal == Attr_properties.Equal)
+                                    if (@double == Attr_properties.Equal)
                                     {
                                         strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
                                         break;
                                     }
                                 }
-                                if (Attr_properties.regExp.NotNull())
+                                if (Attr_properties.regExp.NotNull() && Value.NotNull())
                                 {
-                                    if (!Regex.IsMatch(Value?.ToString(), Attr_properties.regExp))
+                                    if (!Regex.IsMatch(Value.ToString(), Attr_properties.regExp))
                                     {
                                         strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
                                         break;
                                     }
                                 }
-                                if (Attr_properties.expType.NotNull())
+                                if (Attr_properties.expType.NotNull() && Value.NotNull())
                                 {
-                                    if (!Regex.IsMatch(Value?.ToString(), Attr_properties.expType?.Remark()))
+                                    if (!Regex.IsMatch(Value.ToString(), Attr_properties.expType?.Remark()))
                                     {
                                         strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
                                         break;
@@ -227,7 +227,6 @@ namespace GeneralKit
             {
                 throw new Exception(ex.Message);
             }
-
             if (strBuilder.Length > 0)
                 throw new Exception(strBuilder.ToString());
             return true;

@@ -55,7 +55,7 @@ namespace GeneralKit
         /// <summary>
         /// 中文格式
         /// </summary>
-        [Remark(@"/^[\u4e00-\u9fa5]+$/")]
+        [Remark(@"^[\u4e00-\u9fa5]+$")]
         Chinese
     }
 
