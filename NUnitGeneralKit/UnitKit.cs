@@ -1,6 +1,8 @@
 using GeneralKit;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace NUnitGeneralKit
 {
@@ -30,6 +32,77 @@ namespace NUnitGeneralKit
 
             testModel.ModelValidation();
             Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void NullAssert()
+        {
+            //引用类型
+            string test = null;
+            //默认值和NULL都为true
+            test.IsNull();
+            test.NotNull();
+
+            //值类型
+            int test1 = 0;
+            //默认值和NULL都为true
+            test1.IsNull();
+            test1.NotNull();
+
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void EnumRemark()
+        {
+            TestEnum test = TestEnum.None;
+            TestEnum test1 = TestEnum.True;
+            TestEnum test2 = TestEnum.False;
+
+            //""
+            test.Remark();
+            //"正确"
+            test1.Remark();
+            //"错误"
+            test2.Remark();
+
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void ExistCountAssert()
+        {
+            List<string> test = new List<string>();
+            ICollection<string> test1 = new List<string>();
+            IEnumerable<string> test2 = new List<string>();
+            Dictionary<string, string> test3 = new Dictionary<string, string>();
+
+            test.Exist();
+            test.NotExist();
+            test1.Exist();
+            test1.NotExist();
+            test2.Exist();
+            test2.NotExist();
+            test3.Exist();
+            test3.NotExist();
+
+            Assert.IsTrue(true);
+        }
+
+        [Test]
+        public void DataRowSetValue()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("Filed1", typeof(string)));
+            dt.Columns.Add(new DataColumn("Filed2", typeof(decimal)));
+            dt.Columns.Add(new DataColumn("Filed3", typeof(decimal)));
+
+            DataRow dr = dt.NewRow();
+            dr["Filed1"] = null;
+            //dr["Filed2"] = null;//值类型赋值null会报错
+            //dr.CellSetValue("Filed2", null);//自动会解决问题
+
+            dt.Rows.Add(dr);
         }
     }
 
@@ -65,5 +138,14 @@ namespace NUnitGeneralKit
         [Rule("时间")]
         public DateTime? Time { get => time; set => time = value; }
 
+    }
+
+    public enum TestEnum
+    {
+        None,
+        [Remark("正确")]
+        True,
+        [Remark("错误")]
+        False
     }
 }

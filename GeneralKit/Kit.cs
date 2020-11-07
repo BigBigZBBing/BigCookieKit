@@ -1,5 +1,6 @@
 ﻿using GeneralKit.Attributes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,6 +11,9 @@ using System.Text.RegularExpressions;
 
 namespace GeneralKit
 {
+    /// <summary>
+    /// 通用工具箱
+    /// </summary>
     public static class Kit
     {
         /// <summary>
@@ -103,6 +107,30 @@ namespace GeneralKit
         public static Boolean NotNull(this object obj)
         {
             return !obj.IsNull();
+        }
+
+        /// <summary>
+        /// 集合是存在内容
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public static Boolean Exist<T>(this IEnumerable<T> collection)
+        {
+            if (collection.IsNull() || collection.Count().IsNull())
+            {
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 集合是不存在内容
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <returns></returns>
+        public static Boolean NotExist<T>(this IEnumerable<T> collection)
+        {
+            return !collection.Exist();
         }
 
         /// <summary>
@@ -362,26 +390,6 @@ namespace GeneralKit
             process.WaitForExit();
             process.Close();
             return value;
-        }
-
-        /// <summary>
-        /// 获取模型的字段字符串
-        /// </summary>
-        public static String Key<TModel>(this TModel model, Expression<Func<TModel, object>> expression) where TModel : class
-        {
-            if (expression == null) throw new ArgumentNullException();
-            return GetPropertyVlaue("Body.Operand.Member.Name", expression) as string;
-        }
-
-        private static object GetPropertyVlaue(string fullPath, object obj)
-        {
-            var o = obj;
-            fullPath.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries).ToList().ForEach(point =>
-            {
-                var p = o.GetType().GetProperty(point, BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Static);
-                try { o = p.GetValue(o, null); } catch { }
-            });
-            return o;
         }
     }
 }
