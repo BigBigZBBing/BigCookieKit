@@ -124,7 +124,7 @@ namespace GeneralKit
         /// <summary>
         /// 结束的列索引
         /// </summary>
-        public int EndColumnIndex { get; set; }
+        public int? EndColumnIndex { get; set; }
 
         /// <summary>
         /// 配置Excal转DataTable的矩阵
@@ -141,6 +141,10 @@ namespace GeneralKit
         /// </summary>
         public bool CellForceFormula { get; set; }
 
+        /// <summary>
+        /// 导出使用的构造函数
+        /// </summary>
+        /// <param name="type"></param>
         public NpoiKit(ExcalType type)
         {
             switch (type)
@@ -154,6 +158,10 @@ namespace GeneralKit
             }
         }
 
+        /// <summary>
+        /// 导入使用的构造函数
+        /// </summary>
+        /// <param name="excelPath"></param>
         public NpoiKit(string excelPath)
         {
             string fileType = Path.GetExtension(excelPath);
@@ -250,6 +258,8 @@ namespace GeneralKit
             IRow row = sheet.GetRow((StartRow - 1) ?? 0);
             int startCell = ColumnToIndex(StartColumn) ?? row.FirstCellNum;
             int lastCell = ColumnToIndex(EndColumn) ?? row.LastCellNum;
+            int startRow = ((StartRow - 1) ?? sheet.FirstRowNum);
+            int endRow = ((EndRow - 1) ?? sheet.LastRowNum);
             for (int i = startCell; i < lastCell; i++)
             {
                 if (AuthColumnName)
@@ -281,7 +291,7 @@ namespace GeneralKit
                 }
             }
 
-            for (int i = ((StartRow - 1) ?? sheet.FirstRowNum); i < ((EndRow - 1) ?? sheet.LastRowNum); i++)
+            for (int i = startRow; i <= endRow; i++)
             {
                 row = sheet.GetRow(i);
                 DataRow dr = dt.NewRow();

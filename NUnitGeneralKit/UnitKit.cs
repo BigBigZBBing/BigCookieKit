@@ -135,7 +135,7 @@ namespace NUnitGeneralKit
         }
 
         [Test]
-        public void TestTT()
+        public void TryParseUnit()
         {
             string test = "15358";
             if (test.TryParse<int>(out var temp))
@@ -145,6 +145,16 @@ namespace NUnitGeneralKit
             if (test.TryParse<int>())
             {
             }
+        }
+
+        [Test]
+        public void NpoiKitUnit()
+        {
+            string path = @"C:\Users\zbb58\Desktop\123.xlsx";
+            NpoiKit npoiKit = new NpoiKit(path);
+            npoiKit.StartRow = 2;
+            //npoiKit.EndRow = 23;
+            DataTable dt = npoiKit.ToDataTable(npoiKit.GetSheet("Sheet1"));
         }
 
     }
