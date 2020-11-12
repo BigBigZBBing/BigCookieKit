@@ -9,6 +9,9 @@ using System.Text;
 
 namespace GeneralKit
 {
+    /// <summary>
+    /// NPOI工具箱
+    /// </summary>
     public class NpoiKit
     {
         /// <summary>
@@ -75,19 +78,53 @@ namespace GeneralKit
         public int? StartRow { get; set; } = 1;
 
         /// <summary>
-        /// 开始的列 跟Excal上边对应
-        /// </summary>
-        public string StartColumn { get; set; }
-
-        /// <summary>
         /// 结束的行
         /// </summary>
         public int? EndRow { get; set; }
 
         /// <summary>
-        /// 结束的行
+        /// 开始的列 跟Excal上边对应
         /// </summary>
-        public string EndColumn { get; set; }
+        private string _StartColumn;
+        public string StartColumn
+        {
+            get
+            {
+                return _StartColumn;
+            }
+            set
+            {
+                StartColumnIndex = ColumnToIndex(value).GetValueOrDefault();
+                _StartColumn = value;
+            }
+        }
+
+        /// <summary>
+        /// 开始的列索引
+        /// </summary>
+        public int StartColumnIndex { get; set; }
+
+        /// <summary>
+        /// 结束的列
+        /// </summary>
+        private string _EndColumn;
+        public string EndColumn
+        {
+            get
+            {
+                return _EndColumn;
+            }
+            set
+            {
+                EndColumnIndex = ColumnToIndex(value).GetValueOrDefault();
+                _EndColumn = value;
+            }
+        }
+
+        /// <summary>
+        /// 结束的列索引
+        /// </summary>
+        public int EndColumnIndex { get; set; }
 
         /// <summary>
         /// 配置Excal转DataTable的矩阵

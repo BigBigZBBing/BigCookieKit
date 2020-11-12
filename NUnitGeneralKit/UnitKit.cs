@@ -1,8 +1,11 @@
 using GeneralKit;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Xml.Linq;
 
 namespace NUnitGeneralKit
 {
@@ -104,6 +107,46 @@ namespace NUnitGeneralKit
 
             dt.Rows.Add(dr);
         }
+
+        [Test]
+        public void XmlToEntity()
+        {
+            var ele = XElement.Parse($@"
+<Test1 attr1=""attr1"" attr2=""attr2"">
+	<Test2 attr3=""attr3"" attr4=""attr4"">
+		<Field attr5=""attr5"" attr6=""attr6"">
+		</Field>
+		<Field attr5=""attr5"" attr6=""attr6"">
+		</Field>
+		<Field attr5=""attr5"" attr6=""attr6"">
+		</Field>
+	</Test2>
+</Test1>");
+
+            Test1 test1 = ele.XmlToEntity<Test1>();
+        }
+
+        [Test]
+        public void MoneyToUpper()
+        {
+            decimal test = 8436.44868M;
+
+            string temp = test.MoneyUpper();
+        }
+
+        [Test]
+        public void TestTT()
+        {
+            string test = "15358";
+            if (test.TryParse<int>(out var temp))
+            {
+            }
+
+            if (test.TryParse<int>())
+            {
+            }
+        }
+
     }
 
     public class TestModel : ICheckVerify
@@ -147,5 +190,25 @@ namespace NUnitGeneralKit
         True,
         [Remark("´íÎó")]
         False
+    }
+
+    public class Test1
+    {
+        public string attr1 { get; set; }
+        public string attr2 { get; set; }
+        public List<Test2> Test2 { get; set; }
+    }
+
+    public class Test2
+    {
+        public string attr3 { get; set; }
+        public string attr4 { get; set; }
+        public List<Field> Field { get; set; }
+    }
+
+    public class Field
+    {
+        public string attr5 { get; set; }
+        public string attr6 { get; set; }
     }
 }

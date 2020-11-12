@@ -8,6 +8,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace GeneralKit
 {
@@ -102,7 +103,7 @@ namespace GeneralKit
         /// <summary>
         /// 判断对象不为NULL或者默认值
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">对象</param>
         /// <returns></returns>
         public static Boolean NotNull(this object obj)
         {
@@ -112,7 +113,7 @@ namespace GeneralKit
         /// <summary>
         /// 集合是存在内容
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="collection">集合</param>
         /// <returns></returns>
         public static Boolean Exist<T>(this IEnumerable<T> collection)
         {
@@ -126,7 +127,7 @@ namespace GeneralKit
         /// <summary>
         /// 集合是不存在内容
         /// </summary>
-        /// <param name="collection"></param>
+        /// <param name="collection">集合</param>
         /// <returns></returns>
         public static Boolean NotExist<T>(this IEnumerable<T> collection)
         {
@@ -136,8 +137,8 @@ namespace GeneralKit
         /// <summary>
         /// 获取枚举的Remark值
         /// </summary>
-        /// <typeparam name="TEnum"></typeparam>
-        /// <param name="em"></param>
+        /// <typeparam name="TEnum">枚举类型</typeparam>
+        /// <param name="em">枚举对象</param>
         /// <returns></returns>
         public static String Remark<TEnum>(this TEnum em) where TEnum : Enum
         {
@@ -159,8 +160,8 @@ namespace GeneralKit
         /// <para>{1}属性值</para>
         /// <para>{2}属性描述</para>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="Entity"></param>
+        /// <typeparam name="T">实体类型</typeparam>
+        /// <param name="Entity">实体对象</param>
         /// <returns></returns>
         public static Boolean ModelValidation<TEntity>(this TEntity Entity) where TEntity : ICheckVerify
         {
@@ -262,6 +263,7 @@ namespace GeneralKit
 
         /// <summary>
         /// 金钱转大写
+        /// <para>(保留两位小数)</para>
         /// </summary>
         /// <param name="Num">数字</param>
         /// <returns></returns>
@@ -371,7 +373,7 @@ namespace GeneralKit
         /// <summary>
         /// 运行Shell命令
         /// </summary>
-        /// <param name="command"></param>
+        /// <param name="command">命令行</param>
         /// <returns></returns>
         public static String RunCmd(string command)
         {
@@ -390,6 +392,117 @@ namespace GeneralKit
             process.WaitForExit();
             process.Close();
             return value;
+        }
+
+        /// <summary>
+        /// Xml转实体对象
+        /// </summary>
+        /// <typeparam name="T">目标类型</typeparam>
+        /// <param name="element">Xml元素</param>
+        /// <returns></returns>
+        public static T XmlToEntity<T>(this XElement element) where T : class, new()
+        {
+            T obj = Activator.CreateInstance(typeof(T)) as T;
+            AttrSetProp(element.Attributes(), obj);
+            WhileElements(element, obj);
+            return obj;
+
+            void WhileElements(XElement eles, object param0)
+            {
+                Type type = param0.GetType();
+                foreach (var ele in eles.Elements())
+                {
+                    var prop = type.GetProperty(ele.Name.LocalName);
+                    if (prop.IsNull() || !prop.PropertyType.IsGenericType || prop.PropertyType.GenericTypeArguments.NotExist()) continue;
+                    var List = prop.GetValue(param0) ?? Activator.CreateInstance(prop.PropertyType);
+                    var itemType = prop.PropertyType.GenericTypeArguments.FirstOrDefault();
+                    var Add = prop.PropertyType.GetMethod("Add", new[] { itemType });
+                    if (Add.IsNull()) continue;
+                    var instance = Activator.CreateInstance(itemType);
+                    Add.Invoke(List, new object[] { instance });
+                    AttrSetProp(ele.Attributes(), instance);
+                    if (ele.HasElements)
+                    {
+                        WhileElements(ele, instance);
+                    }
+                    prop.SetValue(param0, List);
+                }
+            }
+
+            void AttrSetProp(IEnumerable<XAttribute> attrs, object param1)
+            {
+                Type type = param1.GetType();
+                foreach (var attr in attrs)
+                {
+                    var prop = type.GetProperty(attr.Name.LocalName);
+                    if (prop.IsNull()) continue;
+                    prop.SetValue(param1, attr.Value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 尝试转换类型
+        /// </summary>
+        /// <param name="obj">转换的对象</param>
+        /// <param name="type">需要转换的类型</param>
+        /// <param name="value">回调的参数</param>
+        /// <returns></returns>
+        public static bool TryParse(this object obj, Type type, out object value)
+        {
+            value = null;
+            try
+            {
+                string temp = obj.ToString();
+                MethodInfo methodInfo = type.GetMethod("TryParse", new[] { typeof(string), type.MakeByRefType() });
+                var parameters = new object[] { temp, null };
+                if (methodInfo.NotNull() && (bool)methodInfo.Invoke(type, parameters))
+                {
+                    value = parameters[1];
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch { }
+            return false;
+        }
+
+        /// <summary>
+        /// 尝试转换类型
+        /// </summary>
+        /// <param name="obj">转换的对象</param>
+        /// <param name="type">需要转换的类型</param>
+        /// <returns></returns>
+        public static bool TryParse(this object obj, Type type)
+        {
+            return obj.TryParse(type, out object temp);
+        }
+
+        /// <summary>
+        /// 尝试转换类型
+        /// </summary>
+        /// <typeparam name="T">需要转换的类型</typeparam>
+        /// <param name="obj">转换的对象</param>
+        /// <param name="value">回调的参数</param>
+        /// <returns></returns>
+        public static bool TryParse<T>(this object obj, out object value)
+        {
+            Type type = typeof(T);
+            return obj.TryParse(type, out value);
+        }
+
+        /// <summary>
+        /// 尝试转换类型
+        /// </summary>
+        /// <typeparam name="T">需要转换的类型</typeparam>
+        /// <param name="obj">转换的对象</param>
+        /// <returns></returns>
+        public static bool TryParse<T>(this object obj)
+        {
+            return obj.TryParse<T>(out object temp);
         }
     }
 }

@@ -11,7 +11,7 @@ namespace GeneralKit
     public static class DataTableKit
     {
         /// <summary>
-        /// 给Cell赋值
+        /// 给DataTable单元格赋值
         /// <para/>解决数值类型空值问题
         /// </summary>
         /// <param name="dr"></param>
@@ -26,7 +26,15 @@ namespace GeneralKit
             }
             else
             {
-                dr[filed] = value;
+                if (value.GetType() != filedType 
+                    && value.TryParse(filedType, out object temp))
+                {
+                    dr[filed] = temp;
+                }
+                else
+                {
+                    dr[filed] = value;
+                }
             }
         }
     }
