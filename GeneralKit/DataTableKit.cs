@@ -15,8 +15,8 @@ namespace GeneralKit
         /// <para/>解决数值类型空值问题
         /// </summary>
         /// <param name="dr"></param>
-        /// <param name="filed"></param>
-        /// <param name="value"></param>
+        /// <param name="filed">列名</param>
+        /// <param name="value">值</param>
         public static void CellSetValue(this DataRow dr, string filed, object value)
         {
             Type filedType = dr.Table.Columns[filed].DataType;
@@ -26,7 +26,7 @@ namespace GeneralKit
             }
             else
             {
-                if (value.GetType() != filedType 
+                if (value.GetType() != filedType
                     && value.TryParse(filedType, out object temp))
                 {
                     dr[filed] = temp;
@@ -36,6 +36,23 @@ namespace GeneralKit
                     dr[filed] = value;
                 }
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dr"></param>
+        /// <param name="filed"></param>
+        /// <returns></returns>
+        public static object CellGetValue(this DataRow dr, string filed, DbValueFormat format = DbValueFormat.None)
+        {
+            Type filedType = dr.Table.Columns[filed].DataType;
+            if (dr[filed] == DBNull.Value || dr[filed].IsNull())
+            {
+                return Activator.CreateInstance(filedType);
+            }
+
+            return dr[filed];
         }
     }
 }

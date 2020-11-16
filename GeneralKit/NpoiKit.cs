@@ -68,9 +68,9 @@ namespace GeneralKit
         private IWorkbook workbook { get; set; }
 
         /// <summary>
-        /// 不适用Excel的列名 自动列名 例:Colume1 Colume2
+        /// 列名索引 不设置则自动列名 例:Colume1 Colume2
         /// </summary>
-        public bool AuthColumnName { get; set; }
+        public int? ColumnNameRow { get; set; }
 
         /// <summary>
         /// 开始的行 跟Excal左边对应
@@ -94,7 +94,7 @@ namespace GeneralKit
             }
             set
             {
-                StartColumnIndex = ColumnToIndex(value).GetValueOrDefault();
+                StartColumnIndex = ColumnToIndex(value);
                 _StartColumn = value;
             }
         }
@@ -102,7 +102,7 @@ namespace GeneralKit
         /// <summary>
         /// 开始的列索引
         /// </summary>
-        public int StartColumnIndex { get; set; }
+        public int? StartColumnIndex { get; set; }
 
         /// <summary>
         /// 结束的列
@@ -255,16 +255,19 @@ namespace GeneralKit
         private DataTable SheetToDataTable(ISheet sheet)
         {
             DataTable dt = new DataTable(sheet.SheetName);
-            IRow row = sheet.GetRow((StartRow - 1) ?? 0);
-            int startCell = ColumnToIndex(StartColumn) ?? row.FirstCellNum;
-            int lastCell = ColumnToIndex(EndColumn) ?? row.LastCellNum;
+            IRow row = sheet.GetRow((ColumnNameRow - 1) ?? sheet.FirstRowNum);
+            Dictionary<int, string> cellDic = new Dictionary<int, string>();
+            int startCell = StartColumnIndex ?? row.FirstCellNum;
+            int lastCell = EndColumnIndex + 1 ?? row.LastCellNum;
             int startRow = ((StartRow - 1) ?? sheet.FirstRowNum);
             int endRow = ((EndRow - 1) ?? sheet.LastRowNum);
             for (int i = startCell; i < lastCell; i++)
             {
-                if (AuthColumnName)
+                if (ColumnNameRow.IsNull())
                 {
-                    dt.Columns.Add(new DataColumn());
+                    var dc = new DataColumn();
+                    dt.Columns.Add(dc);
+                    cellDic.Add(i, dc.ColumnName);
                 }
                 else
                 {
@@ -275,17 +278,23 @@ namespace GeneralKit
                         {
                             if (CellForceFormula)
                             {
-                                dt.Columns.Add(new DataColumn(ForceEvaluatorCell(cell).StringValue));
+                                var dc = new DataColumn(ForceEvaluatorCell(cell).StringValue);
+                                dt.Columns.Add(dc);
+                                cellDic.Add(i, dc.ColumnName);
                             }
                         }
                         else
                         {
+                            var dc = new DataColumn(cell.StringCellValue);
                             dt.Columns.Add(new DataColumn(cell.StringCellValue));
+                            cellDic.Add(i, dc.ColumnName);
                         }
                     }
                     catch (System.Exception ex)
                     {
-                        dt.Columns.Add(new DataColumn());
+                        var dc = new DataColumn();
+                        dt.Columns.Add(dc);
+                        cellDic.Add(i, dc.ColumnName);
                         ErrorLog.Add($"生成列发生错误:第{i}列,错误信息:{ex.Message}");
                     }
                 }
@@ -302,7 +311,7 @@ namespace GeneralKit
                     {
                         if (cell == null)
                         {
-                            dr[t] = DBNull.Value;
+                            dr[cellDic[t]] = DBNull.Value;
                         }
                         else
                         {
@@ -313,25 +322,25 @@ namespace GeneralKit
 
                             if (cell.CellType == CellType.Numeric && DateUtil.IsCellDateFormatted(cell))
                             {
-                                dr[t] = cell.DateCellValue;
+                                dr[cellDic[t]] = cell.DateCellValue;
                             }
                             else if (cell.CellType == CellType.Numeric)
                             {
-                                dr[t] = cell.NumericCellValue;
+                                dr[cellDic[t]] = cell.NumericCellValue;
                             }
                             else if (cell.CellType == CellType.Blank)
                             {
-                                dr[t] = DBNull.Value;
+                                dr[cellDic[t]] = DBNull.Value;
                             }
                             else
                             {
-                                dr[t] = cell.StringCellValue;
+                                dr[cellDic[t]] = cell.StringCellValue;
                             }
                         }
                     }
                     catch (System.Exception ex)
                     {
-                        dr[t] = DBNull.Value;
+                        dr[cellDic[t]] = DBNull.Value;
                         ErrorLog.Add($"列赋值发生错误:第{i}行 第{IndexToColumn(t)}列,错误信息:{ex.Message}");
                     }
                 }

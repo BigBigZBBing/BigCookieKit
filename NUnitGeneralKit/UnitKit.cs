@@ -152,11 +152,54 @@ namespace NUnitGeneralKit
         {
             string path = @"C:\Users\zbb58\Desktop\123.xlsx";
             NpoiKit npoiKit = new NpoiKit(path);
+            npoiKit.ColumnNameRow = 1;
             npoiKit.StartRow = 2;
+            npoiKit.EndRow = 13;
+            npoiKit.EndColumn = "B";
             //npoiKit.EndRow = 23;
             DataTable dt = npoiKit.ToDataTable(npoiKit.GetSheet("Sheet1"));
         }
 
+        [Test]
+        public void TypeAssert()
+        {
+            string classObj = "";
+            bool test1 = classObj.IsClass();
+            bool test2 = classObj.IsValue();
+            bool test3 = classObj.IsStruct();
+            bool test4 = classObj.IsEnum();
+
+            int valueObj = 0;
+            test1 = valueObj.IsClass();
+            test2 = valueObj.IsValue();
+            test3 = valueObj.IsStruct();
+            test4 = valueObj.IsEnum();
+
+            TestEnum enumObj = TestEnum.None;
+            test1 = enumObj.IsClass();
+            test2 = enumObj.IsValue();
+            test3 = enumObj.IsStruct();
+            test4 = enumObj.IsEnum();
+
+            TestStruct structObj = new TestStruct();
+            test1 = structObj.IsClass();
+            test2 = structObj.IsValue();
+            test3 = structObj.IsStruct();
+            test4 = structObj.IsEnum();
+        }
+
+        [Test]
+        public void TestKit()
+        {
+            Type type = typeof(TestEnum);
+            var obj = Activator.CreateInstance(typeof(TestEnum));
+        }
+
+    }
+
+    public struct TestStruct
+    {
+        public string filed { get; set; }
     }
 
     public class TestModel : ICheckVerify

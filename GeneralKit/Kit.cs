@@ -32,70 +32,9 @@ namespace GeneralKit
             {
                 return string.IsNullOrEmpty(obj.ToString());
             }
-            else if (obj.GetType() == typeof(sbyte))
+            else if (obj.IsValue() && obj == Activator.CreateInstance(obj.GetType()))
             {
-                if (obj == null || ((sbyte)obj) == default(sbyte))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(byte))
-            {
-                if (obj == null || ((byte)obj) == default(byte))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(ushort))
-            {
-                if (obj == null || ((ushort)obj) == default(ushort))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(short))
-            {
-                if (obj == null || ((short)obj) == default(short))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(uint))
-            {
-                if (obj == null || ((uint)obj) == default(uint))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(int))
-            {
-                if (obj == null || ((int)obj) == default(int))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(ulong))
-            {
-                if (obj == null || ((ulong)obj) == default(ulong))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(long))
-            {
-                if (obj == null || ((long)obj) == default(long))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(float))
-            {
-                if (obj == null || ((float)obj) == default(float))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(double))
-            {
-                if (obj == null || ((double)obj) == default(double))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(decimal))
-            {
-                if (obj == null || ((decimal)obj) == default(decimal))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(DateTime))
-            {
-                if (obj == null || ((DateTime)obj) == default(DateTime))
-                    return true;
-            }
-            else if (obj.GetType() == typeof(TimeSpan))
-            {
-                if (obj == null || ((TimeSpan)obj) == default(TimeSpan))
-                    return true;
+                return true;
             }
             return false;
         }
@@ -373,9 +312,9 @@ namespace GeneralKit
         /// <summary>
         /// 运行Shell命令
         /// </summary>
-        /// <param name="command">命令行</param>
+        /// <param name="cmd">命令行</param>
         /// <returns></returns>
-        public static String RunCmd(string command)
+        public static String RunShell(string cmd)
         {
             Process process = new Process();
             process.StartInfo.FileName = "cmd.exe";
@@ -385,7 +324,7 @@ namespace GeneralKit
             process.StartInfo.RedirectStandardError = true;
             process.StartInfo.CreateNoWindow = true;
             process.Start();
-            process.StandardInput.WriteLine(command);
+            process.StandardInput.WriteLine(cmd);
             process.StandardInput.WriteLine("exit");
             process.StandardInput.AutoFlush = true;
             string value = process.StandardOutput.ReadToEnd();
@@ -503,6 +442,76 @@ namespace GeneralKit
         public static bool TryParse<T>(this object obj)
         {
             return obj.TryParse<T>(out object temp);
+        }
+
+        /// <summary>
+        /// 判断是否为引用类型
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static bool IsClass(this object obj)
+        {
+            if (obj.GetType().BaseType == typeof(object))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 判断是否为值类型
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static bool IsValue(this object obj)
+        {
+            if ((obj as ValueType) != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 判断是否为结构体
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static bool IsStruct(this object obj)
+        {
+            if (obj.GetType().BaseType == typeof(ValueType))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 是否为枚举
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static bool IsEnum(this object obj)
+        {
+            if (obj.GetType().BaseType == typeof(Enum))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 首字母小写
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string FirstLower(this string str)
+        {
+            if (str.NotNull())
+            {
+                return str.Substring(0, 1).ToLower() + str.Substring(1, str.Length - 1);
+            }
+            return str;
         }
     }
 }
