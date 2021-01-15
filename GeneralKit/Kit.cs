@@ -1,4 +1,6 @@
 ﻿using GeneralKit.Attributes;
+using ILWheatBread;
+using ILWheatBread.SmartEmit;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -97,12 +99,12 @@ namespace GeneralKit
         /// <para>(未设置错误消息不验证)</para>
         /// <para>{0}属性名称</para>
         /// <para>{1}属性值</para>
-        /// <para>{2}属性描述</para>
+        /// <para>{2}错误描述</para>
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="Entity">实体对象</param>
         /// <returns></returns>
-        public static Boolean ModelValidation<TEntity>(this TEntity Entity) where TEntity : ICheckVerify
+        public static Boolean ModelValidation<TEntity>(this TEntity Entity)
         {
             StringBuilder strBuilder = new StringBuilder();
             try
@@ -112,81 +114,28 @@ namespace GeneralKit
                 {
                     foreach (PropertyInfo propertie in properties)
                     {
-                        Attribute Attributes = propertie.GetCustomAttribute(typeof(RuleAttribute));
-                        if (Attributes.NotNull())
+                        if (propertie.PropertyType == typeof(string)
+                            && propertie.GetCustomAttribute(typeof(StringRuleAttribute)).NotNull())
                         {
-                            Type Type = propertie.PropertyType;
-                            string Name = propertie.Name;
-                            object Value = propertie.GetValue(Entity);
-                            double @double;
-                            RuleAttribute Attr_properties = Attributes as RuleAttribute;
-                            if (Attr_properties.Error.NotNull())
-                            {
-                                if (Attr_properties.maxLength.NotNull() && Value.NotNull() && Type == typeof(string))
-                                {
-                                    if (Value.ToString().Length > Attr_properties.MaxLength)
-                                    {
-                                        strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
-                                        break;
-                                    }
-                                }
-                                if (Attr_properties.minLength.NotNull() && Value.NotNull() && Type == typeof(string))
-                                {
-                                    if (Value.ToString().Length < Attr_properties.MinLength)
-                                    {
-                                        strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
-                                        break;
-                                    }
-                                }
-                                if (Attr_properties.allowEmpty.NotNull())
-                                {
-                                    if (Value.IsNull())
-                                    {
-                                        strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
-                                        break;
-                                    }
-                                }
-                                if (Attr_properties.greater.NotNull() && Value.NotNull() && double.TryParse(Value.ToString(), out @double))
-                                {
-                                    if (@double > Attr_properties.Greater)
-                                    {
-                                        strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
-                                        break;
-                                    }
-                                }
-                                if (Attr_properties.less.NotNull() && Value.NotNull() && double.TryParse(Value.ToString(), out @double))
-                                {
-                                    if (@double < Attr_properties.Less)
-                                    {
-                                        strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
-                                        break;
-                                    }
-                                }
-                                if (Attr_properties.equal.NotNull() && Value.NotNull() && double.TryParse(Value.ToString(), out @double))
-                                {
-                                    if (@double == Attr_properties.Equal)
-                                    {
-                                        strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
-                                        break;
-                                    }
-                                }
-                                if (Attr_properties.regExp.NotNull() && Value.NotNull())
-                                {
-                                    if (!Regex.IsMatch(Value.ToString(), Attr_properties.regExp))
-                                    {
-                                        strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
-                                        break;
-                                    }
-                                }
-                                if (Attr_properties.expType.NotNull() && Value.NotNull())
-                                {
-                                    if (!Regex.IsMatch(Value.ToString(), Attr_properties.expType?.Remark()))
-                                    {
-                                        strBuilder.Append(string.Format("\r\n" + Attr_properties.Error, Name, Value, Attr_properties.Name));
-                                        break;
-                                    }
-                                }
-                            }
+                            var attr = propertie.GetCustomAttribute(typeof(StringRuleAttribute)) as StringRuleAttribute;
+                            if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
+                                continue;
+                        }
+
+                        if ((propertie.PropertyType == typeof(int) || propertie.PropertyType == typeof(long))
+                            && propertie.GetCustomAttribute(typeof(NumericRuleAttribute)).NotNull())
+                        {
+                            var attr = propertie.GetCustomAttribute(typeof(NumericRuleAttribute)) as NumericRuleAttribute;
+                            if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
+                                continue;
+                        }
+
+                        if ((propertie.PropertyType == typeof(float) || propertie.PropertyType == typeof(double) || propertie.PropertyType == typeof(decimal))
+                            && propertie.GetCustomAttribute(typeof(DecimalRuleAttribute)).NotNull())
+                        {
+                            var attr = propertie.GetCustomAttribute(typeof(DecimalRuleAttribute)) as DecimalRuleAttribute;
+                            if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
+                                continue;
                         }
                     }
                 }
@@ -513,5 +462,217 @@ namespace GeneralKit
             }
             return str;
         }
+
+        /// <summary>
+        /// 类型转换深拷贝
+        /// </summary>
+        /// <typeparam name="TSource">源类型</typeparam>
+        /// <typeparam name="TTarget">目标类型</typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static TTarget MapTo<TSource, TTarget>(this TSource source)
+            where TTarget : class
+            where TSource : class
+        {
+            return SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, func =>
+            {
+                var sourceEntity = func.NewEntity<TSource>(func.EmitParamRef<TSource>(0));
+                var targetEntity = func.NewEntity<TTarget>();
+                foreach (var sourceItem in typeof(TSource).GetProperties())
+                {
+                    var targetItem = typeof(TTarget).GetProperty(sourceItem.Name);
+                    if (targetItem == null || sourceItem.PropertyType != targetItem.PropertyType)
+                        continue;
+                    targetEntity.SetValue(sourceItem.Name, sourceEntity.GetValue(sourceItem.Name));
+                }
+                targetEntity.Output();
+                func.EmitReturn();
+            }).Invoke(source);
+        }
+
+        /// <summary>
+        /// 规则性格式化
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="paramters"></param>
+        /// <returns></returns>
+        public static string RulesFormat(this string value, params string[] paramters)
+        {
+            for (int i = 0; i < paramters.Length; i++)
+            {
+                value = value.Replace($"{{{i}}}", paramters[i]);
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// 获取浮点数的精度
+        /// </summary>
+        /// <param name="m_float"></param>
+        /// <returns></returns>
+        public static int GetPrecision(this float m_float)
+        {
+            return GetPrecision((decimal)m_float);
+        }
+
+        /// <summary>
+        /// 获取浮点数的精度
+        /// </summary>
+        /// <param name="m_float"></param>
+        /// <returns></returns>
+        public static int GetPrecision(this double m_float)
+        {
+            return GetPrecision((decimal)m_float);
+        }
+
+        /// <summary>
+        /// 获取浮点数的精度
+        /// </summary>
+        /// <param name="m_float"></param>
+        /// <returns></returns>
+        public static int GetPrecision(this decimal m_float)
+        {
+            var str = m_float.ToString();
+            var index = str.IndexOf(".");
+            if (index > -1)
+            {
+                return str.Substring(index + 1).TrimEnd('0').Length;
+            }
+            else
+                return 0;
+        }
+
+        /// <summary>
+        /// 保证字符串都拥有
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static bool AllOwn(this string str, params string[] parameters)
+        {
+            foreach (var item in parameters)
+            {
+                if (str.IndexOf(item, StringComparison.Ordinal) == -1)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        #region 
+        private static bool BasicValidation<T>(FastProperty propertie, T attr, StringBuilder strBuilder) where T : BasicAttribute
+        {
+            if (attr.NotNull() && attr.Message.NotNull())
+            {
+                Type Type = propertie.PropertyType;
+                string Name = propertie.PropertyName;
+                object Value = propertie.Get();
+                if (attr.Required.NotNull() && attr.Required.Value == true && Value.IsNull())
+                {
+                    strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Required)));
+                    return false;
+                }
+                if (attr is StringRuleAttribute)
+                {
+                    if (!StringValidation(propertie, attr as StringRuleAttribute, strBuilder))
+                        return false;
+                }
+                if (attr is NumericRuleAttribute)
+                {
+                    if (!NumericValidation(propertie, attr as NumericRuleAttribute, strBuilder))
+                        return false;
+                }
+                if (attr is DecimalRuleAttribute)
+                {
+                    if (!DecimalValidation(propertie, attr as DecimalRuleAttribute, strBuilder))
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool StringValidation(FastProperty propertie, StringRuleAttribute attr, StringBuilder strBuilder)
+        {
+            string Name = propertie.PropertyName;
+            object Value = propertie.Get();
+            if (attr.MinLength.NotNull() && Value.NotNull() && Value.ToString().Length < attr.MinLength)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.MinLength)));
+                return false;
+            }
+            if (attr.MaxLength.NotNull() && Value.NotNull() && Value.ToString().Length > attr.MaxLength)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.MaxLength)));
+                return false;
+            }
+            if (attr.RegExp.NotNull() && Value.NotNull() && !Regex.IsMatch(Value.ToString(), attr.RegExp))
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.RegExp)));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool NumericValidation(FastProperty propertie, NumericRuleAttribute attr, StringBuilder strBuilder)
+        {
+            string Name = propertie.PropertyName;
+            object Value = propertie.Get();
+            if (attr.Greater.NotNull() && Value.NotNull() && Convert.ToInt64(Value) > attr.Greater)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Greater)));
+                return false;
+            }
+            if (attr.Less.NotNull() && Value.NotNull() && Convert.ToInt64(Value) < attr.Less)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Less)));
+                return false;
+            }
+            if (attr.Equal.NotNull() && Value.NotNull() && Convert.ToInt64(Value) == attr.Equal)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Equal)));
+                return false;
+            }
+            if (attr.NoEqual.NotNull() && Value.NotNull() && Convert.ToInt64(Value) != attr.NoEqual)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.NoEqual)));
+                return false;
+            }
+            return true;
+        }
+
+        private static bool DecimalValidation(FastProperty propertie, DecimalRuleAttribute attr, StringBuilder strBuilder)
+        {
+            string Name = propertie.PropertyName;
+            object Value = propertie.Get();
+            if (attr.Greater.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) > attr.Greater)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Greater)));
+                return false;
+            }
+            if (attr.Less.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) < attr.Less)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Less)));
+                return false;
+            }
+            if (attr.Equal.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) == attr.Equal)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Equal)));
+                return false;
+            }
+            if (attr.NoEqual.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) != attr.NoEqual)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.NoEqual)));
+                return false;
+            }
+            if (attr.Precision.NotNull() && Value.NotNull() && Convert.ToDecimal(Value).GetPrecision() > attr.Precision)
+            {
+                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Precision)));
+                return false;
+            }
+            return true;
+        }
+        #endregion
     }
 }

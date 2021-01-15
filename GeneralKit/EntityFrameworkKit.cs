@@ -19,11 +19,7 @@ namespace GeneralKit
         /// </summary>
         public static DataTable ReadDataTable(this DbContext context, string sql, params SqlParameter[] parameters)
         {
-            if (context.Database.IsSqlServer())
-            {
-                return SqlToDataSet(context.Database, sql, parameters).Tables[0];
-            }
-            return null;
+            return SqlToDataSet(context.Database, sql, parameters).Tables[0];
         }
 
         /// <summary>
@@ -33,11 +29,7 @@ namespace GeneralKit
         /// </summary>
         public static DataSet ReadDataSet(this DbContext context, string sql, params SqlParameter[] parameters)
         {
-            if (context.Database.IsSqlServer())
-            {
-                return SqlToDataSet(context.Database, sql, parameters);
-            }
-            return null;
+            return SqlToDataSet(context.Database, sql, parameters);
         }
 
         /// <summary>
@@ -48,26 +40,26 @@ namespace GeneralKit
         private static DataSet SqlToDataSet(DatabaseFacade facade, string sql, params SqlParameter[] parameters)
         {
             var ds = new DataSet();
-            using (var con = facade.GetDbConnection())
-            {
-                if (con.State != ConnectionState.Open) con.Open();
-                using (var cmd = con.CreateCommand())
-                {
-                    cmd.CommandText = sql;
-                    cmd.Parameters.AddRange(parameters);
-                    cmd.Transaction = facade.CurrentTransaction?.GetDbTransaction();
+            var con = facade.GetDbConnection();
 
-                    using (var reader = cmd.ExecuteReader())
+            if (con.State != ConnectionState.Open) con.Open();
+            using (var cmd = con.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                cmd.Parameters.AddRange(parameters);
+                cmd.Transaction = facade.CurrentTransaction?.GetDbTransaction();
+
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (!reader.IsClosed)
                     {
-                        while (!reader.IsClosed)
-                        {
-                            var dt = new DataTable();
-                            dt.Load(reader);
-                            ds.Tables.Add(dt);
-                        }
+                        var dt = new DataTable();
+                        dt.Load(reader);
+                        ds.Tables.Add(dt);
                     }
                 }
             }
+
             return ds;
         }
     }

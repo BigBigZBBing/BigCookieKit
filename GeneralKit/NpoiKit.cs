@@ -1,4 +1,5 @@
-﻿using NPOI.HSSF.UserModel;
+﻿using GeneralKit.Model;
+using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -53,11 +54,6 @@ namespace GeneralKit
         }
 
         /// <summary>
-        /// 26个序列英文字母
-        /// </summary>
-        private char[] sequence = new[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-
-        /// <summary>
         /// 异常日志
         /// </summary>
         public List<string> ErrorLog { get; set; } = new List<string>();
@@ -68,73 +64,9 @@ namespace GeneralKit
         private IWorkbook workbook { get; set; }
 
         /// <summary>
-        /// 列名索引 不设置则自动列名 例:Colume1 Colume2
+        /// Excel配置
         /// </summary>
-        public int? ColumnNameRow { get; set; }
-
-        /// <summary>
-        /// 开始的行 跟Excal左边对应
-        /// </summary>
-        public int? StartRow { get; set; } = 1;
-
-        /// <summary>
-        /// 结束的行
-        /// </summary>
-        public int? EndRow { get; set; }
-
-        /// <summary>
-        /// 开始的列 跟Excal上边对应
-        /// </summary>
-        private string _StartColumn;
-        public string StartColumn
-        {
-            get
-            {
-                return _StartColumn;
-            }
-            set
-            {
-                StartColumnIndex = ColumnToIndex(value);
-                _StartColumn = value;
-            }
-        }
-
-        /// <summary>
-        /// 开始的列索引
-        /// </summary>
-        public int? StartColumnIndex { get; set; }
-
-        /// <summary>
-        /// 结束的列
-        /// </summary>
-        private string _EndColumn;
-        public string EndColumn
-        {
-            get
-            {
-                return _EndColumn;
-            }
-            set
-            {
-                EndColumnIndex = ColumnToIndex(value).GetValueOrDefault();
-                _EndColumn = value;
-            }
-        }
-
-        /// <summary>
-        /// 结束的列索引
-        /// </summary>
-        public int? EndColumnIndex { get; set; }
-
-        /// <summary>
-        /// 配置Excal转DataTable的矩阵
-        /// </summary>
-        public string ImportMatrix { get; set; }
-
-        /// <summary>
-        /// 配置DataTable转Excal的矩阵
-        /// </summary>
-        public string ExportMatrix { get; set; }
+        private ExcelConfig config { get; set; }
 
         /// <summary>
         /// 所有单元格直接获取公式结果
@@ -182,6 +114,16 @@ namespace GeneralKit
         }
 
         /// <summary>
+        /// 创建Excel配置
+        /// </summary>
+        /// <param name="callback"></param>
+        public void CreateConfig(Action<ExcelConfig> callback)
+        {
+            config = new ExcelConfig();
+            callback.Invoke(config);
+        }
+
+        /// <summary>
         /// 获取所有的Sheet
         /// </summary>
         /// <returns></returns>
@@ -217,6 +159,7 @@ namespace GeneralKit
         /// </summary>
         /// <param name="cell">单元格</param>
         /// <returns></returns>
+        [Obsolete("使用另一种替换方案")]
         public CellValue ForceEvaluatorCell(ICell cell)
         {
             return workbook.GetCreationHelper().CreateFormulaEvaluator().Evaluate(cell);
@@ -255,15 +198,16 @@ namespace GeneralKit
         private DataTable SheetToDataTable(ISheet sheet)
         {
             DataTable dt = new DataTable(sheet.SheetName);
-            IRow row = sheet.GetRow((ColumnNameRow - 1) ?? sheet.FirstRowNum);
+            IRow row = sheet.GetRow((config.ColumnNameRow - 1) ?? sheet.FirstRowNum);
             Dictionary<int, string> cellDic = new Dictionary<int, string>();
-            int startCell = StartColumnIndex ?? row.FirstCellNum;
-            int lastCell = EndColumnIndex + 1 ?? row.LastCellNum;
-            int startRow = ((StartRow - 1) ?? sheet.FirstRowNum);
-            int endRow = ((EndRow - 1) ?? sheet.LastRowNum);
+            int startCell = config.StartColumnIndex ?? row.FirstCellNum;
+            int lastCell = config.EndColumnIndex + 1 ?? row.LastCellNum;
+            int startRow = ((config.StartRow - 1) ?? sheet.FirstRowNum);
+            int endRow = ((config.EndRow - 1) ?? sheet.LastRowNum);
+
             for (int i = startCell; i < lastCell; i++)
             {
-                if (ColumnNameRow.IsNull())
+                if (config.ColumnNameRow.IsNull())
                 {
                     var dc = new DataColumn();
                     dt.Columns.Add(dc);
@@ -276,26 +220,18 @@ namespace GeneralKit
                         ICell cell = row.GetCell(i);
                         if (cell.CellType == CellType.Formula)
                         {
-                            if (CellForceFormula)
-                            {
-                                var dc = new DataColumn(ForceEvaluatorCell(cell).StringValue);
-                                dt.Columns.Add(dc);
-                                cellDic.Add(i, dc.ColumnName);
-                            }
+                            cell.SetCellType(cell.CachedFormulaResultType);
                         }
-                        else
-                        {
-                            var dc = new DataColumn(cell.StringCellValue);
-                            dt.Columns.Add(new DataColumn(cell.StringCellValue));
-                            cellDic.Add(i, dc.ColumnName);
-                        }
+                        var dc = new DataColumn(cell.StringCellValue);
+                        dt.Columns.Add(new DataColumn(cell.StringCellValue));
+                        cellDic.Add(i, dc.ColumnName);
                     }
                     catch (System.Exception ex)
                     {
                         var dc = new DataColumn();
                         dt.Columns.Add(dc);
                         cellDic.Add(i, dc.ColumnName);
-                        ErrorLog.Add($"生成列发生错误:第{i}列,错误信息:{ex.Message}");
+                        ErrorLog.Add($"生成列发生错误:第{ExcelConfig.IndexToColumn(i)}列,错误信息:{ex.Message}");
                     }
                 }
             }
@@ -319,7 +255,6 @@ namespace GeneralKit
                             {
                                 cell.SetCellType(cell.CachedFormulaResultType);
                             }
-
                             if (cell.CellType == CellType.Numeric && DateUtil.IsCellDateFormatted(cell))
                             {
                                 dr[cellDic[t]] = cell.DateCellValue;
@@ -341,43 +276,12 @@ namespace GeneralKit
                     catch (System.Exception ex)
                     {
                         dr[cellDic[t]] = DBNull.Value;
-                        ErrorLog.Add($"列赋值发生错误:第{i}行 第{IndexToColumn(t)}列,错误信息:{ex.Message}");
+                        ErrorLog.Add($"列赋值发生错误:第{i}行 第{ExcelConfig.IndexToColumn(t)}列,错误信息:{ex.Message}");
                     }
                 }
                 dt.Rows.Add(dr);
             }
             return dt;
-        }
-
-        /// <summary>
-        /// 获取Excal 列坐标的对应的索引
-        /// </summary>
-        /// <param name="column"></param>
-        /// <returns></returns>
-        private int? ColumnToIndex(string column)
-        {
-            if (column == null) return null;
-            if (column.Length == 1)
-            {
-                return System.Array.IndexOf(sequence, column[0]);
-            }
-            int temp = (column.Length - 1) * 26;
-            return System.Array.IndexOf(sequence, column[column.Length - 1]) + temp;
-        }
-
-        /// <summary>
-        /// 根据索引获取Excal 列坐标
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private string IndexToColumn(int index)
-        {
-            int head = index / 26;
-            int foot = index % 26;
-            string temp = "";
-            temp += sequence[foot];
-            temp = temp.PadLeft(head + 1, 'A');
-            return temp;
         }
 
         /// <summary>
@@ -481,32 +385,26 @@ namespace GeneralKit
             }
             else if (typeof(int) == type)
             {
-                //cell.CellStyle = IntStyle;
                 if (value != null) cell.SetCellValue(Convert.ToInt32(value));
             }
             else if (typeof(short) == type)
             {
-                //cell.CellStyle = IntStyle;
                 if (value != null) cell.SetCellValue(Convert.ToInt16(value));
             }
             else if (typeof(long) == type)
             {
-                //cell.CellStyle = IntStyle;
                 if (value != null) cell.SetCellValue(Convert.ToInt64(value));
             }
             else if (typeof(double) == type)
             {
-                //cell.CellStyle = DoubleStyle;
                 if (value != null) cell.SetCellValue(Convert.ToDouble(value));
             }
             else if (typeof(decimal) == type)
             {
-                //cell.CellStyle = DoubleStyle;
                 if (value != null) cell.SetCellValue(Convert.ToDouble(value));
             }
             else if (typeof(float) == type)
             {
-                //cell.CellStyle = DoubleStyle;
                 if (value != null) cell.SetCellValue(Convert.ToSingle(value));
             }
             else if (typeof(string) == type)

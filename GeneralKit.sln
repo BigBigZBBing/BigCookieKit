@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitGeneralKit", "NUnitGen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeneralKit", "GeneralKit\GeneralKit.csproj", "{B210149D-F751-4D4F-954D-E66A059334A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitConsole", "UnitConsole\UnitConsole.csproj", "{5A00CC08-F081-4D8E-94A1-FCB25A4CAF11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B210149D-F751-4D4F-954D-E66A059334A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B210149D-F751-4D4F-954D-E66A059334A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B210149D-F751-4D4F-954D-E66A059334A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A00CC08-F081-4D8E-94A1-FCB25A4CAF11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A00CC08-F081-4D8E-94A1-FCB25A4CAF11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A00CC08-F081-4D8E-94A1-FCB25A4CAF11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A00CC08-F081-4D8E-94A1-FCB25A4CAF11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

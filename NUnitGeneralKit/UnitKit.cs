@@ -19,21 +19,21 @@ namespace NUnitGeneralKit
         [Test]
         public void VerifyUnit()
         {
-            TestModel testModel = new TestModel();
-            testModel.Id = 100;//不填通不过
-            //testModel.Name = "张";//通不过
-            //testModel.Name = "张三";//通过
-            //testModel.Name = "张as";//通不过
-            //testModel.Name = "张三三";//通过
-            //testModel.Name = "张三三三三";//通不过
-            testModel.Old = 1;//通过
-            //testModel.Old = 12;//通不过
-            testModel.Old1 = 10;//通过
-            //testModel.Old1 = 8;//通不过
-            testModel.Old2 = 8;//通过
-            testModel.Old2 = 7;//通不过
+            //TestModel testModel = new TestModel();
+            //testModel.Id = 100;//不填通不过
+            ////testModel.Name = "张";//通不过
+            ////testModel.Name = "张三";//通过
+            ////testModel.Name = "张as";//通不过
+            ////testModel.Name = "张三三";//通过
+            ////testModel.Name = "张三三三三";//通不过
+            //testModel.Old = 1;//通过
+            ////testModel.Old = 12;//通不过
+            //testModel.Old1 = 10;//通过
+            ////testModel.Old1 = 8;//通不过
+            //testModel.Old2 = 8;//通过
+            //testModel.Old2 = 7;//通不过
 
-            testModel.ModelValidation();
+            //testModel.ModelValidation();
             Assert.IsTrue(true);
         }
 
@@ -150,13 +150,16 @@ namespace NUnitGeneralKit
         [Test]
         public void NpoiKitUnit()
         {
-            string path = @"C:\Users\zbb58\Desktop\123.xlsx";
+            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
             NpoiKit npoiKit = new NpoiKit(path);
-            npoiKit.ColumnNameRow = 1;
-            npoiKit.StartRow = 2;
-            npoiKit.EndRow = 13;
-            npoiKit.EndColumn = "B";
-            //npoiKit.EndRow = 23;
+            npoiKit.CreateConfig(config =>
+            {
+                config.ColumnNameRow = 1;
+                config.StartRow = 2;
+                config.EndRow = 13;
+                config.EndColumn = "B";
+                //config.EndRow = 23;
+            });
             DataTable dt = npoiKit.ToDataTable(npoiKit.GetSheet("Sheet1"));
         }
 
@@ -189,10 +192,15 @@ namespace NUnitGeneralKit
         }
 
         [Test]
-        public void TestKit()
+        public void ExcelKitUnit()
         {
-            Type type = typeof(TestEnum);
-            var obj = Activator.CreateInstance(typeof(TestEnum));
+            ReadExcelKit excelKit = new ReadExcelKit(@"C:\Users\zbb58\Desktop\Execl测试\测试Excel.xlsx");
+            excelKit.CreateConfig(config =>
+            {
+                config.ColumnNameRow = 1;
+                config.StartRow = 2;
+            });
+            DataTable dt = excelKit.ReadDataTable(1);
         }
 
     }
@@ -200,40 +208,6 @@ namespace NUnitGeneralKit
     public struct TestStruct
     {
         public string filed { get; set; }
-    }
-
-    public class TestModel : ICheckVerify
-    {
-        public TestModel() { }
-
-        private int? id;
-        private string name;
-        private long old1;
-        private long old2;
-        private string adress;
-        private DateTime? time;
-
-        [Rule("ID", AllowEmpty = false, Error = "{0}不能为空")]
-        public int? Id { get => id; set => id = value; }
-
-        [Rule("姓名", MinLength = 2, MaxLength = 4, ExpType = ExpType.Chinese, Error = "{2}类型必须为中文")]
-        public string Name { get => name; set => name = value; }
-
-        [Rule("年龄", Greater = 9, Error = "{0}不能大于9")]
-        public int? Old { get; set; }
-
-        [Rule("年龄", Less = 9, Error = "{0}不能小于9")]
-        public long Old1 { get => old1; set => old1 = value; }
-
-        [Rule("年龄", Equal = 7, Error = "{0}不能等于7")]
-        public long Old2 { get => old2; set => old2 = value; }
-
-        [Rule("地址", MinLength = 1, MaxLength = 10, Error = "{2}长度必须在1至10位")]
-        public string Adress { get => adress; set => adress = value; }
-
-        [Rule("时间")]
-        public DateTime? Time { get => time; set => time = value; }
-
     }
 
     public enum TestEnum
