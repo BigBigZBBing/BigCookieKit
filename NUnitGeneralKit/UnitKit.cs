@@ -1,4 +1,5 @@
 using GeneralKit;
+using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
@@ -203,6 +204,50 @@ namespace NUnitGeneralKit
             DataTable dt = excelKit.ReadDataTable(1);
         }
 
+        [Test]
+        public void SequelizeUnit()
+        {
+            // 生成结构化Sql [2021-1-28 zhangbingbin]
+            string sql = SequelizeStructured.SequelizeToSql(new
+            {
+                fields = new[] { "Id", "Name", "Height", "Weight", "Sex" },
+                model = "user",
+                where = new
+                {
+                    like = new { Name = DBNull.Value }
+                },
+                include = new[] {
+                    new{
+                        fields = new string[] { "UserId" },
+                        model = "usermaping",
+                        join = new{
+                            user = "Id",
+                            usermaping = "UserId"
+                        },
+                        include = new[] {
+                            new{
+                                fields = new[] { "Id","WorkType","WorkName","Salary" },
+                                model = "work",
+                                join = new{
+                                    usermaping = "WorkId",
+                                    work = "Id"
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=dbTest;Uid=root;Pwd=zhangbingbin5896;"))
+            {
+                // Table名设置成主表名 [2021-1-28 zhangbingbin]
+                DataTable dt = new DataTable("user");
+                MySqlDataAdapter adapter = new MySqlDataAdapter(sql, connection);
+                adapter.Fill(dt);
+                // 直接动态生成类型 [2021-1-28 zhangbingbin]
+                var obj = dt.SequelizeDynamic();
+            }
+        }
     }
 
     public struct TestStruct
