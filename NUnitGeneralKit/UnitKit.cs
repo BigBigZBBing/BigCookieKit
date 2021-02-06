@@ -207,45 +207,29 @@ namespace NUnitGeneralKit
         [Test]
         public void SequelizeUnit()
         {
-            // 生成结构化Sql [2021-1-28 zhangbingbin]
-            string sql = SequelizeStructured.SequelizeToSql(new
-            {
-                fields = new[] { "Id", "Name", "Height", "Weight", "Sex" },
-                model = "user",
-                where = new
-                {
-                    like = new { Name = DBNull.Value }
-                },
-                include = new[] {
-                    new{
-                        fields = new string[] { "UserId" },
-                        model = "usermaping",
-                        join = new{
-                            user = "Id",
-                            usermaping = "UserId"
-                        },
-                        include = new[] {
-                            new{
-                                fields = new[] { "Id","WorkType","WorkName","Salary" },
-                                model = "work",
-                                join = new{
-                                    usermaping = "WorkId",
-                                    work = "Id"
-                                }
-                            }
-                        }
-                    }
-                }
-            });
 
             using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=dbTest;Uid=root;Pwd=zhangbingbin5896;"))
             {
-                // Table名设置成主表名 [2021-1-28 zhangbingbin]
-                DataTable dt = new DataTable("user");
-                MySqlDataAdapter adapter = new MySqlDataAdapter(sql, connection);
-                adapter.Fill(dt);
-                // 直接动态生成类型 [2021-1-28 zhangbingbin]
-                var obj = dt.SequelizeDynamic();
+                var Obj = SequelizeStructured.SequelizeConfig(new
+                {
+                    fields = new[] { "UserId", "LogonName", "Password", "ExternalId", "CustomerId", "NickName", "FirstName", "LastName", "Phone", "Email", "Gender", "ActiveDate", "LastLogonTime", "InvitateCode", "ExpirationDate", "Source", "AccountType", "Status", "Disable", "CreateUserId", "CreateTime", "UpdateUserId", "UpdateTime", "Version" },
+                    model = "cus_user",
+                    where = new
+                    {
+                        eq = new { UserId = 135686 }
+                    },
+                    include = new[] {
+                        new{
+                            fields = new string[] { "UserFieldId","UserId","FieldId","DataValue","Disable","CreateTime","UpdateTime","CreateUserId","UpdateUserId","Version" },
+                            model = "cus_userfield",
+                            join = new{
+                                cus_user = "UserId",
+                                cus_userfield = "UserId"
+                            }
+                        }
+                    }
+                }, connection);
+                string json = JsonConvert.SerializeObject(Obj);
             }
         }
     }

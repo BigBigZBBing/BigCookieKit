@@ -1,4 +1,6 @@
 ﻿using ILWheatBread;
+using MySql.Data.MySqlClient;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,65 +29,115 @@ namespace GeneralKit
 
         static List<string> Fields { get; set; }
         static bool First { get; set; }
+        static string MainTable { get; set; }
         static Dictionary<string, Type> props { get; set; }
         static SmartBuilder builder { get; set; }
         static IEnumerable<Tier> Table { get; set; }
         static DataTable DataSource { get; set; }
+        static Dictionary<string, string> UniqueMapping { get; set; }
+        static Dictionary<string, DataTable> CacheDistinctTable { get; set; }
 
-        static readonly object _lock = new object();
+        /// <summary>
+        /// 结构化配置
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="con"></param>
+        /// <param name="parameter"></param>
+        /// <param name="tran"></param>
+        /// <returns></returns>
+        public static JArray SequelizeConfig(object config, MySqlConnection con, object parameter = null, MySqlTransaction tran = null)
+        {
+            JArray result = new JArray();
+            var commandText = SequelizeToSql(config);
+            if (con.State != ConnectionState.Open) con.Open();
+            using (var command = con.CreateCommand())
+            {
+                command.CommandText = commandText;
+                if (tran.NotNull()) command.Transaction = tran;
+                using (var abapter = new MySqlDataAdapter(command))
+                {
+                    DataTable tmpDt = new DataTable(MainTable);
+                    abapter.Fill(tmpDt);
+                    result = tmpDt.SequelizeDynamic();
+                }
+            }
+            return result;
+        }
 
         /// <summary>
         /// 使用SequelizeORM方式解析SQL
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="config"></param>
         /// <param name="sql"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string SequelizeToSql(object obj, string sql = "", string prev = "")
+        static string SequelizeToSql(object config, string sql = "", string prev = "")
         {
-            Monitor.Enter(_lock);
-
             // 判断是否第一次 [2021-1-24 zhangbingbin]
             First = string.IsNullOrEmpty(sql);
             if (First)
             {
                 // 初始化 [2021-1-24 zhangbingbin]
                 Fields = new List<string>();
+                UniqueMapping = new Dictionary<string, string>();
+                CacheDistinctTable = new Dictionary<string, DataTable>();
             }
             List<string> cache = new List<string>();
 
             // 显示的字段名(必须带主键) [2021-1-25 zhangbingbin]
-            var fieldsProp = obj.GetType().GetProperty("fields");
-            if (fieldsProp == null)
-                throw new ArgumentNullException("fields不可为空 请使用数组格式展示字段");
+            var fieldsProp = config.GetType().GetProperty("fields");
+            if (fieldsProp.IsNull()) throw new ArgumentNullException("fields不可为空 请使用数组格式展示字段");
+
             // 表名 [2021-1-25 zhangbingbin]
-            var modelProp = obj.GetType().GetProperty("model");
-            if (modelProp == null)
-                throw new ArgumentNullException("model不可为空 请输入表名");
+            var modelProp = config.GetType().GetProperty("model");
+            if (modelProp.IsNull()) throw new ArgumentNullException("model不可为空 请输入表名");
+
             // 查询条件 [2021-1-25 zhangbingbin]
-            var where = obj.GetType().GetProperty("where");
+            var where = config.GetType().GetProperty("where");
+
             // 是否左外连接 [2021-1-25 zhangbingbin]
-            var required = obj.GetType().GetProperty("required");
+            var required = config.GetType().GetProperty("required");
+
             // 联合查询配置 [2021-1-25 zhangbingbin]
-            var include = obj.GetType().GetProperty("include");
+            var include = config.GetType().GetProperty("include");
+
+            // 限制查询结果数量 [2021-2-6 zhangbingbin]
+            var limit = config.GetType().GetProperty("limit");
 
             // 获取表名参数 [2021-1-24 zhangbingbin]
-            string modelStr = modelProp.GetValue(obj).ToString();
+            string modelStr = modelProp.GetValue(config).ToString();
+            if (First) MainTable = modelStr;
 
             // 获取结果显示字段 [2021-1-23 zhangbingbin]
-            var fields = (string[])fieldsProp.GetValue(obj);
+            var fields = (object[])fieldsProp.GetValue(config);
             foreach (var item in fields)
             {
+                string origin = "";
+                string show = "";
+                if (item is string[] asfield)
+                {
+                    origin = asfield[0];
+                    show = asfield[1];
+                }
+                else if (item is string field)
+                {
+                    origin = field;
+                    show = field;
+                }
                 if (First)
-                    Fields.Add($"`_{modelStr}`." + $"`{item}` AS `{item}`");
+                {
+                    Fields.Add($"`_{modelStr}`." + $"`{origin}` AS `{show}`");
+                }
                 else
-                    Fields.Add($"`_{modelStr}`." + $"`{item}` AS `[{prev}]{modelStr}->{item}`");
+                {
+                    Fields.Add($"`_{modelStr}`." + $"`{origin}` AS `({prev}){modelStr}->{show}`");
+                }
             }
 
             // 获取查询条件 [2021-1-23 zhangbingbin]
-            if (where != null)
+            if (where.NotNull())
             {
-                cache = SequelizeCriteria(where.GetValue(obj), modelStr);
+                cache = SequelizeCriteria(where.GetValue(config), modelStr);
             }
 
             // 第一次递归 [2021-1-23 zhangbingbin]
@@ -98,20 +150,22 @@ namespace GeneralKit
             else
             {
                 // 联合关联字段 [2021-1-26 zhangbingbin]
-                var join = obj.GetType().GetProperty("join");
-                if (join == null)
-                    throw new ArgumentNullException("关联模式必须填关联字段");
+                var join = config.GetType().GetProperty("join");
+                if (join.IsNull()) throw new ArgumentNullException("关联模式必须填关联字段");
 
-                var joinObj = join.GetValue(obj);
+                var joinObj = join.GetValue(config);
                 var keyOn = "";
                 foreach (var item in joinObj.GetType().GetProperties())
                 {
                     if (keyOn != "") keyOn += "=";
                     var value = item.GetValue(joinObj);
                     keyOn += $"`_{item.Name}`.`{value}`";
+                    //缓存每个表对应的Key
+                    if (!UniqueMapping.ContainsKey(item.Name))
+                        UniqueMapping.Add(item.Name, value.ToString());
                 }
                 // 如果存在条件又不设置 则转成内连接 [2021-1-24 zhangbingbin]
-                if (where == null || (required != null && !(bool)required.GetValue(obj)))
+                if (where.IsNull() || (required.NotNull() && !(bool)required.GetValue(config)))
                 {
                     sql += $" LEFT OUTER JOIN `{modelStr}` AS `_{modelStr}` ON {keyOn} ";
                     if (cache.Count > 0) sql += "AND " + string.Join(" AND ", cache);
@@ -123,9 +177,9 @@ namespace GeneralKit
                 }
             }
 
-            if (include != null)
+            if (include.NotNull())
             {
-                var join = include.GetValue(obj);
+                var join = include.GetValue(config);
                 if (join is Array includes)
                 {
                     foreach (var item in includes)
@@ -139,7 +193,11 @@ namespace GeneralKit
             if (prev == "" && cache.Count > 0)
                 sql += " WHERE " + string.Join(" AND ", cache);
 
-            Monitor.Exit(_lock);
+            if (limit.NotNull())
+            {
+                sql += $" LIMIT {limit.GetValue(config)} ";
+            }
+
             return sql;
         }
 
@@ -348,29 +406,12 @@ namespace GeneralKit
         }
 
         /// <summary>
-        /// 解析Like
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        static string SequelizeLike(object obj, string model)
-        {
-            string result = "";
-            var condition = obj.GetType().GetProperties();
-            foreach (var item in condition)
-            {
-
-            }
-            return result;
-        }
-
-        /// <summary>
         /// 生产Sequelize结构化类型
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static dynamic SequelizeDynamic(this DataTable dt)
+        static JArray SequelizeDynamic(this DataTable dt)
         {
             props = new Dictionary<string, Type>();
             DataSource = dt;
@@ -382,18 +423,18 @@ namespace GeneralKit
             builder.Assembly();
             builder.Class(dt.TableName);
             // 主架 [2021-1-23 zhangbingbin]
-            var main = props.Keys.Where(x => x.IndexOf("->") == -1);
+            var main = props.Keys.Where(x => x.IndexOf("->", StringComparison.OrdinalIgnoreCase) == -1);
             foreach (var item in main)
             {
                 builder.CreateProperty(item, props[item]);
             }
             // 分割表级 [2021-1-23 zhangbingbin]
-            Table = props.Keys.Where(x => x.IndexOf("->") > -1).Select(x =>
+            Table = props.Keys.Where(x => x.IndexOf("->", StringComparison.OrdinalIgnoreCase) > -1).Select(x =>
             {
                 Tier tier = new Tier();
-                int start = x.IndexOf("[");
-                int end = x.IndexOf("]");
-                int talbe = x.IndexOf("->");
+                int start = x.IndexOf("(", StringComparison.OrdinalIgnoreCase);
+                int end = x.IndexOf(")", StringComparison.OrdinalIgnoreCase);
+                int talbe = x.IndexOf("->", StringComparison.OrdinalIgnoreCase);
                 tier.Prev = x.Substring(start + 1, end - (start + 1));
                 tier.Table = x.Substring(end + 1, talbe - (end + 1));
                 tier.Field = x.Substring(talbe + 2, x.Length - (talbe + 2));
@@ -409,7 +450,7 @@ namespace GeneralKit
             var instance = Activator.CreateInstance(typeof(List<>)
                 .MakeGenericType(builder.Instance.GetType()));
             LoadDataSource(instance);
-            return instance;
+            return JArray.FromObject(instance);
         }
 
         /// <summary>
@@ -427,7 +468,7 @@ namespace GeneralKit
 
             foreach (var item in cols)
             {
-                var toType = props[$"[{item.Prev}]{item.Table}->{item.Field}"];
+                var toType = props[$"({item.Prev}){item.Table}->{item.Field}"];
                 m_builder.CreateProperty(item.Field, toType);
             }
 
@@ -448,7 +489,7 @@ namespace GeneralKit
         /// </summary>
         /// <param name="instance"></param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static void LoadDataSource(object instance)
+        static void LoadDataSource(object instance, string filter = "")
         {
             var type = (Type)instance.GetType();
             var className = type.Name;
@@ -476,12 +517,29 @@ namespace GeneralKit
             {
                 foreach (DataColumn dc in DataSource.Columns)
                 {
-                    var value = related.Count(x => dc.ColumnName.IndexOf(x) > -1);
+                    var value = related.Count(x => dc.ColumnName.IndexOf(x, StringComparison.OrdinalIgnoreCase) > -1);
                     if (value > 0) fields.Add(dc.ColumnName);
                 }
             }
             else fields = related.ToList();
-            var table = DataSource.DefaultView.ToTable(true, fields.ToArray());
+
+            // 获取对应的子集 [2021-2-6 zhangbingbin]
+            DataTable table = null;
+            if (!CacheDistinctTable.ContainsKey(className))
+            {
+                CacheDistinctTable.Add(className, DataSource.DefaultView.ToTable(true, fields.ToArray()));
+                table = CacheDistinctTable[className];
+            }
+            else table = CacheDistinctTable[className];
+
+            if (!string.IsNullOrEmpty(filter))
+            {
+                var drs = table.Select(filter);
+                if (drs.Count() > 0)
+                    table = drs.CopyToDataTable();
+                else
+                    table = table.Clone();
+            }
 
             foreach (DataRow dr in table.Rows)
             {
@@ -493,19 +551,20 @@ namespace GeneralKit
                     if (item.PropertyType.Name.Equals("List`1"))
                     {
                         item.SetValue(instance, Activator.CreateInstance(item.PropertyType));
-                        LoadDataSource(item.GetValue(instance));
+                        filter = $" [({className}){item.Name}->{UniqueMapping[item.Name]}] = '{props.FirstOrDefault(x => x.Name == UniqueMapping[item.Name]).GetValue(instance)}' ";
+                        LoadDataSource(item.GetValue(instance), filter);
                     }
                     else
                     {
                         if (className[0].Equals('_'))
                         {
                             var value = dr[fields.FirstOrDefault(x =>
-                                            x.IndexOf(className.Substring(1) + "->" + item.Name) > -1)];
+                                            x.IndexOf(className.Substring(1) + "->" + item.Name, StringComparison.OrdinalIgnoreCase) > -1)];
                             item.SetValue(instance, value == DBNull.Value ? null : value);
                         }
                         else
                         {
-                            item.SetValue(instance, dr[item.Name]);
+                            item.SetValue(instance, dr[item.Name] == DBNull.Value ? null : dr[item.Name]);
                         }
                     }
                 }
