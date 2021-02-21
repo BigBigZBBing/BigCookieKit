@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GeneralKit.Model
+namespace GeneralKit
 {
     public class ExcelConfig
     {
         /// <summary>
-        /// 列名索引 不设置则自动列名 例:Colume1 Colume2
+        /// 列名索引行 不设置则自动列名 例:Colume1 Colume2
         /// </summary>
         public int? ColumnNameRow { get; set; }
 
@@ -100,7 +100,9 @@ namespace GeneralKit.Model
             return column;
         }
 
-        private string _StartColumn;
-        private string _EndColumn;
+        public List<ColumnConfig> Columns { get; set; }
+
+        string _StartColumn;
+        string _EndColumn;
     }
 }

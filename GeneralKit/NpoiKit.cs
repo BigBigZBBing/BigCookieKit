@@ -1,5 +1,4 @@
-﻿using GeneralKit.Model;
-using NPOI.HSSF.UserModel;
+﻿using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
@@ -114,39 +113,6 @@ namespace GeneralKit
         }
 
         /// <summary>
-        /// 创建Excel配置
-        /// </summary>
-        /// <param name="callback"></param>
-        public void CreateConfig(Action<ExcelConfig> callback)
-        {
-            config = new ExcelConfig();
-            callback.Invoke(config);
-        }
-
-        /// <summary>
-        /// 获取所有的Sheet
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ISheet> GetSheetAll()
-        {
-            for (int i = 0; i < workbook.NumberOfSheets; i++)
-            {
-                var name = workbook.GetSheetName(i);
-                yield return workbook.GetSheet(name);
-            }
-        }
-
-        /// <summary>
-        /// 根据名称获取Sheet
-        /// </summary>
-        /// <param name="name">Sheet名称</param>
-        /// <returns></returns>
-        public ISheet GetSheet(string name)
-        {
-            return workbook.GetSheet(name);
-        }
-
-        /// <summary>
         /// 强制刷新公式结果
         /// </summary>
         public void ForceEvaluatorAll()
@@ -164,6 +130,8 @@ namespace GeneralKit
         {
             return workbook.GetCreationHelper().CreateFormulaEvaluator().Evaluate(cell);
         }
+
+        #region Read
 
         /// <summary>
         /// 读取全部Sheet成DataSet
@@ -195,7 +163,7 @@ namespace GeneralKit
         /// </summary>
         /// <param name="sheet"></param>
         /// <returns></returns>
-        private DataTable SheetToDataTable(ISheet sheet)
+        DataTable SheetToDataTable(ISheet sheet)
         {
             DataTable dt = new DataTable(sheet.SheetName);
             IRow row = sheet.GetRow((config.ColumnNameRow - 1) ?? sheet.FirstRowNum);
@@ -284,8 +252,12 @@ namespace GeneralKit
             return dt;
         }
 
+        #endregion
+
+        #region Write
+
         /// <summary>
-        /// 读取DataTable
+        /// 读取DataTable到Sheet中
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
@@ -299,7 +271,7 @@ namespace GeneralKit
         }
 
         /// <summary>
-        /// 读取DataSet
+        /// 读取DataSet到Sheet中
         /// </summary>
         /// <param name="ds"></param>
         /// <returns></returns>
@@ -328,7 +300,7 @@ namespace GeneralKit
         /// <param name="sheet"></param>
         /// <param name="dt"></param>
         /// <returns></returns>
-        private bool DataTableToSheet(ISheet sheet, DataTable dt)
+        bool DataTableToSheet(ISheet sheet, DataTable dt)
         {
             IRow headRow = sheet.CreateRow(0);
             int colNum = dt.Columns.Count;
@@ -371,12 +343,47 @@ namespace GeneralKit
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// 创建Excel配置
+        /// </summary>
+        /// <param name="callback"></param>
+        public void CreateConfig(Action<ExcelConfig> callback)
+        {
+            config = new ExcelConfig();
+            callback?.Invoke(config);
+        }
+
+        /// <summary>
+        /// 获取所有的Sheet
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<ISheet> GetSheetAll()
+        {
+            for (int i = 0; i < workbook.NumberOfSheets; i++)
+            {
+                var name = workbook.GetSheetName(i);
+                yield return workbook.GetSheet(name);
+            }
+        }
+
+        /// <summary>
+        /// 根据名称获取Sheet
+        /// </summary>
+        /// <param name="name">Sheet名称</param>
+        /// <returns></returns>
+        public ISheet GetSheet(string name)
+        {
+            return workbook.GetSheet(name);
+        }
+
         /// <summary>
         /// 自动单元格格式
         /// </summary>
         /// <param name="cell"></param>
         /// <param name="type"></param>
-        private void AuthCellType(ICell cell, Type type, object value = null)
+        void AuthCellType(ICell cell, Type type, object value = null)
         {
             if (typeof(DateTime) == type)
             {
@@ -412,6 +419,8 @@ namespace GeneralKit
                 if (value != null) cell.SetCellValue(Convert.ToString(value));
             }
         }
+
+        #region Format
 
         /// <summary>
         /// 设置全局日期格式 例:yyyy-MM-dd HH:mm:ss
@@ -507,5 +516,7 @@ namespace GeneralKit
                 _DoubleStyle = value;
             }
         }
+
+        #endregion
     }
 }

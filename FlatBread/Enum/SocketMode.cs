@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GeneralKit
+namespace FlatBread.Enum
 {
-    public class WorkBook
+    public enum SocketMode
     {
-        public int? SheetId { get; set; }
-
-        public string SheetName { get; set; }
+        //服务端
+        Server,
+        //客户端
+        Client,
     }
 }

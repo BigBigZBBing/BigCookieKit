@@ -1,6 +1,10 @@
 ﻿using System;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Configs;
+using GeneralKit;
+using System.Data;
+using System.Linq;
+using System.Net.Http;
 
 namespace UnitConsole
 {
@@ -8,7 +12,10 @@ namespace UnitConsole
     {
         static void Main(string[] args)
         {
-            BenchmarkRunner.Run<BenchmarkExcelRead>();
+            HttpClient httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Add("authorization", "");
+
+            //BenchmarkRunner.Run<BenchmarkExcelRead>();
         }
     }
 }

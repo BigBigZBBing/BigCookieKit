@@ -1,8 +1,24 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;netcoreapp5.0</TargetFrameworks>
-    <AssemblyName>GeneralKit</AssemblyName>
+    <TargetFrameworks>net48;netcoreapp3.1;netcoreapp5.0</TargetFrameworks>
+    <Authors>zhangbingbin</Authors>
+    <Description>比表达式树性能更方便的反射框架</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyName>ILWheatBread</AssemblyName>
+    <RootNamespace>ILWheatBread</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)' == 'Debug|AnyCPU|net48'">
+    <OutputPath>.\bin\Debug\</OutputPath>
+    <DefineConstants>NET48</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)' == 'Release|AnyCPU|net48'">
+    <OutputPath>.\bin\Release\</OutputPath>
+    <DefineConstants>NET48</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)' == 'Debug|AnyCPU|netcoreapp3.1'">
@@ -27,21 +43,13 @@
     <DefineConstants>NETCORE5</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <Compile Remove="ExcalKit`Struct.cs" />
+    <Compile Remove="Compress\Test.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.2" />
-    <PackageReference Include="MySql.Data" Version="8.0.23" />
-    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.22" />
-    <PackageReference Include="NPOI" Version="2.5.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\ILWheatBread\ILWheatBread\ILWheatBread.csproj" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
 
 </Project>

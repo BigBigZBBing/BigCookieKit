@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace GeneralKit
@@ -17,6 +18,7 @@ namespace GeneralKit
         /// <code/>Author: zhangbingbin
         /// <code/>CreateData: 2020-11-13
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DataTable ReadDataTable(this DbContext context, string sql, params SqlParameter[] parameters)
         {
             return SqlToDataSet(context.Database, sql, parameters).Tables[0];
@@ -27,6 +29,7 @@ namespace GeneralKit
         /// <code/>Author: zhangbingbin
         /// <code/>CreateData: 2020-11-14
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DataSet ReadDataSet(this DbContext context, string sql, params SqlParameter[] parameters)
         {
             return SqlToDataSet(context.Database, sql, parameters);
@@ -37,6 +40,7 @@ namespace GeneralKit
         /// <code/>Author: zhangbingbin
         /// <code/>CreateData: 2020-11-5
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static DataSet SqlToDataSet(DatabaseFacade facade, string sql, params SqlParameter[] parameters)
         {
             var ds = new DataSet();

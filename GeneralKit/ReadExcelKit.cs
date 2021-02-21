@@ -1,13 +1,14 @@
-﻿using GeneralKit.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace GeneralKit
@@ -84,6 +85,7 @@ namespace GeneralKit
         /// <summary>
         /// 加载共享字符串
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LoadShareString()
         {
             var entry = zip.GetEntry("xl/sharedStrings.xml");
@@ -107,6 +109,7 @@ namespace GeneralKit
         /// <summary>
         /// 加载数值类型
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LoadNumberFormat()
         {
             var entry = zip.GetEntry("xl/styles.xml");
@@ -131,6 +134,7 @@ namespace GeneralKit
         /// <summary>
         /// 获取单元格样式
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LoadCellStyle()
         {
             var entry = zip.GetEntry("xl/styles.xml");
@@ -154,6 +158,7 @@ namespace GeneralKit
         /// <summary>
         /// 获取工作簿
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LoadWorkBook()
         {
             var entry = zip.GetEntry("xl/workbook.xml");
@@ -182,20 +187,17 @@ namespace GeneralKit
         /// 获取所有工作部
         /// </summary>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public List<WorkBook> GetWorkBook()
         {
             return wookbooks;
         }
 
         /// <summary>
-        /// 全线程的列构建进度
-        /// </summary>
-        private ColumnLock collock = new ColumnLock();
-
-        /// <summary>
         /// 读取数据表
         /// </summary>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public DataTable ReadDataTable(int index)
         {
             try
@@ -204,31 +206,38 @@ namespace GeneralKit
 
                 var entry = zip.GetEntry($"xl/worksheets/sheet{index}.xml");
 
-                var doc = XDocument.Load(entry.Open());
+                XmlReader xmlReader = XmlReader.Create(entry.Open());
+                var doc = XDocument.Load(xmlReader);
 
-                var rows = doc.Root.Elements().FirstOrDefault(e => e.Name.LocalName == "sheetData").Elements();
+                var rows = doc.Root.Elements().FirstOrDefault(e => e.Name.LocalName.Equals("sheetData", StringComparison.OrdinalIgnoreCase));
 
                 bool isBuildColumn = false;
 
-                foreach (var row in rows)
+                foreach (var row in rows.Elements())
                 {
                     //Excel的行索引
-                    var rowIndex = int.Parse(row.Attribute("r").Value);
-                    //所有的列
-                    var columns = row.Elements();
+                    var rowIndex = int.Parse(row.Attribute("r")?.Value);
                     //列数字索引
                     int colIndex = 0;
 
                     if (!isBuildColumn)
                     {
-                        foreach (var col in columns)
+                        foreach (var col in row.Elements())
                         {
-                            var position = col.Attribute("r").Value;
                             //列英文索引
-                            var colEnIndex = CellPosition(position).ToString();
+                            //var position = col.Attribute("r").Value;
+                            //var colEnIndex = CellPosition(position).ToString();
+
                             //列数字索引
-                            var colNumIndex = colIndex;
-                            var type = col.Attribute("t")?.Value;
+                            var colNumIndex = colIndex++;
+
+                            //过滤开始列的索引
+                            if (config.StartColumnIndex > colNumIndex)
+                                continue;
+
+                            //过滤结束列的索引
+                            if (config.EndColumnIndex.NotNull() && config.EndColumnIndex < colNumIndex)
+                                continue;
 
                             //生成列头
                             if (config.ColumnNameRow.IsNull())
@@ -239,33 +248,19 @@ namespace GeneralKit
                             else if (config.ColumnNameRow.NotNull() && config.ColumnNameRow == rowIndex)
                             {
                                 isBuildColumn = true;
+                                var type = col.Attribute("t")?.Value;
                                 dt.Columns.Add(FormColumn(col, type));
                             }
-
-                            colIndex++;
                         }
                     }
-
-                    //过滤开始行的索引
-                    if (config.StartRow > rowIndex)
-                        continue;
-
-                    //过滤结束行的索引
-                    if (config.EndRow.NotNull() && config.EndRow < rowIndex)
-                        continue;
-
-                    dt.Rows.Add(dt.NewRow());
+                    else
+                        break;
                 }
 
-                int Index = 0;
-                foreach (var row in rows)
+                foreach (var row in rows.Elements())
                 {
                     //Excel的行索引
-                    var rowIndex = int.Parse(row.Attribute("r").Value);
-                    //所有的列
-                    var columns = row.Elements();
-                    //列数字索引
-                    int colIndex = 0;
+                    var rowIndex = int.Parse(row.Attribute("r")?.Value);
 
                     //过滤开始行的索引
                     if (config.StartRow > rowIndex)
@@ -275,33 +270,95 @@ namespace GeneralKit
                     if (config.EndRow.NotNull() && config.EndRow < rowIndex)
                         continue;
 
-                    foreach (var col in columns)
+                    //列数字索引
+                    int colIndex = 0;
+                    List<object> Set = new List<object>();
+                    foreach (var col in row.Elements())
                     {
-                        var position = col.Attribute("r").Value;
                         //列英文索引
-                        var colEnIndex = CellPosition(position).ToString();
-                        //列数字索引
-                        var colNumIndex = colIndex;
-                        var type = col.Attribute("t")?.Value;
+                        //var position = col.Attribute("r").Value;
+                        //var colEnIndex = CellPosition(position).ToString();
 
+                        //列数字索引
+                        var colNumIndex = colIndex++;
+
+                        //过滤开始列的索引
+                        if (config.StartColumnIndex > colNumIndex)
+                            continue;
+
+                        //过滤结束列的索引
+                        if (config.EndColumnIndex.NotNull() && config.EndColumnIndex < colNumIndex)
+                            continue;
+
+                        var type = col.Attribute("t")?.Value;
                         var value = FromValue(col, type);
 
-                        //安全赋值
-                        dt.Rows[Index][colNumIndex] = value;
-
-                        colIndex++;
+                        Set.Add(value);
                     }
-
-                    Index++;
+                    dt.Rows.Add(Set.ToArray());
                 }
 
                 return dt;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 ExecuteLog.Add($"[ReadDataTable]:[{ex.Message}]");
             }
             return null;
+        }
+
+        /// <summary>
+        /// 读取数据集合
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public IEnumerable<object[]> ReadSet(int index)
+        {
+            DataTable dt = new DataTable();
+
+            var entry = zip.GetEntry($"xl/worksheets/sheet{index}.xml");
+
+            var doc = XDocument.Load(entry.Open());
+
+            var rows = doc.Root.Elements().FirstOrDefault(e => e.Name.LocalName == "sheetData");
+
+            foreach (var row in rows.Elements())
+            {
+                var Set = new List<object>();
+
+                //Excel的行索引
+                var rowIndex = int.Parse(row.Attribute("r").Value);
+
+                //过滤开始行的索引
+                if (config.StartRow > rowIndex)
+                    continue;
+
+                //过滤结束行的索引
+                if (config.EndRow.NotNull() && config.EndRow < rowIndex)
+                    continue;
+
+                //列数字索引
+                int colIndex = 0;
+                foreach (var col in row.Elements())
+                {
+                    //列数字索引
+                    var colNumIndex = colIndex++;
+
+                    //过滤开始列的索引
+                    if (config.StartColumnIndex > colNumIndex)
+                        continue;
+
+                    //过滤结束列的索引
+                    if (config.EndColumnIndex.NotNull() && config.EndColumnIndex < colNumIndex)
+                        continue;
+
+                    var type = col.Attribute("t")?.Value;
+                    Set.Add(FromValue(col, type));
+                }
+
+                yield return Set.ToArray();
+            }
         }
 
         /// <summary>
@@ -310,7 +367,8 @@ namespace GeneralKit
         /// <param name="col"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        private DataColumn FormColumn(XElement col, string type)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        DataColumn FormColumn(XElement col, string type)
         {
             try
             {
@@ -319,7 +377,7 @@ namespace GeneralKit
                 {
                     return new DataColumn();
                 }
-                return new DataColumn(value.ToString(), typeof(object));
+                return new DataColumn(value.ToString(), value.GetType());
             }
             catch (Exception ex)
             {
@@ -334,7 +392,8 @@ namespace GeneralKit
         /// <param name="col"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        private object FromValue(XElement col, string type)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        object FromValue(XElement col, string type)
         {
             try
             {
@@ -376,7 +435,8 @@ namespace GeneralKit
         /// </summary>
         /// <param name="numFmt"></param>
         /// <returns></returns>
-        private object FixedFormat(XElement col, string numFmt)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        object FixedFormat(XElement col, string numFmt)
         {
             try
             {
@@ -402,7 +462,8 @@ namespace GeneralKit
         /// <param name="col"></param>
         /// <param name="format"></param>
         /// <returns></returns>
-        private object ParseFormat(XElement col, string format)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        object ParseFormat(XElement col, string format)
         {
             try
             {
@@ -417,9 +478,13 @@ namespace GeneralKit
                 //判断是否是整数型
                 if (format.AllOwn("0"))
                 {
-                    if (GetV(col).TryParse<long>(out object value))
+                    if (GetV(col).TryParse<int>(out object value1))
                     {
-                        return value;
+                        return value1;
+                    }
+                    if (GetV(col).TryParse<long>(out object value2))
+                    {
+                        return value2;
                     }
                 }
                 //判断是否是日期格式
@@ -452,7 +517,8 @@ namespace GeneralKit
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
-        private IEnumerable<char> CellPosition(string position)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        IEnumerable<char> CellPosition(string position)
         {
             for (int i = 0; i < position.Length; i++)
             {
@@ -466,7 +532,8 @@ namespace GeneralKit
         /// </summary>
         /// <param name="element"></param>
         /// <returns></returns>
-        private string GetV(XElement element)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        string GetV(XElement element)
         {
             return element.Element(XName.Get("v", "http://schemas.openxmlformats.org/spreadsheetml/2006/main"))?.Value;
         }

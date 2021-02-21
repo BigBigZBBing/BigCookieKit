@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Linq;
 using System.Xml.Linq;
 
 namespace NUnitGeneralKit
@@ -157,9 +158,6 @@ namespace NUnitGeneralKit
             {
                 config.ColumnNameRow = 1;
                 config.StartRow = 2;
-                config.EndRow = 13;
-                config.EndColumn = "B";
-                //config.EndRow = 23;
             });
             DataTable dt = npoiKit.ToDataTable(npoiKit.GetSheet("Sheet1"));
         }
@@ -193,15 +191,51 @@ namespace NUnitGeneralKit
         }
 
         [Test]
-        public void ExcelKitUnit()
+        public void ExcelDataTableKitUnit()
         {
-            ReadExcelKit excelKit = new ReadExcelKit(@"C:\Users\zbb58\Desktop\Execl测试\测试Excel.xlsx");
+            string path = @"C:\Users\zbb58\Desktop\test2.xlsx";
+            ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.CreateConfig(config =>
             {
                 config.ColumnNameRow = 1;
                 config.StartRow = 2;
             });
             DataTable dt = excelKit.ReadDataTable(1);
+        }
+
+        [Test]
+        public void ExcelSetKitUnit()
+        {
+            string path = @"C:\Users\zbb58\Desktop\test2.xlsx";
+            ReadExcelKit excelKit = new ReadExcelKit(path);
+            excelKit.CreateConfig(config =>
+            {
+                config.ColumnNameRow = 1;
+                //config.StartRow = 2;
+            });
+            var rows = excelKit.ReadSet(1);
+
+            //自行转换成DataTable
+            DataTable dt = new DataTable();
+            foreach (var item in rows)
+            {
+                if (dt.Columns.Count == 0)
+                {
+                    foreach (var item1 in item)
+                        dt.Columns.Add(item1.ToString());
+                }
+                else
+                {
+                    int columnIndex = 0;
+                    foreach (var item1 in item)
+                    {
+                        if (dt.Columns[columnIndex].DataType != item1.GetType())
+                            dt.Columns[columnIndex].DataType = item1.GetType();
+                        columnIndex++;
+                    }
+                    dt.Rows.Add(item);
+                }
+            }
         }
 
         [Test]
@@ -231,6 +265,13 @@ namespace NUnitGeneralKit
                 }, connection);
                 string json = JsonConvert.SerializeObject(Obj);
             }
+        }
+
+        [Test]
+        public void ZipUnit()
+        {
+            Kit.DirToFormZipPacket(@"C:\Users\zbb58\Desktop\test.zip", @"C:\Users\zbb58\Desktop\Program");
+            //Kit.FileToFormZipPacket(@"C:\Users\zbb58\Desktop\test.zip", @"C:\Users\zbb58\Desktop\test.xlsx");
         }
     }
 

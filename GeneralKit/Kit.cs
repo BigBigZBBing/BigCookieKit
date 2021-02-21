@@ -3,11 +3,13 @@ using ILWheatBread;
 using ILWheatBread.SmartEmit;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -17,144 +19,15 @@ namespace GeneralKit
     /// <summary>
     /// 通用工具箱
     /// </summary>
-    public static class Kit
+    public static partial class Kit
     {
-        /// <summary>
-        /// 判断对象为NULL或者默认值
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <returns></returns>
-        public static Boolean IsNull(this object obj)
-        {
-            if (obj == null)
-            {
-                return true;
-            }
-            else if (obj.GetType() == typeof(string))
-            {
-                return string.IsNullOrEmpty(obj.ToString());
-            }
-            else if (obj.IsValue() && obj == Activator.CreateInstance(obj.GetType()))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 判断对象不为NULL或者默认值
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <returns></returns>
-        public static Boolean NotNull(this object obj)
-        {
-            return !obj.IsNull();
-        }
-
-        /// <summary>
-        /// 集合是存在内容
-        /// </summary>
-        /// <param name="collection">集合</param>
-        /// <returns></returns>
-        public static Boolean Exist<T>(this IEnumerable<T> collection)
-        {
-            if (collection.IsNull() || collection.Count().IsNull())
-            {
-                return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// 集合是不存在内容
-        /// </summary>
-        /// <param name="collection">集合</param>
-        /// <returns></returns>
-        public static Boolean NotExist<T>(this IEnumerable<T> collection)
-        {
-            return !collection.Exist();
-        }
-
-        /// <summary>
-        /// 获取枚举的Remark值
-        /// </summary>
-        /// <typeparam name="TEnum">枚举类型</typeparam>
-        /// <param name="em">枚举对象</param>
-        /// <returns></returns>
-        public static String Remark<TEnum>(this TEnum em) where TEnum : Enum
-        {
-            Type type = em.GetType();
-            FieldInfo field = type.GetField(em.ToString());
-            if (field != null)
-            {
-                var attrs = field.GetCustomAttributes(typeof(RemarkAttribute), true) as RemarkAttribute[];
-                if (attrs != null && attrs.Length > 0)
-                    return attrs[0].Remark;
-            }
-            return "";
-        }
-
-        /// <summary>
-        /// <para>验证模型</para>
-        /// <para>(未设置错误消息不验证)</para>
-        /// <para>{0}属性名称</para>
-        /// <para>{1}属性值</para>
-        /// <para>{2}错误描述</para>
-        /// </summary>
-        /// <typeparam name="T">实体类型</typeparam>
-        /// <param name="Entity">实体对象</param>
-        /// <returns></returns>
-        public static Boolean ModelValidation<TEntity>(this TEntity Entity)
-        {
-            StringBuilder strBuilder = new StringBuilder();
-            try
-            {
-                PropertyInfo[] properties = Entity.GetType().GetProperties();
-                if (properties != null)
-                {
-                    foreach (PropertyInfo propertie in properties)
-                    {
-                        if (propertie.PropertyType == typeof(string)
-                            && propertie.GetCustomAttribute(typeof(StringRuleAttribute)).NotNull())
-                        {
-                            var attr = propertie.GetCustomAttribute(typeof(StringRuleAttribute)) as StringRuleAttribute;
-                            if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
-                                continue;
-                        }
-
-                        if ((propertie.PropertyType == typeof(int) || propertie.PropertyType == typeof(long))
-                            && propertie.GetCustomAttribute(typeof(NumericRuleAttribute)).NotNull())
-                        {
-                            var attr = propertie.GetCustomAttribute(typeof(NumericRuleAttribute)) as NumericRuleAttribute;
-                            if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
-                                continue;
-                        }
-
-                        if ((propertie.PropertyType == typeof(float) || propertie.PropertyType == typeof(double) || propertie.PropertyType == typeof(decimal))
-                            && propertie.GetCustomAttribute(typeof(DecimalRuleAttribute)).NotNull())
-                        {
-                            var attr = propertie.GetCustomAttribute(typeof(DecimalRuleAttribute)) as DecimalRuleAttribute;
-                            if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
-                                continue;
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-            if (strBuilder.Length > 0)
-                throw new Exception(strBuilder.ToString());
-            return true;
-        }
-
         /// <summary>
         /// 金钱转大写
         /// <para>(保留两位小数)</para>
         /// </summary>
         /// <param name="Num">数字</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static String MoneyUpper(this decimal num)
         {
             string str1 = "零壹贰叁肆伍陆柒捌玖";            //0-9所对应的汉字 
@@ -263,6 +136,7 @@ namespace GeneralKit
         /// </summary>
         /// <param name="cmd">命令行</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static String RunShell(string cmd)
         {
             Process process = new Process();
@@ -288,6 +162,7 @@ namespace GeneralKit
         /// <typeparam name="T">目标类型</typeparam>
         /// <param name="element">Xml元素</param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T XmlToEntity<T>(this XElement element) where T : class, new()
         {
             T obj = Activator.CreateInstance(typeof(T)) as T;
@@ -330,130 +205,11 @@ namespace GeneralKit
         }
 
         /// <summary>
-        /// 尝试转换类型
-        /// </summary>
-        /// <param name="obj">转换的对象</param>
-        /// <param name="type">需要转换的类型</param>
-        /// <param name="value">回调的参数</param>
-        /// <returns></returns>
-        public static bool TryParse(this object obj, Type type, out object value)
-        {
-            value = null;
-            try
-            {
-                string temp = obj.ToString();
-                MethodInfo methodInfo = type.GetMethod("TryParse", new[] { typeof(string), type.MakeByRefType() });
-                var parameters = new object[] { temp, null };
-                if (methodInfo.NotNull() && (bool)methodInfo.Invoke(type, parameters))
-                {
-                    value = parameters[1];
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch { }
-            return false;
-        }
-
-        /// <summary>
-        /// 尝试转换类型
-        /// </summary>
-        /// <param name="obj">转换的对象</param>
-        /// <param name="type">需要转换的类型</param>
-        /// <returns></returns>
-        public static bool TryParse(this object obj, Type type)
-        {
-            return obj.TryParse(type, out object temp);
-        }
-
-        /// <summary>
-        /// 尝试转换类型
-        /// </summary>
-        /// <typeparam name="T">需要转换的类型</typeparam>
-        /// <param name="obj">转换的对象</param>
-        /// <param name="value">回调的参数</param>
-        /// <returns></returns>
-        public static bool TryParse<T>(this object obj, out object value)
-        {
-            Type type = typeof(T);
-            return obj.TryParse(type, out value);
-        }
-
-        /// <summary>
-        /// 尝试转换类型
-        /// </summary>
-        /// <typeparam name="T">需要转换的类型</typeparam>
-        /// <param name="obj">转换的对象</param>
-        /// <returns></returns>
-        public static bool TryParse<T>(this object obj)
-        {
-            return obj.TryParse<T>(out object temp);
-        }
-
-        /// <summary>
-        /// 判断是否为引用类型
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <returns></returns>
-        public static bool IsClass(this object obj)
-        {
-            if (obj.GetType().BaseType == typeof(object))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 判断是否为值类型
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <returns></returns>
-        public static bool IsValue(this object obj)
-        {
-            if ((obj as ValueType) != null)
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 判断是否为结构体
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <returns></returns>
-        public static bool IsStruct(this object obj)
-        {
-            if (obj.GetType().BaseType == typeof(ValueType))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// 是否为枚举
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <returns></returns>
-        public static bool IsEnum(this object obj)
-        {
-            if (obj.GetType().BaseType == typeof(Enum))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
         /// 首字母小写
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string FirstLower(this string str)
         {
             if (str.NotNull())
@@ -464,20 +220,26 @@ namespace GeneralKit
         }
 
         /// <summary>
-        /// 类型转换深拷贝
+        /// 深拷贝
         /// </summary>
         /// <typeparam name="TSource">源类型</typeparam>
         /// <typeparam name="TTarget">目标类型</typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TTarget MapTo<TSource, TTarget>(this TSource source)
             where TTarget : class
             where TSource : class
         {
-            return SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, func =>
+            if (Cache.MapToCache.TryGetValue($"{typeof(TSource).FullName}+{typeof(TTarget).FullName}", out Delegate deleg))
             {
-                var sourceEntity = func.NewEntity<TSource>(func.EmitParamRef<TSource>(0));
-                var targetEntity = func.NewEntity<TTarget>();
+                return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
+            }
+
+            deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, IL =>
+            {
+                var sourceEntity = IL.NewEntity<TSource>(IL.ArgumentRef<TSource>(0));
+                var targetEntity = IL.NewEntity<TTarget>();
                 foreach (var sourceItem in typeof(TSource).GetProperties())
                 {
                     var targetItem = typeof(TTarget).GetProperty(sourceItem.Name);
@@ -486,16 +248,24 @@ namespace GeneralKit
                     targetEntity.SetValue(sourceItem.Name, sourceEntity.GetValue(sourceItem.Name));
                 }
                 targetEntity.Output();
-                func.EmitReturn();
-            }).Invoke(source);
+                IL.Return();
+            });
+
+            if (!Cache.MapToCache.TryAdd($"{typeof(TSource).FullName}+{typeof(TTarget).FullName}", deleg))
+            {
+                throw new ArgumentException();
+            }
+
+            return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
         }
 
         /// <summary>
-        /// 规则性格式化
+        /// 规则性格式化 {0} {1} 类似会被全部格式化
         /// </summary>
-        /// <param name="value"></param>
+        /// <param name="value">被格式化的字符串</param>
         /// <param name="paramters"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string RulesFormat(this string value, params string[] paramters)
         {
             for (int i = 0; i < paramters.Length; i++)
@@ -505,174 +275,12 @@ namespace GeneralKit
             return value;
         }
 
-        /// <summary>
-        /// 获取浮点数的精度
-        /// </summary>
-        /// <param name="m_float"></param>
-        /// <returns></returns>
-        public static int GetPrecision(this float m_float)
+        public static partial class Cache
         {
-            return GetPrecision((decimal)m_float);
+            /// <summary>
+            /// MapTo构建的缓存
+            /// </summary>
+            public static ConcurrentDictionary<string, Delegate> MapToCache = new ConcurrentDictionary<string, Delegate>();
         }
-
-        /// <summary>
-        /// 获取浮点数的精度
-        /// </summary>
-        /// <param name="m_float"></param>
-        /// <returns></returns>
-        public static int GetPrecision(this double m_float)
-        {
-            return GetPrecision((decimal)m_float);
-        }
-
-        /// <summary>
-        /// 获取浮点数的精度
-        /// </summary>
-        /// <param name="m_float"></param>
-        /// <returns></returns>
-        public static int GetPrecision(this decimal m_float)
-        {
-            var str = m_float.ToString();
-            var index = str.IndexOf(".");
-            if (index > -1)
-            {
-                return str.Substring(index + 1).TrimEnd('0').Length;
-            }
-            else
-                return 0;
-        }
-
-        /// <summary>
-        /// 保证字符串都拥有
-        /// </summary>
-        /// <param name="str"></param>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public static bool AllOwn(this string str, params string[] parameters)
-        {
-            foreach (var item in parameters)
-            {
-                if (str.IndexOf(item, StringComparison.Ordinal) == -1)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-
-        #region 
-        private static bool BasicValidation<T>(FastProperty propertie, T attr, StringBuilder strBuilder) where T : BasicAttribute
-        {
-            if (attr.NotNull() && attr.Message.NotNull())
-            {
-                Type Type = propertie.PropertyType;
-                string Name = propertie.PropertyName;
-                object Value = propertie.Get();
-                if (attr.Required.NotNull() && attr.Required.Value == true && Value.IsNull())
-                {
-                    strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Required)));
-                    return false;
-                }
-                if (attr is StringRuleAttribute)
-                {
-                    if (!StringValidation(propertie, attr as StringRuleAttribute, strBuilder))
-                        return false;
-                }
-                if (attr is NumericRuleAttribute)
-                {
-                    if (!NumericValidation(propertie, attr as NumericRuleAttribute, strBuilder))
-                        return false;
-                }
-                if (attr is DecimalRuleAttribute)
-                {
-                    if (!DecimalValidation(propertie, attr as DecimalRuleAttribute, strBuilder))
-                        return false;
-                }
-            }
-            return true;
-        }
-
-        private static bool StringValidation(FastProperty propertie, StringRuleAttribute attr, StringBuilder strBuilder)
-        {
-            string Name = propertie.PropertyName;
-            object Value = propertie.Get();
-            if (attr.MinLength.NotNull() && Value.NotNull() && Value.ToString().Length < attr.MinLength)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.MinLength)));
-                return false;
-            }
-            if (attr.MaxLength.NotNull() && Value.NotNull() && Value.ToString().Length > attr.MaxLength)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.MaxLength)));
-                return false;
-            }
-            if (attr.RegExp.NotNull() && Value.NotNull() && !Regex.IsMatch(Value.ToString(), attr.RegExp))
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.RegExp)));
-                return false;
-            }
-            return true;
-        }
-
-        private static bool NumericValidation(FastProperty propertie, NumericRuleAttribute attr, StringBuilder strBuilder)
-        {
-            string Name = propertie.PropertyName;
-            object Value = propertie.Get();
-            if (attr.Greater.NotNull() && Value.NotNull() && Convert.ToInt64(Value) > attr.Greater)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Greater)));
-                return false;
-            }
-            if (attr.Less.NotNull() && Value.NotNull() && Convert.ToInt64(Value) < attr.Less)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Less)));
-                return false;
-            }
-            if (attr.Equal.NotNull() && Value.NotNull() && Convert.ToInt64(Value) == attr.Equal)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Equal)));
-                return false;
-            }
-            if (attr.NoEqual.NotNull() && Value.NotNull() && Convert.ToInt64(Value) != attr.NoEqual)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.NoEqual)));
-                return false;
-            }
-            return true;
-        }
-
-        private static bool DecimalValidation(FastProperty propertie, DecimalRuleAttribute attr, StringBuilder strBuilder)
-        {
-            string Name = propertie.PropertyName;
-            object Value = propertie.Get();
-            if (attr.Greater.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) > attr.Greater)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Greater)));
-                return false;
-            }
-            if (attr.Less.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) < attr.Less)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Less)));
-                return false;
-            }
-            if (attr.Equal.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) == attr.Equal)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Equal)));
-                return false;
-            }
-            if (attr.NoEqual.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) != attr.NoEqual)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.NoEqual)));
-                return false;
-            }
-            if (attr.Precision.NotNull() && Value.NotNull() && Convert.ToDecimal(Value).GetPrecision() > attr.Precision)
-            {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Precision)));
-                return false;
-            }
-            return true;
-        }
-        #endregion
     }
 }
