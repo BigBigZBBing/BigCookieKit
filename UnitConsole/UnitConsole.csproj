@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GeneralKit\BigCookieKit.csproj" />
+    <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
   </ItemGroup>
 
 </Project>

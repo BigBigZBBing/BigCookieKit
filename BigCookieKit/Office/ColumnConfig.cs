@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GeneralKit
+namespace BigCookieKit.Office
 {
-    public partial class ExcalKit
+    public class ColumnConfig
     {
-
-
     }
 }

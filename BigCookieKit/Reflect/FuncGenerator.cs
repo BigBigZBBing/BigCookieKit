@@ -12,40 +12,28 @@ namespace BigCookieKit.Reflect
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void For(Int32 init, LocalBuilder length, Action<FieldInt32> build)
         {
             ManagerGX.For(this, init, length, build);
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void For(LocalBuilder init, LocalBuilder length, Action<FieldInt32> build)
         {
             ManagerGX.For(this, init, length, build);
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void For(Int32 init, Int32 length, Action<FieldInt32> build)
         {
-            Label _for = DefineLabel();
-            Label _endfor = DefineLabel();
-            LocalBuilder index = DeclareLocal(typeof(Int32));
-            this.IntegerMap(init);
-            Emit(OpCodes.Stloc_S, index);
-            Emit(OpCodes.Br, _endfor);
-            MarkLabel(_for);
-            build?.Invoke(new FieldInt32(index, generator));
-            Emit(OpCodes.Ldloc_S, index);
-            Emit(OpCodes.Ldc_I4_1);
-            Emit(OpCodes.Add);
-            Emit(OpCodes.Stloc_S, index);
-            MarkLabel(_endfor);
-            Emit(OpCodes.Ldloc_S, index);
-            this.IntegerMap(length);
-            Emit(OpCodes.Clt);
-            Emit(OpCodes.Brtrue, _for);
+            ManagerGX.For(this, init, length, build);
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Forr(LocalBuilder init, Action<FieldInt32> builder)
         {
             Label _for = DefineLabel();
@@ -73,18 +61,21 @@ namespace BigCookieKit.Reflect
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public AssertManager IF(LocalBuilder assert, Action builder)
         {
             return new AssertManager(generator, new Tuple<LocalBuilder, Action>(assert, builder));
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public AssertManager IF<T>(FieldManager<T> assert, Action builder)
         {
             return new AssertManager(generator, new Tuple<LocalBuilder, Action>(assert, builder));
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void While(Action assert, Action builder)
         {
             var START = DefineLabel();
@@ -98,6 +89,7 @@ namespace BigCookieKit.Reflect
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TryCatchManager Try(Action builder)
         {
             BeginExceptionBlock();
@@ -106,6 +98,7 @@ namespace BigCookieKit.Reflect
         }
 
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Return()
         {
             Emit(OpCodes.Ret);
