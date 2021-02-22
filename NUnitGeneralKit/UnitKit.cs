@@ -9,7 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace NUnitGeneralKit
+namespace NUnitBigCookieKit
 {
     public class UnitKit
     {
