@@ -1,10 +1,10 @@
-﻿using GeneralKit.Attributes;
+﻿using BigCookieKit.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public class RemarkAttribute : Attribute

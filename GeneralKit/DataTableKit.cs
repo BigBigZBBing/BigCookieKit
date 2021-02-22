@@ -4,7 +4,7 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     /// <summary>
     /// DataTable工具箱

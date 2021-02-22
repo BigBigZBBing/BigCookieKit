@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     /// <summary>
     /// Excal读写 只适用xlsx(性能是NPOI的几倍)

@@ -1,4 +1,4 @@
-using GeneralKit;
+using BigCookieKit;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -241,7 +241,6 @@ namespace NUnitGeneralKit
         [Test]
         public void SequelizeUnit()
         {
-
             using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=dbTest;Uid=root;Pwd=zhangbingbin5896;"))
             {
                 var Obj = SequelizeStructured.SequelizeConfig(new

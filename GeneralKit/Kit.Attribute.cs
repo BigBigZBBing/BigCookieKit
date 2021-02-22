@@ -1,5 +1,5 @@
-﻿using GeneralKit.Attributes;
-using ILWheatBread;
+﻿using BigCookieKit.Attributes;
+using BigCookieKit.Reflect;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     public static partial class Kit
     {
@@ -87,9 +87,10 @@ namespace GeneralKit
             return true;
         }
 
-        #region 
+        #region 私有
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool BasicValidation<T>(FastProperty propertie, T attr, StringBuilder strBuilder) where T : BasicAttribute
+        static bool BasicValidation<T>(FastProperty propertie, T attr, StringBuilder strBuilder) where T : BasicAttribute
         {
             if (attr.NotNull() && attr.Message.NotNull())
             {
@@ -121,7 +122,7 @@ namespace GeneralKit
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool StringValidation(FastProperty propertie, StringRuleAttribute attr, StringBuilder strBuilder)
+        static bool StringValidation(FastProperty propertie, StringRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;
             object Value = propertie.Get();
@@ -144,7 +145,7 @@ namespace GeneralKit
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool NumericValidation(FastProperty propertie, NumericRuleAttribute attr, StringBuilder strBuilder)
+        static bool NumericValidation(FastProperty propertie, NumericRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;
             object Value = propertie.Get();
@@ -172,7 +173,7 @@ namespace GeneralKit
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool DecimalValidation(FastProperty propertie, DecimalRuleAttribute attr, StringBuilder strBuilder)
+        static bool DecimalValidation(FastProperty propertie, DecimalRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;
             object Value = propertie.Get();
@@ -203,6 +204,7 @@ namespace GeneralKit
             }
             return true;
         }
+
         #endregion
     }
 }

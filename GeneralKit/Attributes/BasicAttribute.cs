@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GeneralKit.Attributes
+namespace BigCookieKit.Attributes
 {
     public abstract class BasicAttribute : Attribute
     {

@@ -9,7 +9,7 @@ using System.Data.Common;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     public static class EntityFrameworkKit
     {

@@ -7,7 +7,7 @@ using System.Data;
 using System.IO;
 using System.Text;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     /// <summary>
     /// NPOI工具箱

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GeneralKit.Model
+namespace BigCookieKit.Model
 {
     public class XmlPacket
     {

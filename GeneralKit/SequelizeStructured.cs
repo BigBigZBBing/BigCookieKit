@@ -1,4 +1,4 @@
-﻿using ILWheatBread;
+﻿using BigCookieKit.Reflect;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json.Linq;
 using System;
@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     /// <summary>
     /// 结构化动态类型

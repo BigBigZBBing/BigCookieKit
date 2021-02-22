@@ -6,7 +6,7 @@ using System.Text;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     public static partial class Kit
     {

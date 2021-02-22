@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     public static partial class Kit
     {

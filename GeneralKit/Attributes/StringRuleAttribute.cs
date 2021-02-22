@@ -1,7 +1,7 @@
-﻿using GeneralKit.Attributes;
+﻿using BigCookieKit.Attributes;
 using System;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     /// <summary>
     /// 字符串规则

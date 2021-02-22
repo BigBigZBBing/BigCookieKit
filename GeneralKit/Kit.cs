@@ -1,6 +1,5 @@
-﻿using GeneralKit.Attributes;
-using ILWheatBread;
-using ILWheatBread.SmartEmit;
+﻿using BigCookieKit.Attributes;
+using BigCookieKit.Reflect;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -14,7 +13,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     /// <summary>
     /// 通用工具箱

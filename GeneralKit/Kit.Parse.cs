@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace GeneralKit
+namespace BigCookieKit
 {
     public static partial class Kit
     {
