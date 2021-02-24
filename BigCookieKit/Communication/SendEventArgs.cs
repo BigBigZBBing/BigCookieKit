@@ -12,6 +12,10 @@ namespace BigCookieKit.Communication
     /// </summary>
     internal class SendEventArgs : SocketAsyncEventArgs
     {
+#if NET452
+        public Memory<byte> MemoryBuffer { get { return this.Buffer; } }
+#endif
+
         /// <summary>
         /// 发送回调
         /// </summary>
@@ -50,7 +54,7 @@ namespace BigCookieKit.Communication
             }
 
             //设置缓冲区
-            SetBuffer(packet.ToArray());
+            Communication.Buffer.SetBuffer(this, packet.ToArray());
             //给缓冲区赋值
             packet.CopyTo(MemoryBuffer.Span);
         }
@@ -65,7 +69,7 @@ namespace BigCookieKit.Communication
             packet = new byte[2];
             packet[0] = 0xFF;
             packet[1] = 0;
-            SetBuffer(packet.ToArray());
+            Communication.Buffer.SetBuffer(this, packet.ToArray());
             packet.CopyTo(MemoryBuffer.Span);
         }
 
@@ -79,7 +83,7 @@ namespace BigCookieKit.Communication
             packet = new byte[2];
             packet[0] = 0xFE;
             packet[1] = 0;
-            SetBuffer(packet.ToArray());
+            Communication.Buffer.SetBuffer(this, packet.ToArray());
             packet.CopyTo(MemoryBuffer.Span);
         }
 

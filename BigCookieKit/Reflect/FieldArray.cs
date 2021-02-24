@@ -72,7 +72,7 @@ namespace BigCookieKit.Reflect
             var result = this.NewBoolean();
             Label trueTo = DefineLabel();
             Label falseTo = DefineLabel();
-            this.For(0, GetLength(), build =>
+            this.For(0, GetLength(), (build, tab) =>
             {
                 GetValue(build);
                 Emit(OpCodes.Ldloc_S, value);
@@ -94,7 +94,7 @@ namespace BigCookieKit.Reflect
             var result = this.NewInt32(-1);
             Label trueTo = DefineLabel();
             Label falseTo = DefineLabel();
-            this.For(0, GetLength(), build =>
+            this.For(0, GetLength(), (build, tab) =>
             {
                 GetValue(build);
                 Emit(OpCodes.Ldloc_S, value);
@@ -113,7 +113,7 @@ namespace BigCookieKit.Reflect
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Copy(FieldArray<T> target, FieldInt32 length)
         {
-            this.For(0, length, int1 =>
+            this.For(0, length, (int1, tab) =>
             {
                 var local = DeclareLocal(target.identity);
                 GetValue(int1);

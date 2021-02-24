@@ -13,51 +13,42 @@ namespace BigCookieKit.Reflect
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void For(Int32 init, LocalBuilder length, Action<FieldInt32> build)
+        public void For(Int32 init, LocalBuilder length, Action<FieldInt32, TabManager> build)
         {
             ManagerGX.For(this, init, length, build);
         }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void For(LocalBuilder init, LocalBuilder length, Action<FieldInt32> build)
+        public void For(LocalBuilder init, LocalBuilder length, Action<FieldInt32, TabManager> build)
         {
             ManagerGX.For(this, init, length, build);
         }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void For(Int32 init, Int32 length, Action<FieldInt32> build)
+        public void For(Int32 init, Int32 length, Action<FieldInt32, TabManager> build)
         {
             ManagerGX.For(this, init, length, build);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Forr(Int32 init, LocalBuilder length, Action<FieldInt32, TabManager> build)
+        {
+            ManagerGX.Forr(this, init, length, build);
+        }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Forr(LocalBuilder init, Action<FieldInt32> builder)
+        public void Forr(LocalBuilder init, LocalBuilder length, Action<FieldInt32, TabManager> build)
         {
-            Label _for = DefineLabel();
-            Label _endfor = DefineLabel();
-            LocalBuilder index = DeclareLocal(typeof(Int32));
-            Emit(OpCodes.Ldloc_S, init);
-            Emit(OpCodes.Ldlen);
-            Emit(OpCodes.Ldc_I4_1);
-            Emit(OpCodes.Sub);
-            Emit(OpCodes.Stloc_S, index);
-            Emit(OpCodes.Br, _endfor);
-            MarkLabel(_for);
-            builder?.Invoke(new FieldInt32(index, generator));
-            Emit(OpCodes.Ldloc_S, index);
-            Emit(OpCodes.Ldc_I4_1);
-            Emit(OpCodes.Sub);
-            Emit(OpCodes.Stloc_S, index);
-            MarkLabel(_endfor);
-            Emit(OpCodes.Ldloc_S, index);
-            Emit(OpCodes.Ldc_I4_0);
-            Emit(OpCodes.Clt);
-            Emit(OpCodes.Ldc_I4_0);
-            Emit(OpCodes.Ceq);
-            Emit(OpCodes.Brtrue, _for);
+            ManagerGX.Forr(this, init, length, build);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Forr(Int32 init, Int32 length, Action<FieldInt32, TabManager> build)
+        {
+            ManagerGX.Forr(this, init, length, build);
         }
 
 
@@ -76,16 +67,18 @@ namespace BigCookieKit.Reflect
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void While(Action assert, Action builder)
+        public void While(Action assert, Action<TabManager> builder)
         {
             var START = DefineLabel();
             var FALSE = DefineLabel();
+            var BREAK = DefineLabel();
             MarkLabel(START);
             assert();
             Emit(OpCodes.Brfalse, FALSE);
-            builder();
+            builder(new TabManager(this, BREAK));
             Emit(OpCodes.Br, START);
             MarkLabel(FALSE);
+            MarkLabel(BREAK);
         }
 
 
@@ -99,9 +92,6 @@ namespace BigCookieKit.Reflect
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Return()
-        {
-            Emit(OpCodes.Ret);
-        }
+        public void Return() => Emit(OpCodes.Ret);
     }
 }

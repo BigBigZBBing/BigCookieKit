@@ -73,7 +73,7 @@ namespace BigCookieKit.Communication
             ReceiveEvent.Completed += AsyncDispatchCenter;
             ReceiveEvent.UserToken = Session;
             ReceiveEvent.ReceiveAction = ProcessReceive;
-            ReceiveEvent.SetBuffer(ReceiveBuffer);
+            Buffer.SetBuffer(ReceiveEvent, ReceiveBuffer);
 
             ShakeHandEvent = new ShakeHandEventArgs(ReceiveEvent, SendEvent);
             ShakeHandEvent.Completed += AsyncDispatchCenter;

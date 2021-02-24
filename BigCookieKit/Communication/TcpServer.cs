@@ -128,7 +128,7 @@ namespace BigCookieKit.Communication
                 UserTokenSession UserToken = eventArgs.UserToken as UserTokenSession;
                 var EndPoint = (IPEndPoint)eventArgs.AcceptSocket.RemoteEndPoint;
                 var AllHost = Dns.GetHostEntry(EndPoint.Address).AddressList;
-                UserToken.UserHost = string.Join('|', AllHost.Select(x => x.ToString()).ToArray());
+                UserToken.UserHost = string.Join("|", AllHost.Select(x => x.ToString()).ToArray());
                 UserToken.UserPort = ((IPEndPoint)(eventArgs.AcceptSocket.RemoteEndPoint)).Port;
                 UserToken.Mode = SocketMode.Server;
                 UserToken.OperationTime = DateTime.Now;

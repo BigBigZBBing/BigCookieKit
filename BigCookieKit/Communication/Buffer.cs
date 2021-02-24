@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using System.Text;
 
 namespace BigCookieKit.Communication
@@ -78,5 +79,17 @@ namespace BigCookieKit.Communication
         }
 
         public static implicit operator Memory<byte>(Buffer buffer) => buffer.Data;
+#if NET452
+        public static implicit operator byte[](Buffer buffer) => buffer.Data.ToArray();
+#endif
+
+        public static void SetBuffer(SocketAsyncEventArgs saea, Memory<byte> buffer)
+        {
+#if NET452
+            saea.SetBuffer(buffer.ToArray(), 0, buffer.Length);
+#else
+            saea.SetBuffer(buffer);
+#endif
+        }
     }
 }

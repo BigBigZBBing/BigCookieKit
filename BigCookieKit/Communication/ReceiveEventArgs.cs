@@ -13,6 +13,10 @@ namespace BigCookieKit.Communication
     /// </summary>
     public class ReceiveEventArgs : SocketAsyncEventArgs
     {
+#if NET452
+        public Memory<byte> MemoryBuffer { get { return this.Buffer; } }
+#endif
+
         /// <summary>
         /// 接收回调
         /// </summary>

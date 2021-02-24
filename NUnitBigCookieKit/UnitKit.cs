@@ -198,8 +198,16 @@ namespace NUnitBigCookieKit
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.CreateConfig(config =>
             {
+                //作为列名的行
                 config.ColumnNameRow = 1;
+                //开始的行
                 config.StartRow = 2;
+                //结束的行
+                config.EndRow = 700;
+                //开始的列
+                config.StartColumn = "A";
+                //结束的列
+                config.EndColumn = "B";
             });
             DataTable dt = excelKit.ReadDataTable(1);
         }

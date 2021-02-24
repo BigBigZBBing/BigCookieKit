@@ -88,8 +88,8 @@ namespace BigCookieKit.Communication
                         switch (lengthBit.Length)
                         {
                             case 1: BodyTargetLength = lengthBit[0]; break;
-                            case 2: BodyTargetLength = BitConverter.ToInt16(lengthBit); break;
-                            case 3: BodyTargetLength = BitConverter.ToInt32(lengthBit); break;
+                            case 2: BodyTargetLength = Kit.BitToInt16(lengthBit.ToArray()); break;
+                            case 3: BodyTargetLength = Kit.BitToInt32(lengthBit.ToArray()); break;
                         }
                         BodyCurrentLength = 0;
                     }

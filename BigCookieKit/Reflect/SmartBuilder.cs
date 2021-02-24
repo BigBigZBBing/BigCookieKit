@@ -36,13 +36,13 @@ namespace BigCookieKit.Reflect
         {
             assmblyName = new AssemblyName(dllName);
 
-#if NET48
+#if NET452
             assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assmblyName, AssemblyBuilderAccess.RunAndSave);
 #else
             assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assmblyName, AssemblyBuilderAccess.RunAndCollect);
 #endif
 
-#if NET48
+#if NET452
             moduleBuilder = assemblyBuilder.DefineDynamicModule(assmblyName.Name, $"{assmblyName.Name}.dll");
 #else
             moduleBuilder = assemblyBuilder.DefineDynamicModule(assmblyName.Name);
@@ -111,7 +111,7 @@ namespace BigCookieKit.Reflect
             _dymaticType = typeBuilder.CreateTypeInfo();
         }
 
-#if NET48
+#if NET452
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Save()

@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿#if !NET45
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -68,3 +69,4 @@ namespace BigCookieKit
         }
     }
 }
+#endif

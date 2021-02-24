@@ -41,12 +41,12 @@ namespace BigCookieKit.Communication
                 ReceiveEventArgs receiveEventArgs = new ReceiveEventArgs();
                 receiveEventArgs.UserToken = userToken;
                 receiveEventArgs.Completed += DispatchCenter;
-                receiveEventArgs.SetBuffer(ReceiveBufferPool.Pop());
+                Buffer.SetBuffer(receiveEventArgs, ReceiveBufferPool.Pop());
 
                 SendEventArgs senEventArgs = new SendEventArgs();
                 senEventArgs.UserToken = userToken;
                 senEventArgs.Completed += DispatchCenter;
-                senEventArgs.SetBuffer(SendBufferPool.Pop());
+                Buffer.SetBuffer(senEventArgs, SendBufferPool.Pop());
 
                 ShakeHandEventArgs acceptEventArgs = new ShakeHandEventArgs(receiveEventArgs, senEventArgs);
                 acceptEventArgs.Completed += DispatchCenter;

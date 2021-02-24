@@ -113,16 +113,17 @@ namespace BigCookieKit.Reflect
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void For(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<FieldInt32> build)
+        internal static void For(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<FieldInt32, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
+            Label _break = basic.DefineLabel();
             LocalBuilder index = basic.DeclareLocal(typeof(Int32));
             basic.Emit(OpCodes.Ldloc_S, init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new FieldInt32(index, basic));
+            build?.Invoke(new FieldInt32(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Add);
@@ -130,23 +131,24 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_endfor);
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldloc_S, length);
-
             basic.Emit(OpCodes.Clt);
             basic.Emit(OpCodes.Brtrue, _for);
+            basic.MarkLabel(_break);
         }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void For(this EmitBasic basic, Int32 init, LocalBuilder length, Action<FieldInt32> build)
+        internal static void For(this EmitBasic basic, Int32 init, LocalBuilder length, Action<FieldInt32, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
+            Label _break = basic.DefineLabel();
             LocalBuilder index = basic.DeclareLocal(typeof(Int32));
             basic.IntegerMap(init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new FieldInt32(index, basic));
+            build?.Invoke(new FieldInt32(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Add);
@@ -154,22 +156,23 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_endfor);
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldloc_S, length);
-
             basic.Emit(OpCodes.Clt);
             basic.Emit(OpCodes.Brtrue, _for);
+            basic.MarkLabel(_break);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void For(this EmitBasic basic, Int32 init, Int32 length, Action<FieldInt32> build)
+        internal static void For(this EmitBasic basic, Int32 init, Int32 length, Action<FieldInt32, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
+            Label _break = basic.DefineLabel();
             LocalBuilder index = basic.DeclareLocal(typeof(Int32));
             basic.IntegerMap(init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new FieldInt32(index, basic));
+            build?.Invoke(new FieldInt32(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Add);
@@ -179,19 +182,21 @@ namespace BigCookieKit.Reflect
             basic.IntegerMap(length);
             basic.Emit(OpCodes.Clt);
             basic.Emit(OpCodes.Brtrue, _for);
+            basic.MarkLabel(_break);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Forr(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<FieldInt32> build)
+        internal static void Forr(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<FieldInt32, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
+            Label _break = basic.DefineLabel();
             LocalBuilder index = basic.DeclareLocal(typeof(Int32));
             basic.Emit(OpCodes.Ldloc_S, init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new FieldInt32(index, basic));
+            build?.Invoke(new FieldInt32(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Sub);
@@ -199,22 +204,23 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_endfor);
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldloc_S, length);
-            basic.Emit(OpCodes.Bge);
-            basic.Emit(OpCodes.Brtrue, _for);
+            basic.Emit(OpCodes.Bge, _for);
+            basic.MarkLabel(_break);
         }
 
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Forr(this EmitBasic basic, Int32 init, LocalBuilder length, Action<FieldInt32> build)
+        internal static void Forr(this EmitBasic basic, Int32 init, LocalBuilder length, Action<FieldInt32, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
+            Label _break = basic.DefineLabel();
             LocalBuilder index = basic.DeclareLocal(typeof(Int32));
             basic.IntegerMap(init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new FieldInt32(index, basic));
+            build?.Invoke(new FieldInt32(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Sub);
@@ -222,21 +228,22 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_endfor);
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldloc_S, length);
-            basic.Emit(OpCodes.Bge);
-            basic.Emit(OpCodes.Brtrue, _for);
+            basic.Emit(OpCodes.Bge, _for);
+            basic.MarkLabel(_break);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static void Forr(this EmitBasic basic, Int32 init, Int32 length, Action<FieldInt32> build)
+        internal static void Forr(this EmitBasic basic, Int32 init, Int32 length, Action<FieldInt32, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
+            Label _break = basic.DefineLabel();
             LocalBuilder index = basic.DeclareLocal(typeof(Int32));
             basic.IntegerMap(init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new FieldInt32(index, basic));
+            build?.Invoke(new FieldInt32(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Sub);
@@ -244,8 +251,8 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_endfor);
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.IntegerMap(length);
-            basic.Emit(OpCodes.Bge);
-            basic.Emit(OpCodes.Brtrue, _for);
+            basic.Emit(OpCodes.Bge, _for);
+            basic.MarkLabel(_break);
         }
 
 

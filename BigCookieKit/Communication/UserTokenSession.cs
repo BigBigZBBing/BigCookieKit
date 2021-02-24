@@ -76,7 +76,11 @@ namespace BigCookieKit.Communication
             UserPort = null;
             OperationTime = null;
             ShakeHandEvent.Clear();
+#if NET452
+            NoSuccessMessage = new ConcurrentQueue<byte[]>();
+#else
             NoSuccessMessage.Clear();
+#endif
             Cache = null;
         }
 
