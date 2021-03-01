@@ -1,5 +1,6 @@
 using BigCookieKit;
 using BigCookieKit.Office;
+using BigCookieKit.XML;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -196,33 +197,62 @@ namespace NUnitBigCookieKit
         {
             string path = @"C:\Users\zbb58\Desktop\test2.xlsx";
             ReadExcelKit excelKit = new ReadExcelKit(path);
-            excelKit.CreateConfig(config =>
+            excelKit.AddConfig(config =>
             {
-                //作为列名的行
+                config.SheetIndex = 1;
                 config.ColumnNameRow = 1;
-                //开始的行
                 config.StartRow = 2;
-                //结束的行
                 config.EndRow = 700;
-                //开始的列
                 config.StartColumn = "A";
-                //结束的列
                 config.EndColumn = "B";
             });
-            DataTable dt = excelKit.ReadDataTable(1);
+            DataTable dt = excelKit.ReadDataTable();
+        }
+
+        [Test]
+        public void ExcelDataSetKitUnit()
+        {
+            string path = @"C:\Users\zbb58\Desktop\test3.xlsx";
+            ReadExcelKit excelKit = new ReadExcelKit(path);
+            excelKit.AddConfig(config =>
+            {
+                config.SheetIndex = 1;
+                config.StartRow = 1;
+                config.EndRow = 2;
+                config.StartColumn = "A";
+                config.EndColumn = "A";
+            });
+            excelKit.AddConfig(config =>
+            {
+                config.SheetIndex = 1;
+                config.StartRow = 4;
+                config.EndRow = 53;
+                config.StartColumn = "A";
+                config.EndColumn = "D";
+            });
+            excelKit.AddConfig(config =>
+            {
+                config.SheetIndex = 1;
+                config.StartRow = 3;
+                config.EndRow = 4;
+                config.StartColumn = "G";
+                config.EndColumn = "G";
+            });
+            DataSet ds = excelKit.ReadDataSet();
         }
 
         [Test]
         public void ExcelSetKitUnit()
         {
-            string path = @"C:\Users\zbb58\Desktop\test2.xlsx";
+            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
             ReadExcelKit excelKit = new ReadExcelKit(path);
-            excelKit.CreateConfig(config =>
+            excelKit.AddConfig(config =>
             {
+                config.SheetIndex = 1;
                 config.ColumnNameRow = 1;
                 //config.StartRow = 2;
             });
-            var rows = excelKit.ReadSet(1);
+            var rows = excelKit.ReadSet();
 
             //自行转换成DataTable
             DataTable dt = new DataTable();
@@ -280,6 +310,51 @@ namespace NUnitBigCookieKit
         {
             Kit.DirToFormZipPacket(@"C:\Users\zbb58\Desktop\test.zip", @"C:\Users\zbb58\Desktop\Program");
             //Kit.FileToFormZipPacket(@"C:\Users\zbb58\Desktop\test.zip", @"C:\Users\zbb58\Desktop\test.xlsx");
+        }
+
+        [Test]
+        public void XmlRead()
+        {
+            string path = @"C:\Users\zbb58\Desktop\sheet1.xml";
+            XmlReadKit xmlReadKit = new XmlReadKit(path);
+            //如果单应用于Xml结构 没有属性 设置不读属性 性能提升大
+            xmlReadKit.IsReadAttributes = false;
+            var packet = xmlReadKit.Read("sheetData");
+        }
+
+        [Test]
+        public void XmlReadSet()
+        {
+            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
+            ReadExcelKit excelKit = new ReadExcelKit(path);
+            excelKit.AddConfig(config =>
+            {
+                config.SheetIndex = 1;
+                config.ColumnNameRow = 1;
+            });
+            var rows = excelKit.XmlReaderSet();
+
+            //自行转换成DataTable
+            DataTable dt = new DataTable();
+            foreach (var item in rows)
+            {
+                if (dt.Columns.Count == 0)
+                {
+                    foreach (var item1 in item)
+                        dt.Columns.Add(item1.ToString());
+                }
+                else
+                {
+                    int columnIndex = 0;
+                    foreach (var item1 in item)
+                    {
+                        if (dt.Columns[columnIndex].DataType != item1.GetType())
+                            dt.Columns[columnIndex].DataType = item1.GetType();
+                        columnIndex++;
+                    }
+                    dt.Rows.Add(item);
+                }
+            }
         }
     }
 

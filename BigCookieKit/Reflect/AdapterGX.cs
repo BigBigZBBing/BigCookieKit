@@ -7,7 +7,7 @@ namespace BigCookieKit.Reflect
 {
     internal static partial class ManagerGX
     {
-        
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void EmitValue<T>(this EmitBasic basic, T value)
         {

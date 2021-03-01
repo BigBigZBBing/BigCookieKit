@@ -20,10 +20,12 @@
     <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <AssemblyVersion>1.0.*</AssemblyVersion>
-    <FileVersion>1.0.2021.0224</FileVersion>
-    <Version>1.0.2021.0224</Version>
-    <PackageReleaseNotes>修复反射库For Forr While的使用
-增加BitConvert的替代方法 能节省runtime的额外操作的消耗</PackageReleaseNotes>
+    <FileVersion>1.0.2021.0301</FileVersion>
+    <Version>1.0.2021.0301</Version>
+    <PackageReleaseNotes>取消反射库非静态函数调用
+扩展和调整ReadExcelKit的使用 增加了配置读取DataSet的方式 详情看CSDN博客的教程
+ReadExcelKit读取进行内部优化 性能更快
+增加XmlReadKit读取Xml方案类 最高性能读取Xml格式</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|net452'">

@@ -64,7 +64,7 @@ namespace BigCookieKit.Reflect
             basic.Throw(_ex);
         }
 
-        public static MethodManager ReflectMethod<T>(this VariableManager basic, String MethodName)
+        internal static MethodManager ReflectMethod<T>(this VariableManager basic, String MethodName)
         {
             Type type = typeof(T);
             MethodInfo method = type.GetMethod(MethodName, Type.EmptyTypes);
@@ -75,7 +75,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        public static MethodManager ReflectMethod<T>(this VariableManager basic, String MethodName, params LocalBuilder[] parameters)
+        internal static MethodManager ReflectMethod<T>(this VariableManager basic, String MethodName, params LocalBuilder[] parameters)
         {
             Type type = typeof(T);
             MethodInfo method = type.GetMethod(MethodName, parameters.Select(x => x.LocalType).ToArray());
@@ -87,7 +87,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        public static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type)
+        internal static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type)
         {
             MethodInfo method = type.GetMethod(MethodName, Type.EmptyTypes);
             basic.Output();
@@ -97,7 +97,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        public static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type, params LocalBuilder[] parameters)
+        internal static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type, params LocalBuilder[] parameters)
         {
             MethodInfo method = type.GetMethod(MethodName, parameters.Select(x => x.LocalType).ToArray());
             if (method == null) throw new MethodAccessException("Not exists this method!");

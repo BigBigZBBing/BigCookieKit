@@ -26,12 +26,13 @@ namespace UnitConsole
         public void OpenXmlRead()
         {
             ReadExcelKit excelKit = new ReadExcelKit(@"C:\Users\zbb58\Desktop\test.xlsx");
-            excelKit.CreateConfig(config =>
+            excelKit.AddConfig(config =>
             {
+                config.SheetIndex = 1;
                 config.ColumnNameRow = 1;
                 config.StartRow = 2;
             });
-            DataTable dt = excelKit.ReadDataTable(1);
+            DataTable dt = excelKit.ReadDataTable();
         }
     }
 }

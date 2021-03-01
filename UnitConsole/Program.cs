@@ -9,50 +9,41 @@ using BigCookieKit.Reflect;
 
 namespace UnitConsole
 {
+    class TModel
+    {
+        public string Name { get; set; }
+
+        public void TestCall()
+        {
+            Console.WriteLine("调用测试");
+        }
+
+        public string TestCall1()
+        {
+            Console.WriteLine("调用测试1");
+            return "测试返回";
+        }
+    }
     class Program
     {
         static void Main(string[] args)
         {
-            HttpClient httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Add("authorization", "");
 
-            var action = SmartBuilder.DynamicMethod<Action>(string.Empty, emit =>
+            var action = SmartBuilder.DynamicMethod<Action<object>>(string.Empty, emit =>
             {
-                //var int1 = 0;
-                //while(true)
-                //{
-                //  if(int1>5) break;
-                //}
-                var int1 = emit.NewInt32();
-                emit.While(() => emit.NewBoolean(true).Output(), tab =>
+                //TModel obj = (TModel)param1;
+                var obj = emit.NewObject(emit.ArgumentRef<object>(0));
+                var tmodel = obj.As<TModel>();
+                emit.IF(tmodel.IsNull(), () =>
                 {
-                    emit.IF(int1 > 5, () => tab.Break()).IFEnd();
-                    int1 += 1;
-                });
-
-                //for(int i =0; i<10 ; i++)
-                //{
-                //  Console.WriteLine(i);
-                //}
-                emit.For(0, 10, (index, tab) =>
-                {
-                    emit.ReflectStaticMethod("WriteLine", typeof(Console), index);
-                });
-
-                //for(int i =10; i>=0 ; i--)
-                //{
-                //  Console.WriteLine(i);
-                //}
-                emit.Forr(10, 0, (index, tab) =>
-                {
-                    emit.ReflectStaticMethod("WriteLine", typeof(Console), index);
-                });
+                    emit.ReflectStaticMethod("WriteLine", typeof(Console), emit.NewInt32(1));
+                }).IFEnd();
 
                 emit.Return();
             });
-            action.Invoke();
+            action.Invoke(null);
 
-
+            Console.ReadKey();
             //BenchmarkRunner.Run<BenchmarkExcelRead>();
         }
     }

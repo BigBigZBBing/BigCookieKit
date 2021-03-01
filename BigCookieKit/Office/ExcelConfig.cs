@@ -9,6 +9,11 @@ namespace BigCookieKit.Office
     public class ExcelConfig
     {
         /// <summary>
+        /// 工作簿索引
+        /// </summary>
+        public int SheetIndex { get; set; }
+
+        /// <summary>
         /// 列名索引行 不设置则自动列名 例:Colume1 Colume2
         /// </summary>
         public int? ColumnNameRow { get; set; }
@@ -99,8 +104,6 @@ namespace BigCookieKit.Office
             } while (index > 0);
             return column;
         }
-
-        public List<ColumnConfig> Columns { get; set; }
 
         string _StartColumn;
         string _EndColumn;
