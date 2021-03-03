@@ -6,45 +6,35 @@ using System.Data;
 using System.Linq;
 using System.Net.Http;
 using BigCookieKit.Reflect;
+using System.Threading.Tasks.Dataflow;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace UnitConsole
 {
-    class TModel
-    {
-        public string Name { get; set; }
-
-        public void TestCall()
-        {
-            Console.WriteLine("调用测试");
-        }
-
-        public string TestCall1()
-        {
-            Console.WriteLine("调用测试1");
-            return "测试返回";
-        }
-    }
     class Program
     {
         static void Main(string[] args)
         {
 
-            var action = SmartBuilder.DynamicMethod<Action<object>>(string.Empty, emit =>
+            ThreadPool.SetMinThreads(100, 100);
+            var block = new ActionBlock<int>(index =>
             {
-                //TModel obj = (TModel)param1;
-                var obj = emit.NewObject(emit.ArgumentRef<object>(0));
-                var tmodel = obj.As<TModel>();
-                emit.IF(tmodel.IsNull(), () =>
-                {
-                    emit.ReflectStaticMethod("WriteLine", typeof(Console), emit.NewInt32(1));
-                }).IFEnd();
-
-                emit.Return();
+                Console.WriteLine(index);
+                Thread.Sleep(500);
+            }, new ExecutionDataflowBlockOptions()
+            {
+                MaxDegreeOfParallelism = 100,
             });
-            action.Invoke(null);
+            for (int i = 0; i < 400; i++)
+            {
+                block.Post(i);
+            }
+            block.Complete();
+            block.Completion.Wait();
+            Console.WriteLine("完成");
 
             Console.ReadKey();
-            //BenchmarkRunner.Run<BenchmarkExcelRead>();
         }
     }
 }

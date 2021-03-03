@@ -51,6 +51,34 @@ namespace BigCookieKit.Reflect
             return new FieldBoolean(value, this);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public CanCompute<Byte> NewByte(Byte value = default(Byte))
+        {
+            return ManagerGX.NewByte(this, value);
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public CanCompute<Byte> NewByte(LocalBuilder value)
+        {
+            if (value.LocalType != typeof(Byte)) ManagerGX.ShowEx("Type not is [Byte]");
+            return new FieldByte(value, this);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public CanCompute<Int16> NewInt16(Int16 value = default(Int16))
+        {
+            return ManagerGX.NewInt16(this, value);
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public CanCompute<Int16> NewInt16(LocalBuilder value)
+        {
+            if (value.LocalType != typeof(Int16)) ManagerGX.ShowEx("Type not is [Int16]");
+            return new FieldInt16(value, this);
+        }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public CanCompute<Int32> NewInt32(Int32 value = default(Int32))

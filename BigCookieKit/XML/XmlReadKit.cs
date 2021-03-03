@@ -23,7 +23,7 @@ namespace BigCookieKit.XML
         private XmlReader _read { get; set; }
         private Action<string> _callback { get; set; }
         private XmlPacket _curr { get; set; }
-        private XmlAttr[] xmlAttrs { get; set; }
+        private XmlAttribute[] xmlAttrs { get; set; }
 
         #endregion
 
@@ -230,14 +230,14 @@ namespace BigCookieKit.XML
         #endregion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private XmlAttr[] XmlReadNodeAttr(int count)
+        private XmlAttribute[] XmlReadNodeAttr(int count)
         {
             if (!IsReadAttributes) return null;
-            xmlAttrs = new XmlAttr[count];
+            xmlAttrs = new XmlAttribute[count];
             for (int index = 0; index < count; index++)
             {
                 _read.MoveToAttribute(index);
-                xmlAttrs[index] = new XmlAttr()
+                xmlAttrs[index] = new XmlAttribute()
                 {
                     Name = _read.Name,
                     Text = _read.Value

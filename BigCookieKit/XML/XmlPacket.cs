@@ -17,7 +17,7 @@ namespace BigCookieKit.XML
         public bool HasValue { get; set; }
         public string Name { get; set; }
         public string Text { get; set; }
-        public XmlAttr[] Attributes { get; set; }
+        public XmlAttribute[] Attributes { get; set; }
         public IList<XmlPacket> Node { get; set; }
     }
 
@@ -31,7 +31,7 @@ namespace BigCookieKit.XML
     /// <summary>
     /// XML标签的属性
     /// </summary>
-    public class XmlAttr
+    public class XmlAttribute
     {
         public string Name { get; set; }
 

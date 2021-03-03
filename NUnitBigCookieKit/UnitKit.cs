@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
 
 namespace NUnitBigCookieKit
@@ -42,7 +44,7 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void NullAssert()
+        public void NullAssertUnit()
         {
             //引用类型
             string test = null;
@@ -60,7 +62,7 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void EnumRemark()
+        public void EnumRemarkUnit()
         {
             TestEnum test = TestEnum.None;
             TestEnum test1 = TestEnum.True;
@@ -77,7 +79,7 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void ExistCountAssert()
+        public void ExistCountAssertUnit()
         {
             List<string> test = new List<string>();
             ICollection<string> test1 = new List<string>();
@@ -97,7 +99,7 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void DataRowSetValue()
+        public void DataRowSetValueUnit()
         {
             DataTable dt = new DataTable();
             dt.Columns.Add(new DataColumn("Filed1", typeof(string)));
@@ -113,7 +115,7 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void XmlToEntity()
+        public void XmlToEntityUnit()
         {
             var ele = XElement.Parse($@"
 <Test1 attr1=""attr1"" attr2=""attr2"">
@@ -131,7 +133,7 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void MoneyToUpper()
+        public void MoneyToUpperUnit()
         {
             decimal test = 8436.44868M;
 
@@ -165,7 +167,7 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void TypeAssert()
+        public void TypeAssertUnit()
         {
             string classObj = "";
             bool test1 = classObj.IsClass();
@@ -313,7 +315,7 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void XmlRead()
+        public void XmlReadUnit()
         {
             string path = @"C:\Users\zbb58\Desktop\sheet1.xml";
             XmlReadKit xmlReadKit = new XmlReadKit(path);
@@ -323,7 +325,7 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void XmlReadSet()
+        public void XmlReadSetUnit()
         {
             string path = @"C:\Users\zbb58\Desktop\test.xlsx";
             ReadExcelKit excelKit = new ReadExcelKit(path);
@@ -355,6 +357,46 @@ namespace NUnitBigCookieKit
                     dt.Rows.Add(item);
                 }
             }
+        }
+
+        [Test]
+        public void ActorModelUnit()
+        {
+            var batch = new ActorModel<int>(100, index =>
+            {
+                foreach (var item in index)
+                {
+                    Console.WriteLine(item);
+                }
+                Thread.Sleep(500);
+            });
+            for (int i = 0; i < 400; i++)
+            {
+                batch.Post(i);
+            }
+            batch.Complete(true);
+            Console.WriteLine("完成");
+        }
+
+        [Test]
+        public void ActionBlockUnit()
+        {
+            ThreadPool.SetMinThreads(100, 100);
+            var block = new ActionBlock<int>(index =>
+            {
+                Console.WriteLine(index);
+                Thread.Sleep(500);
+            }, new ExecutionDataflowBlockOptions()
+            {
+                MaxDegreeOfParallelism = 100,
+            });
+            for (int i = 0; i < 400; i++)
+            {
+                block.Post(i);
+            }
+            block.Complete();
+            block.Completion.Wait();
+            Console.WriteLine("完成");
         }
     }
 

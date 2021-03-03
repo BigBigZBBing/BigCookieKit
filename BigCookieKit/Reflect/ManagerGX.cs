@@ -22,6 +22,18 @@ namespace BigCookieKit.Reflect
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static FieldByte NewByte(this EmitBasic basic, Byte value = default(Byte))
+        {
+            return new FieldByte(NewField(basic, value), basic);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static FieldInt16 NewInt16(this EmitBasic basic, Int16 value = default(Int16))
+        {
+            return new FieldInt16(NewField(basic, value), basic);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static FieldInt32 NewInt32(this EmitBasic basic, Int32 value = default(Int32))
         {
             return new FieldInt32(NewField(basic, value), basic);
