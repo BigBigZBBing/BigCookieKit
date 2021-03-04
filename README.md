@@ -1,23 +1,24 @@
-# GeneralKit
-C#代码层的扩展累积库
-位于我所有类库的基础库
+# BigCookieKit
+超级工具箱
+所有的经验积累库 包含的强大功能
 
-#### 扩展功能文档
+##### BigCookieKit.Reflect 高性能反射库
 
-| API             | 注释                       | 指向对象(this)       |
-| :-------------- | -------------------------- | -------------------- |
-| IsNull          | 判断对象为NULL或者默认值   | object               |
-| NotNull         | 判断对象不为NULL或者默认值 | object               |
-| Exist           | 集合是存在内容             | IEnumerable<T>       |
-| NotExist        | 集合是不存在内容           | IEnumerable<T>       |
-| Remark          | 获取枚举的Remark值         | Enum                 |
-| ModelValidation | 验证模型                   | 继承ICheckVerify的类 |
-| MoneyUpper      | 金钱转中文大写             | decimal              |
-| RunCmd          | 运行Shell命令              |                      |
-| XmlToEntity     | Xml转实体对象              | XElement             |
-| RuleAttribute   | 模型规则配置               |                      |
-| RemarkAttribute | 枚举描述配置               |                      |
-| CellSetValue    | 给DataTable单元格赋值      | DataRow              |
-| TryParse        | 尝试转换类型               | object               |
+替代表达式树 作为更高性能的解决方案
+
+##### BigCookieKit.Communication 高性能通信库
+
+使用SEAE异步方式以及极简化结构实现通信
 
 
+##### BigCookieKit.Office 高性能读取Excel
+
+使用OpenXML方式读取Excel数据的方案 性能是Npoi的3倍以上
+
+##### SequelizeStructured 结构化查询结果
+
+仿造SequelizeORM的结构化结果方案
+
+##### BigCookieKit 工具箱
+
+开发中的常用套件 工具件
