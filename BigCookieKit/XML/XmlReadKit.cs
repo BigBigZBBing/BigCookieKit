@@ -76,14 +76,12 @@ namespace BigCookieKit.XML
                         {
                             packet = new XmlPacket();
                             _curr = packet;
-                            _curr.Name = _read.Name;
-                            if (_read.HasAttributes && _read.AttributeCount > 0)
-                                _curr.Attributes = XmlReadNodeAttr(_read.AttributeCount);
+                            ReadContentFrom();
                         }
                         #endregion
 
                         #region EOF方式读取
-                        if (_curr.NotNull())
+                        if (_curr != null)
                         {
                             if (_curr.State == PacketState.Start)
                             {
@@ -101,8 +99,8 @@ namespace BigCookieKit.XML
                     case XmlNodeType.Text:
                         if (_read.HasValue)
                         {
-                            _curr.HasValue = true;
-                            _curr.Text = _read.Value;
+                            _curr.Info.HasValue = true;
+                            _curr.Info.Text = _read.Value;
                         }
                         break;
                     case XmlNodeType.EndElement:
@@ -111,7 +109,7 @@ namespace BigCookieKit.XML
                         #endregion
 
                         #region EOF结束
-                        if (_curr.NotNull() && _curr.State == PacketState.Start)
+                        if (_curr != null && _curr.State == PacketState.Start)
                             EndReadFrom();
                         #endregion
                         break;
@@ -136,11 +134,7 @@ namespace BigCookieKit.XML
                     case XmlNodeType.Element:
                         if (_read.Name.Equals(Node, StringComparison.OrdinalIgnoreCase))
                         {
-                            packet.Name = _read.Name;
-                            if (_read.HasAttributes && _read.AttributeCount > 0)
-                            {
-                                packet.Attributes = XmlReadNodeAttr(_read.AttributeCount);
-                            }
+                            ReadContentFrom();
                             packet.Node = XmlReadNode(ref switchover);
                         }
                         break;
@@ -178,16 +172,12 @@ namespace BigCookieKit.XML
                 {
                     case XmlNodeType.Element:
                         packet = new XmlPacket();
-                        packet.Name = _read.Name;
                         _callback = value =>
                         {
-                            packet.HasValue = true;
-                            packet.Text = value;
+                            packet.Info.HasValue = true;
+                            packet.Info.Text = value;
                         };
-                        if (_read.HasAttributes && _read.AttributeCount > 0)
-                        {
-                            packet.Attributes = XmlReadNodeAttr(_read.AttributeCount);
-                        }
+                        ReadContentFrom();
                         if (_read.IsEmptyElement)
                         {
                             if (packet.NotNull())
@@ -230,18 +220,15 @@ namespace BigCookieKit.XML
         #endregion
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private XmlAttribute[] XmlReadNodeAttr(int count)
+        private XmlAttribute[] XmlReadNodeAttr()
         {
             if (!IsReadAttributes) return null;
-            xmlAttrs = new XmlAttribute[count];
-            for (int index = 0; index < count; index++)
+            _curr.Info.Attributes = new XmlAttribute[_read.AttributeCount];
+            for (int index = 0; index < _read.AttributeCount; index++)
             {
                 _read.MoveToAttribute(index);
-                xmlAttrs[index] = new XmlAttribute()
-                {
-                    Name = _read.Name,
-                    Text = _read.Value
-                };
+                _curr.Info.Attributes[index].Name = _read.Name;
+                _curr.Info.Attributes[index].Text = _read.Value;
             }
             return xmlAttrs;
         }
@@ -249,10 +236,10 @@ namespace BigCookieKit.XML
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ReadContentFrom()
         {
-            _curr.Name = _read.Name;
+            _curr.Info.Name = _read.Name;
             if (_read.HasAttributes && _read.AttributeCount > 0)
             {
-                _curr.Attributes = XmlReadNodeAttr(_read.AttributeCount);
+                XmlReadNodeAttr();
             }
         }
 
@@ -260,7 +247,7 @@ namespace BigCookieKit.XML
         private void EndReadFrom()
         {
 
-            if (_curr.Parent.Node.IsNull())
+            if (_curr.Parent.Node == null)
                 _curr.Parent.Node = new List<XmlPacket>();
             _curr.Parent.Node.Add(_curr);
             _curr.State = PacketState.End;

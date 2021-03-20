@@ -14,7 +14,9 @@ namespace BigCookieKit.Office
         internal static Dictionary<string, Type> FixedNumFmt => new Dictionary<string, Type>()
         {
             { "0" , typeof(string) },
-            { "14" , typeof(DateTime) }
+            { "14" , typeof(DateTime) },
+            { "176" , typeof(Decimal) },
+            { "177" , typeof(DateTime) }
         };
     }
 }

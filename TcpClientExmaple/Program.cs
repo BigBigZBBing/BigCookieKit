@@ -10,27 +10,26 @@ namespace TcpClientExmaple
     {
         static void Main(string[] args)
         {
-            TcpClient client = new TcpClient("127.0.0.1", 7447);
+            NetworkClient client = new NetworkClient("127.0.0.1", 7447);
 
             client.OnConnect = user =>
             {
                 Random random = new Random();
                 while (true)
                 {
-                    byte[] message = Encoding.UTF8.GetBytes("测试数据" + random.Next(short.MaxValue));
-                    user.SendMessage(message);
-                    Thread.Sleep(1);
+                    //byte[] message = Encoding.UTF8.GetBytes("测试数据" + random.Next(short.MaxValue));
+                    user.SendMessage(Console.ReadLine());
                 }
             };
 
             client.OnCallBack = (user, packet) =>
             {
-
+                Console.WriteLine(Encoding.UTF8.GetString(packet));
             };
 
-            client.StartConnect();
+            client.Start();
 
-            Console.ReadLine();
+            Thread.Sleep(-1);
         }
     }
 }

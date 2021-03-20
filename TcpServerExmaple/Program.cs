@@ -8,7 +8,7 @@ namespace TcpServerExmaple
     {
         static void Main(string[] args)
         {
-            TcpServer tcpServer = new TcpServer(7447);
+            NetworkServer tcpServer = new NetworkServer(7447);
 
             tcpServer.OnConnect = user =>
             {
@@ -18,6 +18,7 @@ namespace TcpServerExmaple
             tcpServer.OnReceive = (user, packet) =>
             {
                 Console.WriteLine($"[{user.UserHost}:{user.UserPort}]:{Encoding.UTF8.GetString(packet)}");
+                user.SendMessage("测试数据");
             };
 
             tcpServer.OnExit = user =>
@@ -25,7 +26,7 @@ namespace TcpServerExmaple
                 Console.WriteLine($"{user.UserHost}:{user.UserPort}离开~");
             };
 
-            tcpServer.StartServer();
+            tcpServer.Start();
 
             Console.ReadLine();
         }

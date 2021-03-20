@@ -29,22 +29,12 @@ namespace BigCookieKit.Communication
         /// <summary>
         /// 最大等待队列数
         /// </summary>
-        public int MaxWaitQueue { get; set; } = 100;
+        public int MaxWaitQueue { get; set; } = 1000;
 
         /// <summary>
         /// 缓冲位大小
         /// </summary>
         public int BufferSize { get; set; } = 4096;
-
-        /// <summary>
-        /// 缓冲池单元
-        /// </summary>
-        public int BufferPoolUnit { get; set; }
-
-        /// <summary>
-        /// 缓冲池最大容量
-        /// </summary>
-        public int BufferPoolSize { get { return BufferSize * BufferPoolUnit; } }
 
         /// <summary>
         /// 地址族
@@ -130,7 +120,7 @@ namespace BigCookieKit.Communication
                 var AllHost = Dns.GetHostEntry(EndPoint.Address).AddressList;
                 UserToken.UserHost = string.Join("|", AllHost.Select(x => x.ToString()).ToArray());
                 UserToken.UserPort = ((IPEndPoint)(eventArgs.AcceptSocket.RemoteEndPoint)).Port;
-                UserToken.Mode = SocketMode.Server;
+                UserToken.Mode = ApplyMode.Server;
                 UserToken.OperationTime = DateTime.Now;
                 eventArgs.SendEventArgs.SendAction = ProcessSend;
                 eventArgs.ReceiveEventArgs.ReceiveAction = ProcessReceive;

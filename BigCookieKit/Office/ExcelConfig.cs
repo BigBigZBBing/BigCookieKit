@@ -39,7 +39,7 @@ namespace BigCookieKit.Office
             }
             set
             {
-                StartColumnIndex = ColumnToIndex(value);
+                StartColumnIndex = ExcelHelper.ColumnToIndex(value);
                 _StartColumn = value;
             }
         }
@@ -60,7 +60,7 @@ namespace BigCookieKit.Office
             }
             set
             {
-                EndColumnIndex = ColumnToIndex(value).GetValueOrDefault();
+                EndColumnIndex = ExcelHelper.ColumnToIndex(value).GetValueOrDefault();
                 _EndColumn = value;
             }
         }
@@ -71,39 +71,9 @@ namespace BigCookieKit.Office
         public int? EndColumnIndex { get; set; }
 
         /// <summary>
-        /// 获取Excal 列坐标的对应的索引
+        /// 列的配置
         /// </summary>
-        /// <param name="column"></param>
-        /// <returns></returns>
-        public static int? ColumnToIndex(string column)
-        {
-            if (string.IsNullOrEmpty(column)) return null;
-            int index = 0, pos = 0;
-            for (int i = column.Length - 1; i >= 0; i--, pos++)
-            {
-                index += ((column[i] - 64) * (int)(Math.Pow(26, pos)));
-            }
-            return index - 1;
-        }
-
-        /// <summary>
-        /// 根据索引获取Excal 列坐标
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public static string IndexToColumn(int index)
-        {
-            if (index <= 0) return null;
-            string column = "";
-            do
-            {
-                if (column.Length > 0)
-                    index--;
-                column = ((char)(index % 26 + (int)'A')).ToString() + column;
-                index = (int)((index - index % 26) / 26);
-            } while (index > 0);
-            return column;
-        }
+        public ColumnConfig[] ColumnSetting { get; set; }
 
         string _StartColumn;
         string _EndColumn;

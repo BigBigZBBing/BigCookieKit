@@ -10,7 +10,8 @@
     <RootNamespace>BigCookieKit</RootNamespace>
     <Description>工具箱,高性能通信,高性能反射 超级工具库
 特点:高性能,使用方便
-使用详解关注CSDN Big.Cookie博客</Description>
+使用详解关注CSDN Big.Cookie博客
+技术讨论群 QQ群:1600800</Description>
     <Copyright>©2021-2021 Big.Cookie</Copyright>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -18,11 +19,12 @@
     <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <AssemblyVersion>1.0.*</AssemblyVersion>
-    <FileVersion>1.0.2021.0304</FileVersion>
-    <Version>1.0.2021.0304</Version>
-    <PackageReleaseNotes>反射库增加 Byte和Int16类型实体
-去除EF工具箱
-增加ActorModel和ActionBlock使用单元测试</PackageReleaseNotes>
+    <FileVersion>1.0.2021.0320</FileVersion>
+    <Version>1.0.2021.0320</Version>
+    <PackageReleaseNotes>调试原生XML读取方案的优劣性
+读取Excel日期SSF解析修正
+FieldObject增加SetField,GetField,SetProptery,GetProptery函数
+重构网络库在不影响老版累的情况下增加NetworkServer,NetworkClient类库</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|net452'">

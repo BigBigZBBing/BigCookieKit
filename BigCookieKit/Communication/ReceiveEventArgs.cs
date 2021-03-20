@@ -86,10 +86,10 @@ namespace BigCookieKit.Communication
             UserTokenSession UserToken = this.UserToken as UserTokenSession;
             switch (UserToken.Mode)
             {
-                case SocketMode.Server:
+                case ApplyMode.Server:
                     UserToken.SendDisconnect();
                     break;
-                case SocketMode.Client:
+                case ApplyMode.Client:
                     UserToken.Channel.Disconnect(false);
                     break;
             }
@@ -101,10 +101,10 @@ namespace BigCookieKit.Communication
             UserTokenSession UserToken = this.UserToken as UserTokenSession;
             switch (UserToken.Mode)
             {
-                case SocketMode.Server:
+                case ApplyMode.Server:
                     UserToken.SendReconnect();
                     break;
-                case SocketMode.Client:
+                case ApplyMode.Client:
                     UserToken.Channel.Disconnect(true);
                     UserToken.ShakeHandEvent.ReConnect();
                     break;

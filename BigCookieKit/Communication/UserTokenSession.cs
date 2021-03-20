@@ -18,7 +18,7 @@ namespace BigCookieKit.Communication
         /// <summary>
         /// Session类型
         /// </summary>
-        internal SocketMode Mode { get; set; }
+        internal ApplyMode Mode { get; set; }
 
         /// <summary>
         /// 是否在进行连接中
@@ -32,8 +32,8 @@ namespace BigCookieKit.Communication
         {
             get => Mode switch
             {
-                SocketMode.Client => ShakeHandEvent?.ConnectSocket,
-                SocketMode.Server => ShakeHandEvent?.AcceptSocket,
+                ApplyMode.Client => ShakeHandEvent?.ConnectSocket,
+                ApplyMode.Server => ShakeHandEvent?.AcceptSocket,
                 _ => null
             };
         }

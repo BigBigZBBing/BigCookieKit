@@ -79,7 +79,7 @@ namespace BigCookieKit.Communication
             ShakeHandEvent.Completed += AsyncDispatchCenter;
             ShakeHandEvent.ConnectAction = StartConnect;
             Session.ShakeHandEvent = ShakeHandEvent;
-            Session.Mode = SocketMode.Client;
+            Session.Mode = ApplyMode.Client;
             ShakeHandEvent.UserToken = Session;
         }
 

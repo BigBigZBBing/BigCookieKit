@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace BigCookieKit.XML
@@ -14,11 +16,22 @@ namespace BigCookieKit.XML
         internal XmlPacket Parent { get; set; }
         internal PacketState State { get; set; }
         #endregion
-        public bool HasValue { get; set; }
-        public string Name { get; set; }
-        public string Text { get; set; }
-        public XmlAttribute[] Attributes { get; set; }
+        public XmlInfo Info;
         public IList<XmlPacket> Node { get; set; }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public XmlAttribute GetAttr(string key)
+        {
+            var attrs = Info.Attributes;
+            if (attrs.NotExist()) return default;
+            for (int i = 0; i < attrs.Length; i++)
+            {
+                var attr = attrs[i];
+                if (attr.Name.Equals(key, StringComparison.OrdinalIgnoreCase))
+                    return attr;
+            }
+            return default;
+        }
     }
 
     internal enum PacketState
@@ -28,13 +41,23 @@ namespace BigCookieKit.XML
         End
     }
 
+    [StructLayout(LayoutKind.Auto)]
+    public struct XmlInfo
+    {
+        public bool HasValue;
+        public string Name;
+        public string Text;
+        public XmlAttribute[] Attributes;
+    }
+
     /// <summary>
     /// XML标签的属性
     /// </summary>
-    public class XmlAttribute
+    [StructLayout(LayoutKind.Auto)]
+    public struct XmlAttribute
     {
-        public string Name { get; set; }
+        public string Name;
 
-        public string Text { get; set; }
+        public string Text;
     }
 }

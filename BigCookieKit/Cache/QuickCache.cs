@@ -4,13 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BigCookieKit.Communication
+namespace BigCookieKit.Cache
 {
-    public enum SocketMode
+    public class QuickCache
     {
-        //服务端
-        Server,
-        //客户端
-        Client,
     }
 }

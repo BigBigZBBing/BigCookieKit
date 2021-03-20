@@ -1,14 +1,15 @@
 ﻿using System;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Configs;
-using BigCookieKit;
 using System.Data;
 using System.Linq;
 using System.Net.Http;
-using BigCookieKit.Reflect;
 using System.Threading.Tasks.Dataflow;
 using System.Threading.Tasks;
 using System.Threading;
+using BigCookieKit.Reflect;
+using System.Linq.Expressions;
+using System.Text;
 
 namespace UnitConsole
 {
@@ -16,23 +17,14 @@ namespace UnitConsole
     {
         static void Main(string[] args)
         {
+            //BenchmarkRunner.Run<ReflectCompare>();
 
-            ThreadPool.SetMinThreads(100, 100);
-            var block = new ActionBlock<int>(index =>
-            {
-                Console.WriteLine(index);
-                Thread.Sleep(500);
-            }, new ExecutionDataflowBlockOptions()
-            {
-                MaxDegreeOfParallelism = 100,
-            });
-            for (int i = 0; i < 400; i++)
-            {
-                block.Post(i);
-            }
-            block.Complete();
-            block.Completion.Wait();
-            Console.WriteLine("完成");
+            Console.WriteLine($"字节数:[{Encoding.UTF8.GetBytes(Encode.message).Length}]");
+
+            BenchmarkRunner.Run<Encode>();
+
+            //Encode encode = new Encode();
+            //encode.MemoryStreamEncode();
 
             Console.ReadKey();
         }

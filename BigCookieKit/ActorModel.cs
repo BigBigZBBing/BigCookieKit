@@ -55,12 +55,12 @@ namespace BigCookieKit
         /// <summary>
         /// 阻塞等待
         /// </summary>
-        public void Complete(bool IsWait = false)
+        public void Complete(bool iswait = false)
         {
             _batchBlock.Complete();
             _batchBlock.Completion.Wait();
             _actionBlock.Complete();
-            if (IsWait) _actionBlock.Completion.Wait();
+            if (iswait) _actionBlock.Completion.Wait();
         }
 
         /// <summary>

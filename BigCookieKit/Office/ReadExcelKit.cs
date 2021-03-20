@@ -60,10 +60,13 @@ namespace BigCookieKit.Office
         private ExcelConfig current { get; set; }
 
         private Dictionary<string, XDocument> cache { get; set; }
+        private Dictionary<string, XmlPacket> xmlcache { get; set; }
 
         public ReadExcelKit(string filePath)
         {
             cache = new Dictionary<string, XDocument>();
+
+            xmlcache = new Dictionary<string, XmlPacket>();
 
             configs = new List<ExcelConfig>();
 
@@ -265,10 +268,6 @@ namespace BigCookieKit.Office
 
                         foreach (var col in row.Elements())
                         {
-                            //列英文索引
-                            //var position = col.Attribute("r").Value;
-                            //var colEnIndex = CellPosition(position).ToString();
-
                             //列数字索引
                             var colNumIndex = colIndex++;
 
@@ -319,7 +318,7 @@ namespace BigCookieKit.Office
                     {
                         //列英文索引
                         var position = col.Attribute("r").Value;
-                        var colEnIndex = ExcelConfig.ColumnToIndex(string.Join("", CellPosition(position)));
+                        var colEnIndex = ExcelHelper.ColumnToIndex(string.Join("", CellPosition(position)));
 
                         //前面出现其他列 则跳过
                         if (colEnIndex < colIndex) continue;
@@ -377,6 +376,7 @@ namespace BigCookieKit.Office
         /// <param name="index"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [Obsolete("请使用 XmlReaderSet 读取得到更佳的性能")]
         public IEnumerable<object[]> ReadSet()
         {
             DataTable dt = new DataTable();
@@ -518,7 +518,12 @@ namespace BigCookieKit.Office
             {
                 if (ExcelSSF.FixedNumFmt.ContainsKey(numFmt))
                 {
-                    if (GetV(col).TryParse(ExcelSSF.FixedNumFmt[numFmt], out object value))
+                    var type = ExcelSSF.FixedNumFmt[numFmt];
+                    if (type == typeof(DateTime))
+                    {
+                        return fmtParseDateTime(GetV(col));
+                    }
+                    else if (GetV(col).TryParse(type, out object value))
                     {
                         return value;
                     }
@@ -566,10 +571,7 @@ namespace BigCookieKit.Office
                 //判断是否是日期格式
                 if (format.AllOwn("y", "m") || format.AllOwn("m", "d"))
                 {
-                    if (GetV(col).TryParse<DateTime>(out object value))
-                    {
-                        return value;
-                    }
+                    return fmtParseDateTime(GetV(col));
                 }
                 //判断是否是时间格式
                 if (format.AllOwn("h", "m"))
@@ -616,6 +618,136 @@ namespace BigCookieKit.Office
 
         #region XmlReader方案
 
+        /// <summary>
+        /// 读取数据表
+        /// </summary>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public DataTable XmlReadDataTable()
+        {
+            try
+            {
+                DataTable dt = new DataTable();
+
+                current = current ?? configs.FirstOrDefault();
+
+                var sheet = $"sheet{current.SheetIndex}";
+
+                var entry = zip.GetEntry($"xl/worksheets/{sheet}.xml");
+
+                XmlPacket packet = null;
+                if (!cache.ContainsKey(sheet))
+                {
+                    XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
+                    packet = xmlReadKit.Read("sheetData");
+                    xmlcache.Add(sheet, packet);
+                }
+                else packet = xmlcache[sheet];
+
+                bool isBuildColumn = false;
+
+                foreach (var row in packet.Node)
+                {
+                    if (!isBuildColumn)
+                    {
+                        //Excel的行索引
+                        var rowIndex = int.Parse(row.GetAttr("r").Text);
+                        //列数字索引
+                        int colIndex = current.StartColumnIndex ?? 0;
+
+                        //如果没设置列头行 就取开始行的列数
+                        if (current.ColumnNameRow.IsNull() && rowIndex != current.StartRow)
+                            continue;
+
+                        foreach (var col in row.Node)
+                        {
+                            //列英文索引
+                            //var position = col.Attribute("r").Value;
+                            //var colEnIndex = CellPosition(position).ToString();
+
+                            //列数字索引
+                            var colNumIndex = colIndex++;
+
+                            //过滤开始列的索引
+                            if (current.StartColumnIndex > colNumIndex)
+                                continue;
+
+                            //过滤结束列的索引
+                            if (current.EndColumnIndex.NotNull() && current.EndColumnIndex < colNumIndex)
+                                continue;
+
+                            //生成列头
+                            if (current.ColumnNameRow.IsNull())
+                            {
+                                isBuildColumn = true;
+                                dt.Columns.Add(new DataColumn());
+                            }
+                            else if (current.ColumnNameRow.NotNull() && current.ColumnNameRow == rowIndex)
+                            {
+                                isBuildColumn = true;
+                                var type = col.GetAttr("t").Text;
+                                dt.Columns.Add(FormColumn(col, type));
+                            }
+                        }
+                    }
+                    else
+                        break;
+                }
+
+                foreach (var row in packet.Node)
+                {
+                    //Excel的行索引
+                    var rowIndex = int.Parse(row.GetAttr("r").Text);
+
+                    //过滤开始行的索引
+                    if (current.StartRow > rowIndex)
+                        continue;
+
+                    //过滤结束行的索引
+                    if (current.EndRow.NotNull() && current.EndRow < rowIndex)
+                        continue;
+
+                    //列数字索引
+                    int colIndex = current.StartColumnIndex ?? 0;
+
+                    List<object> Set = new List<object>();
+                    foreach (var col in row.Node)
+                    {
+                        //列英文索引
+                        var position = col.GetAttr("r").Text;
+                        var colEnIndex = ExcelHelper.ColumnToIndex(string.Join("", CellPosition(position)));
+
+                        //前面出现其他列 则跳过
+                        if (colEnIndex < colIndex) continue;
+
+                        //列数字索引
+                        var colNumIndex = colIndex++;
+
+                        //过滤开始列的索引
+                        if (current.StartColumnIndex > colNumIndex)
+                            continue;
+
+                        //过滤结束列的索引
+                        if (current.EndColumnIndex.NotNull() && current.EndColumnIndex < colNumIndex)
+                            continue;
+
+                        var type = col.GetAttr("t").Text;
+                        var value = FromValue(col, type);
+
+                        Set.Add(value);
+                    }
+                    dt.Rows.Add(Set.ToArray());
+                }
+
+                return dt;
+            }
+            catch (Exception ex)
+            {
+                ExecuteLog.Add($"[ReadDataTable]:[{ex.Message}]");
+            }
+            return null;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IEnumerable<object[]> XmlReaderSet()
         {
@@ -627,16 +759,21 @@ namespace BigCookieKit.Office
 
             var entry = zip.GetEntry($"xl/worksheets/{sheet}.xml");
 
-            XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
-            XmlPacket packet = xmlReadKit.Read("sheetData");
+            XmlPacket packet = null;
+            if (!cache.ContainsKey(sheet))
+            {
+                XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
+                packet = xmlReadKit.Read("sheetData");
+                xmlcache.Add(sheet, packet);
+            }
+            else packet = xmlcache[sheet];
 
             foreach (var row in packet.Node)
             {
                 var Set = new List<object>();
 
                 //Excel的行索引
-                var rowIndex = int.Parse(row.Attributes
-                    .FirstOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
+                var rowIndex = int.Parse(row.GetAttr("r").Text);
 
                 //过滤开始行的索引
                 if (current.StartRow > rowIndex)
@@ -662,12 +799,36 @@ namespace BigCookieKit.Office
                     if (current.EndColumnIndex.NotNull() && current.EndColumnIndex < colNumIndex)
                         continue;
 
-                    var type = col.Attributes
-                        .FirstOrDefault(x => x.Name.Equals("t", StringComparison.OrdinalIgnoreCase))?.Text;
+                    var type = col.GetAttr("t").Text;
                     Set.Add(FromValue(col, type));
                 }
 
                 yield return Set.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// 获取表头
+        /// </summary>
+        /// <param name="col"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        DataColumn FormColumn(XmlPacket col, string type)
+        {
+            try
+            {
+                var value = FromValue(col, type);
+                if (value == DBNull.Value)
+                {
+                    return new DataColumn();
+                }
+                return new DataColumn(value.ToString(), value.GetType());
+            }
+            catch (Exception ex)
+            {
+                ExecuteLog.Add($"[FormColumn]:[{ex.Message}]");
+                return new DataColumn();
             }
         }
 
@@ -684,8 +845,7 @@ namespace BigCookieKit.Office
                     return GetV(col);
 
                 //索引数值类型格式
-                var style = col.Attributes
-                        .FirstOrDefault(x => x.Name.Equals("s", StringComparison.OrdinalIgnoreCase)).Text;
+                var style = col.GetAttr("s").Text;
                 if (style.NotNull())
                 {
                     var numFmt = cellXfs[int.Parse(style)];
@@ -717,7 +877,12 @@ namespace BigCookieKit.Office
             {
                 if (ExcelSSF.FixedNumFmt.ContainsKey(numFmt))
                 {
-                    if (GetV(col).TryParse(ExcelSSF.FixedNumFmt[numFmt], out object value))
+                    var type = ExcelSSF.FixedNumFmt[numFmt];
+                    if (type == typeof(DateTime))
+                    {
+                        return fmtParseDateTime(GetV(col));
+                    }
+                    else if (GetV(col).TryParse(type, out object value))
                     {
                         return value;
                     }
@@ -759,18 +924,12 @@ namespace BigCookieKit.Office
                 //判断是否是日期格式
                 if (format.AllOwn("y", "m") || format.AllOwn("m", "d"))
                 {
-                    if (GetV(col).TryParse<DateTime>(out object value))
-                    {
-                        return value;
-                    }
+                    return fmtParseDateTime(GetV(col));
                 }
                 //判断是否是时间格式
                 if (format.AllOwn("h", "m"))
                 {
-                    if (GetV(col).TryParse<TimeSpan>(out object value))
-                    {
-                        return value;
-                    }
+                    return fmtParseDateTime(GetV(col));
                 }
             }
             catch (System.Exception ex)
@@ -784,7 +943,22 @@ namespace BigCookieKit.Office
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         string GetV(XmlPacket element)
         {
-            return element.Node.FirstOrDefault(x => x.Name.Equals("v", StringComparison.OrdinalIgnoreCase)).Text;
+            return element.Node.FirstOrDefault(x => x.Info.Name.Equals("v", StringComparison.OrdinalIgnoreCase)).Info.Text;
+        }
+
+        #endregion
+
+        #region SSF处理
+
+        DateTime excelDateTime = DateTime.Parse("1900-01-01");
+        /// <summary>
+        /// Excel的时间处理
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        DateTime fmtParseDateTime(string value)
+        {
+            return excelDateTime.AddDays(double.Parse(value));
         }
 
         #endregion

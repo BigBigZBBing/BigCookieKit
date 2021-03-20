@@ -11,7 +11,7 @@ namespace BigCookieKit.Communication
         /// <summary>
         /// 用户端的唯一编码
         /// </summary>
-        public string UserCode { get; set; } = Guid.NewGuid().ToString("D");
+        public string UserCode { get; set; }
 
         /// <summary>
         /// 用户端的地址

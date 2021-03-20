@@ -12,6 +12,7 @@ namespace BigCookieKit.Office
     /// <summary>
     /// NPOI工具箱
     /// </summary>
+    [Obsolete("推荐使用 ReadExcelKit Npoi读取性能太低")]
     public class NpoiKit
     {
         /// <summary>
@@ -199,7 +200,7 @@ namespace BigCookieKit.Office
                         var dc = new DataColumn();
                         dt.Columns.Add(dc);
                         cellDic.Add(i, dc.ColumnName);
-                        ErrorLog.Add($"生成列发生错误:第{ExcelConfig.IndexToColumn(i)}列,错误信息:{ex.Message}");
+                        ErrorLog.Add($"生成列发生错误:第{ExcelHelper.IndexToColumn(i)}列,错误信息:{ex.Message}");
                     }
                 }
             }
@@ -244,7 +245,7 @@ namespace BigCookieKit.Office
                     catch (System.Exception ex)
                     {
                         dr[cellDic[t]] = DBNull.Value;
-                        ErrorLog.Add($"列赋值发生错误:第{i}行 第{ExcelConfig.IndexToColumn(t)}列,错误信息:{ex.Message}");
+                        ErrorLog.Add($"列赋值发生错误:第{i}行 第{ExcelHelper.IndexToColumn(t)}列,错误信息:{ex.Message}");
                     }
                 }
                 dt.Rows.Add(dr);

@@ -9,7 +9,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
+using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
 
@@ -204,9 +206,9 @@ namespace NUnitBigCookieKit
                 config.SheetIndex = 1;
                 config.ColumnNameRow = 1;
                 config.StartRow = 2;
-                config.EndRow = 700;
-                config.StartColumn = "A";
-                config.EndColumn = "B";
+                //config.EndRow = 700;
+                //config.StartColumn = "A";
+                //config.EndColumn = "B";
             });
             DataTable dt = excelKit.ReadDataTable();
         }
@@ -214,7 +216,7 @@ namespace NUnitBigCookieKit
         [Test]
         public void ExcelDataSetKitUnit()
         {
-            string path = @"C:\Users\zbb58\Desktop\test3.xlsx";
+            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
@@ -360,6 +362,21 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
+        public void XmlReadDataTableKitUnit()
+        {
+            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
+            ReadExcelKit excelKit = new ReadExcelKit(path);
+            excelKit.AddConfig(config =>
+            {
+                config.SheetIndex = 1;
+                config.ColumnNameRow = 1;
+                config.StartRow = 2;
+                config.EndRow = 700;
+            });
+            DataTable dt = excelKit.XmlReadDataTable();
+        }
+
+        [Test]
         public void ActorModelUnit()
         {
             var batch = new ActorModel<int>(100, index =>
@@ -398,6 +415,7 @@ namespace NUnitBigCookieKit
             block.Completion.Wait();
             Console.WriteLine("Íê³É");
         }
+
     }
 
     public struct TestStruct
