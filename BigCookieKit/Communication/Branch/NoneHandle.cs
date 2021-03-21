@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BigCookieKit.Communication
+{
+    class NoneHandle : Handle
+    {
+        public override void Encode(byte[] bytes)
+        {
+
+        }
+
+        public override void Decode(Action<byte[]> packet)
+        {
+            packet(MemoryBuffer.ToArray());
+        }
+    }
+}

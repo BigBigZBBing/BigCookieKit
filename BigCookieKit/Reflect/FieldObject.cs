@@ -68,6 +68,7 @@ namespace BigCookieKit.Reflect
         {
             FieldInfo field = asidentity.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             LocalBuilder local = DeclareLocal(field.FieldType);
+            Output();
             Emit(OpCodes.Ldfld, field);
             Emit(OpCodes.Stloc_S, local);
             return local;
@@ -96,6 +97,7 @@ namespace BigCookieKit.Reflect
         {
             PropertyInfo prop = asidentity.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
             LocalBuilder local = DeclareLocal(prop.PropertyType);
+            Output();
             Emit(OpCodes.Callvirt, prop.GetGetMethod());
             Emit(OpCodes.Stloc_S, local);
             return local;

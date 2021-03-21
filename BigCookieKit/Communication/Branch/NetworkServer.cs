@@ -29,7 +29,6 @@ namespace BigCookieKit.Communication
 
         public Action<Session> OnExit { get; set; }
 
-        internal XSocket Server { get; set; }
 
         internal ConcurrentQueue<Session> Pool = new ConcurrentQueue<Session>();
 
@@ -40,52 +39,53 @@ namespace BigCookieKit.Communication
                 case NetworkProtocol.Tcp:
                 case NetworkProtocol.Http1:
                 case NetworkProtocol.Http2:
-                    Server = new XSocket(AddressFamily, SocketType, ProtocolType.Tcp);
+                    CurrSocket = new XSocket(AddressFamily, SocketType, ProtocolType.Tcp);
                     break;
                 case NetworkProtocol.Udp:
-                    Server = new XSocket(AddressFamily, SocketType, ProtocolType.Udp);
+                    CurrSocket = new XSocket(AddressFamily, SocketType, ProtocolType.Udp);
                     break;
             }
-            Server.Mode = ApplyMode.Server;
-            Server.Bind(GetAddress());
-            Server.Listen(MaxConnect);
 
-            ThreadPool.QueueUserWorkItem(e => Open());
+            CurrSocket.Mode = ApplyMode.Server;
+            CurrSocket.Bind(GetAddress());
+            CurrSocket.Listen(MaxConnect);
+
+            ((IServer)this).Open();
         }
 
-        public void Open()
+        void IServer.Open()
         {
             Session session = Pool.TryDequeue(out Session oldSession)
                 ? oldSession
-                : new Session(DispatchCenter)
+                : new Session(((IServer)this).DispatchCenter)
                 {
-                    Server = Server,
-                    Mode = Server.Mode,
+                    Server = CurrSocket,
+                    Mode = CurrSocket.Mode,
                     Encoder = Encoder,
-                    ReceiveHandle = Handle.Define(BufferPool.Rent(BufferSize), DispatchCenter) ?? Protocol switch
+                    ReceiveHandle = Handle?.New().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter) ?? Protocol switch
                     {
-                        NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), DispatchCenter),
+                        NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         NetworkProtocol.Udp => throw new NotImplementedException(),
                         NetworkProtocol.Http1 => throw new NotImplementedException(),
                         NetworkProtocol.Http2 => throw new NotImplementedException(),
                         _ => throw new NotImplementedException(),
                     },
-                    SendHandle = Handle.Define(DispatchCenter) ?? Protocol switch
+                    SendHandle = Handle?.New().Define(((IServer)this).DispatchCenter) ?? Protocol switch
                     {
-                        NetworkProtocol.Tcp => new TcpHandle().Define(DispatchCenter),
+                        NetworkProtocol.Tcp => new TcpHandle().Define(((IServer)this).DispatchCenter),
                         NetworkProtocol.Udp => throw new NotImplementedException(),
                         NetworkProtocol.Http1 => throw new NotImplementedException(),
                         NetworkProtocol.Http2 => throw new NotImplementedException(),
                         _ => throw new NotImplementedException(),
                     },
                 };
-            if (!Server.AcceptAsync(session))
+            if (!CurrSocket.AcceptAsync(session))
             {
-                ProcessAccept(session);
+                ((IServer)this).ProcessAccept(session);
             }
         }
 
-        public void ProcessAccept(SocketAsyncEventArgs e)
+        void IServer.ProcessAccept(SocketAsyncEventArgs e)
         {
             Session session = (Session)e.UserToken;
             if (e.LastOperation == SocketAsyncOperation.Accept
@@ -102,28 +102,33 @@ namespace BigCookieKit.Communication
                 OnConnect?.Invoke(session);
 
                 if (!session.m_Socket
-                    .ReceiveAsync(session.ReceiveHandle))
-                    ProcessReceive(session.ReceiveHandle);
+                        .ReceiveAsync(session.ReceiveHandle))
+                    ((IServer)this).ProcessReceive(session.ReceiveHandle);
             }
             else
             {
                 Pool.Enqueue(session);
             }
-            ThreadPool.QueueUserWorkItem(e => Open());
+            ThreadPool.QueueUserWorkItem(e => ((IServer)this).Open());
         }
 
-        public void ProcessReceive(SocketAsyncEventArgs e)
+        void IServer.ProcessReceive(SocketAsyncEventArgs e)
         {
             Session session = (Session)e.UserToken;
             if (e.SocketError == SocketError.Success && e.BytesTransferred > 0)
             {
                 session.ReceiveHandle
                     .Decode(packet =>
-                    OnReceive?.Invoke(session, packet));
+                    {
+                        session.ReceiveHandle.PipeStart(delegate
+                        {
+                            OnReceive?.Invoke(session, packet);
+                        });
+                    });
 
                 if (!session.m_Socket
-                    .ReceiveAsync(e))
-                    ProcessReceive(e);
+                        .ReceiveAsync(e))
+                    ((IServer)this).ProcessReceive(e);
             }
             else
             {
@@ -132,22 +137,22 @@ namespace BigCookieKit.Communication
             }
         }
 
-        public void ProcessSend(SocketAsyncEventArgs e)
+        void IServer.ProcessSend(SocketAsyncEventArgs e)
         {
         }
 
-        public void DispatchCenter(object sender, SocketAsyncEventArgs e)
+        void IServer.DispatchCenter(object sender, SocketAsyncEventArgs e)
         {
             switch (e.LastOperation)
             {
                 case SocketAsyncOperation.Accept:
-                    ProcessAccept(e);
+                    ((IServer)this).ProcessAccept(e);
                     break;
                 case SocketAsyncOperation.Receive:
-                    ProcessReceive(e);
+                    ((IServer)this).ProcessReceive(e);
                     break;
                 case SocketAsyncOperation.Send:
-                    ProcessSend(e);
+                    ((IServer)this).ProcessSend(e);
                     break;
             }
         }

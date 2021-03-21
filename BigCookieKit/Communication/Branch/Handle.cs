@@ -8,26 +8,36 @@ using System.Threading.Tasks;
 
 namespace BigCookieKit.Communication
 {
-    public class Handle : XSocketAsyncEventArgs
+    public abstract class Handle : XSocketAsyncEventArgs
     {
         public Handle()
         {
         }
 
         private byte[] _buffer;
+
         private EventHandler<SocketAsyncEventArgs> _callback;
+
         internal byte[] buffer { get { return _buffer; } set { Communication.Buffer.SetBuffer(this, value); } }
 
         internal EventHandler<SocketAsyncEventArgs> callback { get { return _callback; } set { Completed += value; } }
 
-        public virtual void Encode(byte[] bytes)
+        internal Pipeline pipeline = new Pipeline();
+
+        internal Handle New()
         {
-            throw new NotImplementedException();
+            Handle handle = (Handle)Activator.CreateInstance(GetType());
+            handle.pipeline = pipeline;
+            return handle;
         }
 
-        public virtual void Decode(Action<byte[]> packet)
+        public void PipeStart(Action callback)
         {
-            throw new NotImplementedException();
+            pipeline.Start(callback);
         }
+
+        public abstract void Encode(byte[] bytes);
+
+        public abstract void Decode(Action<byte[]> packet);
     }
 }

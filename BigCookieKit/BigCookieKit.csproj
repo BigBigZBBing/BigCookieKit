@@ -21,10 +21,10 @@
     <AssemblyVersion>1.0.*</AssemblyVersion>
     <FileVersion>1.0.2021.0320</FileVersion>
     <Version>1.0.2021.0320</Version>
-    <PackageReleaseNotes>调试原生XML读取方案的优劣性
-读取Excel日期SSF解析修正
-FieldObject增加SetField,GetField,SetProptery,GetProptery函数
-重构网络库在不影响老版累的情况下增加NetworkServer,NetworkClient类库</PackageReleaseNotes>
+    <PackageReleaseNotes>增加Network库IPipe管道接口 可自定义实现管道模式
+修复GetPropterty,GetField报错
+修复Network里Session发送出现重用问题
+修复Network里Client Callback无法收到的问题</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|net452'">

@@ -9,8 +9,6 @@ namespace BigCookieKit.Communication
 {
     public class TcpHandle : Handle
     {
-        public TcpHandle() { }
-
         public override void Encode(byte[] bytes)
         {
             List<byte> buffer = new List<byte>();
@@ -37,9 +35,14 @@ namespace BigCookieKit.Communication
         {
             Session session = (Session)UserToken;
         loop:
-            if (session.ReceiveCapacity == 0)
+            if (session.ReceiveType == 0)
             {
-                switch (MemoryBuffer.Span[session.ReadOffset++])
+                session.ReceiveType = MemoryBuffer.Span[session.ReadOffset++];
+            }
+
+            if (session.ReceiveCapacity == 0 && session.ReadOffset < MemoryBuffer.Length)
+            {
+                switch (session.ReceiveType)
                 {
                     case 1: session.ReceiveCapacity = MemoryBuffer.Slice(session.ReadOffset, 1).Span[0]; session.ReadOffset += 1; break;
                     case 2: session.ReceiveCapacity = Kit.BitToInt16(MemoryBuffer.Slice(session.ReadOffset, 2).ToArray()); session.ReadOffset += 2; break;
@@ -65,6 +68,7 @@ namespace BigCookieKit.Communication
             if (session.ReceiveCapacity == session.BufferCache.Count)
             {
                 packet.Invoke(session.BufferCache.ToArray());
+                session.ReceiveType = 0;
                 session.ReceiveCapacity = 0;
                 session.BufferCache.Clear();
             }

@@ -17,8 +17,9 @@ namespace TcpClientExmaple
                 Random random = new Random();
                 while (true)
                 {
-                    //byte[] message = Encoding.UTF8.GetBytes("测试数据" + random.Next(short.MaxValue));
-                    user.SendMessage(Console.ReadLine());
+                    byte[] message = Encoding.UTF8.GetBytes("测试数据" + random.Next(short.MaxValue));
+                    //user.SendMessage(Console.ReadLine());
+                    user.SendMessage(message);
                 }
             };
 

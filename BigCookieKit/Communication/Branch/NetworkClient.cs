@@ -14,21 +14,18 @@ namespace BigCookieKit.Communication
         public NetworkClient(string Host, int Port) : base(Host, Port)
         {
         }
-
-        internal XSocket Server { get; set; }
-
-        public void DispatchCenter(object sender, SocketAsyncEventArgs e)
+        void ICilent.DispatchCenter(object sender, SocketAsyncEventArgs e)
         {
             switch (e.LastOperation)
             {
                 case SocketAsyncOperation.Connect:
-                    ProcessConnect(e);
+                    ((ICilent)this).ProcessConnect(e);
                     break;
                 case SocketAsyncOperation.Receive:
-                    ProcessReceive(e);
+                    ((ICilent)this).ProcessReceive(e);
                     break;
                 case SocketAsyncOperation.Send:
-                    ProcessSend(e);
+                    ((ICilent)this).ProcessSend(e);
                     break;
             }
         }
@@ -40,49 +37,51 @@ namespace BigCookieKit.Communication
                 case NetworkProtocol.Tcp:
                 case NetworkProtocol.Http1:
                 case NetworkProtocol.Http2:
-                    Server = new XSocket(AddressFamily, SocketType, ProtocolType.Tcp);
+                    CurrSocket = new XSocket(AddressFamily, SocketType, ProtocolType.Tcp);
                     break;
                 case NetworkProtocol.Udp:
-                    Server = new XSocket(AddressFamily, SocketType, ProtocolType.Udp);
+                    CurrSocket = new XSocket(AddressFamily, SocketType, ProtocolType.Udp);
                     break;
             }
-            Server.Mode = ApplyMode.Client;
-            ThreadPool.QueueUserWorkItem(e => Open());
+            CurrSocket.Mode = ApplyMode.Client;
+            ((ICilent)this).Open();
         }
 
-        public void Open()
+        void ICilent.Open()
         {
-            Session session = new Session(DispatchCenter)
+            Session session = new Session(((ICilent)this).DispatchCenter)
             {
-                Server = Server,
-                Mode = Server.Mode,
+                Server = CurrSocket,
+                Mode = CurrSocket.Mode,
                 Encoder = Encoder,
                 RemoteEndPoint = GetAddress(),
-                ReceiveHandle = Handle.Define(BufferPool.Rent(BufferSize), DispatchCenter) ?? Protocol switch
+                ReceiveHandle = Handle?.New().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter) ?? Protocol switch
                 {
-                    NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), DispatchCenter),
+                    NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     NetworkProtocol.Udp => throw new NotImplementedException(),
                     NetworkProtocol.Http1 => throw new NotImplementedException(),
                     NetworkProtocol.Http2 => throw new NotImplementedException(),
+                    NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     _ => throw new NotImplementedException(),
                 },
-                SendHandle = Handle.Define(DispatchCenter) ?? Protocol switch
+                SendHandle = Handle?.New().Define(((ICilent)this).DispatchCenter) ?? Protocol switch
                 {
-                    NetworkProtocol.Tcp => new TcpHandle().Define(DispatchCenter),
+                    NetworkProtocol.Tcp => new TcpHandle().Define(((ICilent)this).DispatchCenter),
                     NetworkProtocol.Udp => throw new NotImplementedException(),
                     NetworkProtocol.Http1 => throw new NotImplementedException(),
                     NetworkProtocol.Http2 => throw new NotImplementedException(),
+                    NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     _ => throw new NotImplementedException(),
                 },
             };
 
-            if (!Server.ConnectAsync(session))
+            if (!CurrSocket.ConnectAsync(session))
             {
-                ProcessConnect(session);
+                ((ICilent)this).ProcessConnect(session);
             }
         }
 
-        public void ProcessConnect(SocketAsyncEventArgs e)
+        void ICilent.ProcessConnect(SocketAsyncEventArgs e)
         {
             Session session = (Session)e.UserToken;
             if (session.SocketError == SocketError.Success)
@@ -95,11 +94,16 @@ namespace BigCookieKit.Communication
                 session.OperationTime = DateTime.Now;
                 session.ReceiveHandle.UserToken = session;
 
-                OnConnect?.Invoke(session);
+                ThreadPool.QueueUserWorkItem(e => OnConnect?.Invoke(session));
+
+                if (Certificate.NotNull())
+                {
+                    session.SendMessage(Certificate.GetRawCertData());
+                }
 
                 if (!session.m_Socket
-                    .ReceiveAsync(session.ReceiveHandle))
-                    ProcessReceive(session.ReceiveHandle);
+                        .ReceiveAsync(session.ReceiveHandle))
+                    ((ICilent)this).ProcessReceive(session.ReceiveHandle);
             }
             else
             {
@@ -107,22 +111,27 @@ namespace BigCookieKit.Communication
             }
         }
 
-        public void ProcessReceive(SocketAsyncEventArgs e)
+        void ICilent.ProcessReceive(SocketAsyncEventArgs e)
         {
             Session session = (Session)e.UserToken;
             if (e.SocketError == SocketError.Success && e.BytesTransferred > 0)
             {
                 session.ReceiveHandle
-                    .Decode(packet =>
-                    OnCallBack?.Invoke(session, packet));
+                .Decode(packet =>
+                {
+                    session.ReceiveHandle.PipeStart(delegate
+                    {
+                        OnCallBack?.Invoke(session, packet);
+                    });
+                });
 
                 if (!session.m_Socket
-                    .ReceiveAsync(e))
-                    ProcessReceive(e);
+                        .ReceiveAsync(e))
+                    ((ICilent)this).ProcessReceive(e);
             }
         }
 
-        public void ProcessSend(SocketAsyncEventArgs e)
+        void ICilent.ProcessSend(SocketAsyncEventArgs e)
         {
         }
 

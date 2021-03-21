@@ -10,23 +10,26 @@ using System.Threading;
 using BigCookieKit.Reflect;
 using System.Linq.Expressions;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Net.Sockets;
 
 namespace UnitConsole
 {
     class Program
     {
+        static bool isTrue { get; set; }
+
         static void Main(string[] args)
         {
             //BenchmarkRunner.Run<ReflectCompare>();
 
-            Console.WriteLine($"字节数:[{Encoding.UTF8.GetBytes(Encode.message).Length}]");
+            //Console.WriteLine($"字节数:[{Encoding.UTF8.GetBytes(Encode.message).Length}]");
 
-            BenchmarkRunner.Run<Encode>();
+            //BenchmarkRunner.Run<Encode>();
 
             //Encode encode = new Encode();
             //encode.MemoryStreamEncode();
 
-            Console.ReadKey();
         }
     }
 }

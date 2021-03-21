@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BigCookieKit.Communication
 {
-    internal static class HandleTools
+    public static class HandleTools
     {
         internal static Handle Define(this Handle handle, EventHandler<SocketAsyncEventArgs> _event)
         {
@@ -26,6 +26,18 @@ namespace BigCookieKit.Communication
                 handle.callback = _event;
             }
             return handle;
+        }
+
+        public static void AddPipe<T>(this Handle handle) where T : IPipe
+        {
+            var midType = typeof(T);
+            handle.pipeline.Add((IPipe)Activator.CreateInstance(midType));
+        }
+
+        public static void AddPipe(this Handle handle, Type midType)
+        {
+            if (!(midType.BaseType is IPipe)) throw new ArrayTypeMismatchException();
+            handle.pipeline.Add((IPipe)Activator.CreateInstance(midType));
         }
     }
 }

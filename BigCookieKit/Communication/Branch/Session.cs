@@ -1,7 +1,9 @@
-﻿using System;
+﻿using BigCookieKit.Reflect;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,11 +28,28 @@ namespace BigCookieKit.Communication
 
         public Handle SendHandle { get; set; }
 
-        internal List<byte> BufferCache { get; set; }
+        internal List<byte> BufferCache;
 
-        internal int ReceiveCapacity { get; set; }
+        internal int ReceiveType;
 
-        internal int ReadOffset { get; set; }
+        internal int ReceiveCapacity;
+
+        internal int ReadOffset;
+
+        internal static Func<SocketAsyncEventArgs, bool> EnsureFree =
+            SmartBuilder.DynamicMethod<Func<SocketAsyncEventArgs, bool>>("EnsureFree", il =>
+            {
+                var saea = il.NewObject(il.ArgumentRef<SocketAsyncEventArgs>(0));
+                var isFree = il.NewInt32(saea.GetField(
+#if NET452
+            "m_Operating"
+#else
+            "_operating"
+#endif
+                    )) == 0;
+                isFree.Output();
+                il.Return();
+            });
 
         public Session()
         {
@@ -51,12 +70,10 @@ namespace BigCookieKit.Communication
 
         public bool SendMessage(byte[] message)
         {
-            lock (SendHandle)
-            {
-                SendHandle.Encode(message);
-                m_Socket.SendAsync(SendHandle);
-                return ValidationState();
-            }
+            SpinLock();
+            SendHandle.Encode(message);
+            m_Socket.SendAsync(SendHandle);
+            return ValidationState();
         }
 
         public void SendFile(string fileName)
@@ -76,6 +93,13 @@ namespace BigCookieKit.Communication
                     Console.WriteLine($"SendValidation:[{SendHandle.SocketError.ToString()}]");
                     return false;
             }
+        }
+
+        private void SpinLock()
+        {
+            SpinWait sw = default;
+            while (!EnsureFree(SendHandle))
+                sw.SpinOnce();
         }
     }
 }

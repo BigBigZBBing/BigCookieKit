@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace BigCookieKit.Communication
 {
-    public enum NetworkProtocol
+    public interface IPipe
     {
-        Tcp,
-        Udp,
-        None,
-        Http1,
-        Http2
+        Task InvokeAsync(Action context);
     }
 }
