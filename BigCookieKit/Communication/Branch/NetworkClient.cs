@@ -87,7 +87,7 @@ namespace BigCookieKit.Communication
             if (session.SocketError == SocketError.Success)
             {
                 session.UserCode = Guid.NewGuid().ToString("D");
-                var EndPoint = (IPEndPoint)session.m_Socket.RemoteEndPoint;
+                var EndPoint = (IPEndPoint)session.Client.RemoteEndPoint;
                 var AllHost = Dns.GetHostEntry(EndPoint.Address).AddressList;
                 session.UserHost = string.Join("|", AllHost.Select(x => x.ToString()).ToArray());
                 session.UserPort = EndPoint.Port;
@@ -101,7 +101,7 @@ namespace BigCookieKit.Communication
                     session.SendMessage(Certificate.GetRawCertData());
                 }
 
-                if (!session.m_Socket
+                if (!session.Client
                         .ReceiveAsync(session.ReceiveHandle))
                     ((ICilent)this).ProcessReceive(session.ReceiveHandle);
             }
@@ -125,7 +125,7 @@ namespace BigCookieKit.Communication
                     });
                 });
 
-                if (!session.m_Socket
+                if (!session.Client
                         .ReceiveAsync(e))
                     ((ICilent)this).ProcessReceive(e);
             }

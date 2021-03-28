@@ -28,7 +28,9 @@ namespace BigCookieKit.Communication
 
         public Handle SendHandle { get; set; }
 
-        internal List<byte> BufferCache;
+        internal EofStream BufferBody;
+
+        internal EofStream BufferHead;
 
         internal int ReceiveType;
 
@@ -54,7 +56,8 @@ namespace BigCookieKit.Communication
         public Session()
         {
             this.UserToken = this;
-            BufferCache = new List<byte>();
+            BufferBody = new EofStream();
+            BufferHead = new EofStream();
         }
 
         public Session(EventHandler<SocketAsyncEventArgs> _event) : this()
@@ -70,36 +73,39 @@ namespace BigCookieKit.Communication
 
         public bool SendMessage(byte[] message)
         {
-            SpinLock();
+            if (!EnsureSafe()) return false;
             SendHandle.Encode(message);
-            m_Socket.SendAsync(SendHandle);
+            Client.SendAsync(SendHandle);
             return ValidationState();
         }
 
-        public void SendFile(string fileName)
+        public bool Disconnect()
         {
-            m_Socket.SendFile(fileName);
+            Client.Shutdown(SocketShutdown.Both);
+            return true;
+            //if (!EnsureSafe()) return false;
+            //Communication.Buffer.SetBuffer(SendHandle, new byte[] { 255, 0 });
+            //Client.SendAsync(SendHandle);
+            //return ValidationState();
         }
 
         private bool ValidationState()
         {
             switch (SendHandle.SocketError)
             {
-                case SocketError.Success: return true;
-                case SocketError.ConnectionReset:
-                    Console.WriteLine("目标点断开连接！");
-                    return false;
-                default:
-                    Console.WriteLine($"SendValidation:[{SendHandle.SocketError.ToString()}]");
-                    return false;
+                case SocketError.Success:
+                    return true;
+                default: return false;
             }
         }
 
-        private void SpinLock()
+        private bool EnsureSafe()
         {
+            if (!Client.Connected) return false;
             SpinWait sw = default;
             while (!EnsureFree(SendHandle))
                 sw.SpinOnce();
+            return true;
         }
     }
 }

@@ -66,8 +66,7 @@ namespace BigCookieKit.Communication
                     {
                         NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         NetworkProtocol.Udp => throw new NotImplementedException(),
-                        NetworkProtocol.Http1 => throw new NotImplementedException(),
-                        NetworkProtocol.Http2 => throw new NotImplementedException(),
+                        NetworkProtocol.Http1 | NetworkProtocol.Http2 => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         _ => throw new NotImplementedException(),
                     },
                     SendHandle = Handle?.New().Define(((IServer)this).DispatchCenter) ?? Protocol switch
@@ -92,7 +91,7 @@ namespace BigCookieKit.Communication
                 && e.SocketError == SocketError.Success)
             {
                 session.UserCode = Guid.NewGuid().ToString("D");
-                var EndPoint = (IPEndPoint)session.m_Socket.RemoteEndPoint;
+                var EndPoint = (IPEndPoint)session.Client.RemoteEndPoint;
                 var AllHost = Dns.GetHostEntry(EndPoint.Address).AddressList;
                 session.UserHost = string.Join("|", AllHost.Select(x => x.ToString()).ToArray());
                 session.UserPort = EndPoint.Port;
@@ -101,7 +100,7 @@ namespace BigCookieKit.Communication
 
                 OnConnect?.Invoke(session);
 
-                if (!session.m_Socket
+                if (!session.Client
                         .ReceiveAsync(session.ReceiveHandle))
                     ((IServer)this).ProcessReceive(session.ReceiveHandle);
             }
@@ -126,7 +125,7 @@ namespace BigCookieKit.Communication
                         });
                     });
 
-                if (!session.m_Socket
+                if (!session.Client
                         .ReceiveAsync(e))
                     ((IServer)this).ProcessReceive(e);
             }

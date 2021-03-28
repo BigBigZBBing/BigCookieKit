@@ -1,5 +1,6 @@
 ﻿using BigCookieKit.Communication;
 using System;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,8 +19,10 @@ namespace TcpServerExmaple
 
             tcpServer.OnReceive = (user, packet) =>
             {
-                Console.WriteLine($"[{user.UserHost}:{user.UserPort}]:{Encoding.UTF8.GetString(packet)}");
+                string res = Encoding.UTF8.GetString(packet);
+                Console.WriteLine($"[{user.UserHost}:{user.UserPort}]:{res}");
                 user.SendMessage("收到~");
+                HttpListener httpListener = new HttpListener();
             };
 
             tcpServer.OnExit = user =>
@@ -27,8 +30,8 @@ namespace TcpServerExmaple
                 Console.WriteLine($"{user.UserHost}:{user.UserPort}离开~");
             };
 
-            tcpServer.Handle = new TcpHandle();
-            tcpServer.Handle.AddPipe<TestPipe>();
+            tcpServer.Handle = new EasyHandle();
+            //tcpServer.Handle.AddPipe<TestPipe>();
 
             tcpServer.Start();
 

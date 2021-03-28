@@ -2,16 +2,20 @@
 
   <PropertyGroup>
     <Deterministic>False</Deterministic>
-    <TargetFrameworks>net452;netcoreapp2.1;netcoreapp3.1;net5</TargetFrameworks>
+    <TargetFrameworks>
+      <!--net452;netcoreapp2.1;-->netcoreapp3.1;net5
+    </TargetFrameworks>
     <AssemblyName>BigCookieKit</AssemblyName>
     <PackageId>BigCookieKit</PackageId>
     <Authors>BigCookieKit</Authors>
     <Product>BigCookieKit</Product>
     <RootNamespace>BigCookieKit</RootNamespace>
-    <Description>工具箱,高性能通信,高性能反射 超级工具库
-特点:高性能,使用方便
-使用详解关注CSDN Big.Cookie博客
-技术讨论群 QQ群:1600800</Description>
+    <Description>
+      工具箱,高性能通信,高性能反射 超级工具库
+      特点:高性能,使用方便
+      使用详解关注CSDN Big.Cookie博客
+      技术讨论群 QQ群:1600800
+    </Description>
     <Copyright>©2021-2021 Big.Cookie</Copyright>
     <PackageLicenseFile></PackageLicenseFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -19,12 +23,10 @@
     <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <AssemblyVersion>1.0.*</AssemblyVersion>
-    <FileVersion>1.0.2021.0320</FileVersion>
-    <Version>1.0.2021.0320</Version>
-    <PackageReleaseNotes>增加Network库IPipe管道接口 可自定义实现管道模式
-修复GetPropterty,GetField报错
-修复Network里Session发送出现重用问题
-修复Network里Client Callback无法收到的问题</PackageReleaseNotes>
+    <FileVersion>1.0.2021.0321</FileVersion>
+    <Version>1.0.2021.0321</Version>
+    <PackageReleaseNotes>修复Network类TcpHandle解包的Bug 优化性能IO在1K以内IO性能极限化
+增加EasyHandle降低解决粘包的复杂度，增加IO性能</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|net452'">

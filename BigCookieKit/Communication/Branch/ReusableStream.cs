@@ -13,6 +13,8 @@ namespace BigCookieKit.Communication
 {
     public class ReusableStream : MemoryStream
     {
+        public int Count { get => (int)Length; }
+
         private Action<MemoryStream> _flush;
 
         public override void Flush()

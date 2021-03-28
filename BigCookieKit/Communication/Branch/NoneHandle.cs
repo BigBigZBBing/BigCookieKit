@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BigCookieKit.Communication
 {
-    class NoneHandle : Handle
+    public class NoneHandle : Handle
     {
         public override void Encode(byte[] bytes)
         {
-
+            Communication.Buffer.SetBuffer(this, bytes);
         }
 
         public override void Decode(Action<byte[]> packet)

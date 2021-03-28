@@ -416,6 +416,14 @@ namespace NUnitBigCookieKit
             Console.WriteLine("Íê³É");
         }
 
+        [Test]
+        public void FastIndexOfUnit()
+        {
+            int[] t1 = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 };
+            int[] t2 = new int[] { 8, 9, 10, 11 };
+
+            var index = Kit.FastIndexOf(t1, t2);
+        }
     }
 
     public struct TestStruct

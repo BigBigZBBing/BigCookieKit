@@ -14,7 +14,7 @@ namespace BigCookieKit.Communication
 #endif
         internal ApplyMode Mode { get; set; }
 
-        internal Socket m_Socket
+        public Socket Client
         {
             get => Mode switch
             {
