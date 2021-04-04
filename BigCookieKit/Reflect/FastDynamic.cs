@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -34,7 +33,8 @@ namespace BigCookieKit.Reflect
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public String ToJson()
         {
-            return JsonConvert.SerializeObject(this.Instance);
+            //return JsonConvert.SerializeObject(this.Instance);
+            return "";
         }
 
 

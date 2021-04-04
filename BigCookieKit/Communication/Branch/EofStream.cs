@@ -76,6 +76,14 @@ namespace BigCookieKit.Communication
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AddRange(ReadOnlyMemory<byte> items)
+        {
+            EnsureCapacity(items.Length);
+            items.CopyTo(m_bytes.Slice(m_offset));
+            m_offset += items.Length;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             m_offset = 0;

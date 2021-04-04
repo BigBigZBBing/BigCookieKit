@@ -9,9 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit", "BigCookieKi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NUnitBigCookieKit", "NUnitBigCookieKit\NUnitBigCookieKit.csproj", "{89226298-7E6F-4188-8625-E656FAF7C82D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpClientExmaple", "TcpClientExmaple\TcpClientExmaple.csproj", "{CB204554-CEB9-41B0-95A8-28B971CBCF85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpClientExmaple", "TcpClientExmaple\TcpClientExmaple.csproj", "{CB204554-CEB9-41B0-95A8-28B971CBCF85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TcpServerExmaple", "TcpServerExmaple\TcpServerExmaple.csproj", "{556A957C-A4A5-4A85-AB0C-D97C6F3F9E3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerExmaple", "TcpServerExmaple\TcpServerExmaple.csproj", "{556A957C-A4A5-4A85-AB0C-D97C6F3F9E3B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieEntityFrameworkKit.SqlServer", "BigCookieEntityFrameworkKit.SqlServer\BigCookieEntityFrameworkKit.SqlServer.csproj", "{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCookieEntityFrameworkKit.Mysql", "BigCookieEntityFrameworkKit.Mysql\BigCookieEntityFrameworkKit.Mysql.csproj", "{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCookieSequelize", "BigCookieSequelize\BigCookieSequelize.csproj", "{B4F21A00-7D87-4F13-830B-4AEE7C08028B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +45,18 @@ Global
 		{556A957C-A4A5-4A85-AB0C-D97C6F3F9E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{556A957C-A4A5-4A85-AB0C-D97C6F3F9E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{556A957C-A4A5-4A85-AB0C-D97C6F3F9E3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4F21A00-7D87-4F13-830B-4AEE7C08028B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4F21A00-7D87-4F13-830B-4AEE7C08028B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4F21A00-7D87-4F13-830B-4AEE7C08028B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4F21A00-7D87-4F13-830B-4AEE7C08028B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

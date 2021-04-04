@@ -1,8 +1,7 @@
-﻿#if !NET45
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +9,7 @@ using System.Data.Common;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace BigCookieKit
+namespace BigCookieEntityFrameworkKit.Mysql
 {
     public static class EntityFrameworkKit
     {
@@ -19,8 +18,7 @@ namespace BigCookieKit
         /// <code/>Author: zhangbingbin
         /// <code/>CreateData: 2020-11-13
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DataTable ReadDataTable(this DbContext context, string sql, params SqlParameter[] parameters)
+        public static DataTable ReadDataTable(this DbContext context, string sql, params DbParameter[] parameters)
         {
             return SqlToDataSet(context.Database, sql, parameters).Tables[0];
         }
@@ -30,8 +28,7 @@ namespace BigCookieKit
         /// <code/>Author: zhangbingbin
         /// <code/>CreateData: 2020-11-14
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DataSet ReadDataSet(this DbContext context, string sql, params SqlParameter[] parameters)
+        public static DataSet ReadDataSet(this DbContext context, string sql, params DbParameter[] parameters)
         {
             return SqlToDataSet(context.Database, sql, parameters);
         }
@@ -41,8 +38,7 @@ namespace BigCookieKit
         /// <code/>Author: zhangbingbin
         /// <code/>CreateData: 2020-11-5
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static DataSet SqlToDataSet(DatabaseFacade facade, string sql, params SqlParameter[] parameters)
+        private static DataSet SqlToDataSet(DatabaseFacade facade, string sql, params DbParameter[] parameters)
         {
             var ds = new DataSet();
             var con = facade.GetDbConnection();
@@ -64,9 +60,7 @@ namespace BigCookieKit
                     }
                 }
             }
-
             return ds;
         }
     }
 }
-#endif

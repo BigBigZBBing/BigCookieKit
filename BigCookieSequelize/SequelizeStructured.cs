@@ -1,16 +1,14 @@
-﻿using BigCookieKit.Reflect;
+﻿using BigCookieKit;
+using BigCookieKit.Reflect;
 using MySql.Data.MySqlClient;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 
-namespace BigCookieKit
+namespace BigCookieSequelize
 {
     /// <summary>
     /// 结构化动态类型
@@ -45,9 +43,9 @@ namespace BigCookieKit
         /// <param name="parameter"></param>
         /// <param name="tran"></param>
         /// <returns></returns>
-        public static JArray SequelizeConfig(object config, MySqlConnection con, object parameter = null, MySqlTransaction tran = null)
+        public static dynamic SequelizeConfig(object config, MySqlConnection con, object parameter = null, MySqlTransaction tran = null)
         {
-            JArray result = new JArray();
+            dynamic result;
             var commandText = SequelizeToSql(config);
             if (con.State != ConnectionState.Open) con.Open();
             using (var command = con.CreateCommand())
@@ -411,7 +409,7 @@ namespace BigCookieKit
         /// <param name="dt"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static JArray SequelizeDynamic(this DataTable dt)
+        static dynamic SequelizeDynamic(this DataTable dt)
         {
             props = new Dictionary<string, Type>();
             DataSource = dt;
@@ -450,7 +448,7 @@ namespace BigCookieKit
             var instance = Activator.CreateInstance(typeof(List<>)
                 .MakeGenericType(builder.Instance.GetType()));
             LoadDataSource(instance);
-            return JArray.FromObject(instance);
+            return instance;
         }
 
         /// <summary>

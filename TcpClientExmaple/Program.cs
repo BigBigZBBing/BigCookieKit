@@ -17,7 +17,10 @@ namespace TcpClientExmaple
                 Random random = new Random();
                 while (true)
                 {
-                    //Console.ReadLine();
+                    Console.ReadLine();
+                    user.SendMessage(RamdomString());
+                    user.SendMessage(RamdomString());
+                    user.SendMessage(RamdomString());
                     user.SendMessage(RamdomString());
                     //string str = Console.ReadLine();
                     //switch (str)
