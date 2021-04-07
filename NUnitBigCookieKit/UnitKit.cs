@@ -1,17 +1,14 @@
 using BigCookieKit;
 using BigCookieKit.Office;
 using BigCookieKit.XML;
+using BigCookieSequelize;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Linq;
-using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
 
@@ -155,18 +152,18 @@ namespace NUnitBigCookieKit
             }
         }
 
-        [Test]
-        public void NpoiKitUnit()
-        {
-            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
-            NpoiKit npoiKit = new NpoiKit(path);
-            npoiKit.CreateConfig(config =>
-            {
-                config.ColumnNameRow = 1;
-                config.StartRow = 2;
-            });
-            DataTable dt = npoiKit.ToDataTable(npoiKit.GetSheet("Sheet1"));
-        }
+        //[Test]
+        //public void NpoiKitUnit()
+        //{
+        //    string path = @"C:\Users\zbb58\Desktop\test.xlsx";
+        //    NpoiKit npoiKit = new NpoiKit(path);
+        //    npoiKit.CreateConfig(config =>
+        //    {
+        //        config.ColumnNameRow = 1;
+        //        config.StartRow = 2;
+        //    });
+        //    DataTable dt = npoiKit.ToDataTable(npoiKit.GetSheet("Sheet1"));
+        //}
 
         [Test]
         public void TypeAssertUnit()

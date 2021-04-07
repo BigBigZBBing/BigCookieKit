@@ -22,22 +22,31 @@ namespace UnitConsole
     {
         static void Main(string[] args)
         {
-            var a1 = GC.GetTotalMemory(true);
-            Chain<string> stream = new Chain<string>();
+            //Chain<ChaimUnitModel> stream = new Chain<ChaimUnitModel>();
+            //for (int i = 0; i < short.MaxValue; i++)
+            //{
+            //    stream.Add(new ChaimUnitModel()
+            //    {
+            //        Name = "张炳彬" + i,
+            //        Old = i
+            //    });
+            //}
+            //var expression = stream.Where(x => x.Old > 30);
+            //var array = stream.ToArray();
+
+            List<ChaimUnitModel> list = new List<ChaimUnitModel>();
             for (int i = 0; i < short.MaxValue; i++)
             {
-                stream.Add("你说啥" + i);
+                list.Add(new ChaimUnitModel()
+                {
+                    Name = "张炳彬" + i,
+                    Old = i
+                });
             }
-            var a2 = GC.GetTotalMemory(true);
-            Console.WriteLine(a2 - a1);
-            var array = stream.ToArray();
+            var expression = list.Where(x => x.Old > 30);
+            var array = list.ToArray();
 
             Console.ReadKey();
-            //List<string> list = new List<string>();
-            //for (int i = 0; i < 1000; i++)
-            //{
-            //    list.Add("你说啥" + i);
-            //}
 
             //BenchmarkRunner.Run<ReflectCompare>();
 

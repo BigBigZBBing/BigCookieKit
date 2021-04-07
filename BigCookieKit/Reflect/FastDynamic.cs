@@ -53,7 +53,6 @@ namespace BigCookieKit.Reflect
             return doc.ToString();
         }
 
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static FastDynamic GetFastDynamic<T>(T entity) where T : class, new()
         {

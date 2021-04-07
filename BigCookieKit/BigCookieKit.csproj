@@ -21,10 +21,11 @@
     <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <AssemblyVersion>1.0.*</AssemblyVersion>
-    <FileVersion>1.0.2021.0321</FileVersion>
-    <Version>1.0.2021.0321</Version>
+    <FileVersion>1.0.2021.0407</FileVersion>
+    <Version>1.0.2021.0407</Version>
     <PackageReleaseNotes>修复Network类TcpHandle解包的Bug 优化性能IO在1K以内IO性能极限化
-增加EasyHandle降低解决粘包的复杂度，增加IO性能</PackageReleaseNotes>
+增加EasyHandle降低解决粘包的复杂度，增加IO性能
+Http和Udp协议使用NoneHandle处理器</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netcoreapp3.1'">
@@ -56,7 +57,12 @@
 
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1' Or '$(TargetFramework)'=='net5'">
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="5.0.0" />
-    <PackageReference Include="NPOI" Version="2.5.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <!--<PackageReference Include="NPOI" Version="2.5.2" />-->
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Office\NpoiKit.cs" />
   </ItemGroup>
 
   <ItemGroup>

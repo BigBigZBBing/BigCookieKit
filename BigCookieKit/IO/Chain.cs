@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BigCookieKit.IO
 {
@@ -19,7 +20,7 @@ namespace BigCookieKit.IO
     /// 根据表达式获取节点的委托
     /// </summary>
     /// <param name="expression"></param>
-    internal delegate void NodeByExpression<T>(Func<T, bool> expression) where T : class;
+    internal delegate void NodeByExpression<T>(Func<T, bool> expression, List<T> list) where T : class;
 
     /// <summary>
     /// 根据节点索引生成数组
@@ -30,9 +31,14 @@ namespace BigCookieKit.IO
 
     /// <summary>
     /// 链式流模型
-    /// 插入慢
-    /// 查找快
-    /// 删除快
+    /// 劣势:
+    /// 1.内存占用量大
+    /// 2.最大长度小 暂时short.MaxLength没问题
+    /// 3.写入速度慢
+    /// 优势:
+    /// 1.多样化查询快速 O(1)
+    /// 2.删除快速 O(1)
+    /// 3.转成数组快速 O(1)
     /// </summary>
     public class Chain<T>
         where T : class
@@ -133,12 +139,12 @@ namespace BigCookieKit.IO
                 xnew.m_position = m_chain.m_position + 1;
             }
             xnew.m_item = item;
-            xnew.callback += CompassCallBack;
-            updateposition += xnew.UpdatePosition;
-            informallnode += xnew.CallBackByNode;
-            refreshbottom += xnew.RefreshBottom;
-            arrayallnode += xnew.ArrayByRefNode;
-            informallnodeexpression += xnew.CallBackByExpression;
+            xnew.callback += CompassCallBack;//回调当前节点
+            updateposition += xnew.UpdatePosition;//更新节点在链式中的位置
+            informallnode += xnew.CallBackByNode;//根据索引回调节点
+            refreshbottom += xnew.RefreshBottom;//更新所有节点的末尾
+            arrayallnode += xnew.ArrayByRefNode;//自动对位数组
+            informallnodeexpression += xnew.CallBackByExpression;//根据表达式回调节点
             m_chain = xnew;
             refreshbottom(m_chain);
             m_length++;
@@ -161,9 +167,11 @@ namespace BigCookieKit.IO
         /// 根据表达式寻找节点
         /// </summary>
         /// <param name="expression"></param>
-        public void Where(Func<T, bool> expression)
+        public IEnumerable<T> Where(Func<T, bool> expression)
         {
-            informallnodeexpression(expression);
+            List<T> list = new List<T>();
+            informallnodeexpression(expression, list);
+            return list;
         }
 
         /// <summary>
@@ -302,11 +310,11 @@ namespace BigCookieKit.IO
         /// 根据表达式回调节点
         /// </summary>
         /// <param name="expression"></param>
-        internal void CallBackByExpression(Func<T, bool> expression)
+        internal void CallBackByExpression(Func<T, bool> expression, List<T> list)
         {
             if (expression(this.m_item))
             {
-                callback(this);
+                list.Add(this.m_item);
             }
         }
 

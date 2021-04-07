@@ -65,16 +65,17 @@ namespace BigCookieKit.Communication
                     ReceiveHandle = Handle?.New().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter) ?? Protocol switch
                     {
                         NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
-                        NetworkProtocol.Udp => throw new NotImplementedException(),
-                        NetworkProtocol.Http1 | NetworkProtocol.Http2 => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
+                        NetworkProtocol.Udp => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
+                        NetworkProtocol.Http1 => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
+                        NetworkProtocol.Http2 => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         _ => throw new NotImplementedException(),
                     },
                     SendHandle = Handle?.New().Define(((IServer)this).DispatchCenter) ?? Protocol switch
                     {
                         NetworkProtocol.Tcp => new TcpHandle().Define(((IServer)this).DispatchCenter),
-                        NetworkProtocol.Udp => throw new NotImplementedException(),
-                        NetworkProtocol.Http1 => throw new NotImplementedException(),
-                        NetworkProtocol.Http2 => throw new NotImplementedException(),
+                        NetworkProtocol.Udp => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
+                        NetworkProtocol.Http1 => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
+                        NetworkProtocol.Http2 => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         _ => throw new NotImplementedException(),
                     },
                 };
