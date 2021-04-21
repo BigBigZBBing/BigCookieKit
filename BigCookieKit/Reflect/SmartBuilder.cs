@@ -15,6 +15,7 @@ namespace BigCookieKit.Reflect
         private AssemblyBuilder assemblyBuilder;
         private ModuleBuilder moduleBuilder;
         private TypeBuilder typeBuilder;
+        private ConstructorBuilder constructorBuilder;
         private FieldBuilder fieldBuilder;
         private PropertyBuilder propertyBuilder;
         private MethodBuilder methodBuilder;
@@ -37,42 +38,54 @@ namespace BigCookieKit.Reflect
 
 #if NET452
             assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assmblyName, AssemblyBuilderAccess.RunAndSave);
-#else
-            assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assmblyName, AssemblyBuilderAccess.RunAndCollect);
-#endif
-
-#if NET452
             moduleBuilder = assemblyBuilder.DefineDynamicModule(assmblyName.Name, $"{assmblyName.Name}.dll");
 #else
+            assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(assmblyName, AssemblyBuilderAccess.RunAndCollect);
             moduleBuilder = assemblyBuilder.DefineDynamicModule(assmblyName.Name);
 #endif
 
             return this;
         }
 
-        public SmartBuilder Class(String ClassName, Qualifier ClassType = Qualifier.Public)
+        public ClassIL Class(String ClassName, Qualifier ClassType = Qualifier.Public)
         {
             typeBuilder = moduleBuilder.DefineType(ClassName, (TypeAttributes)ClassType);
-            return this;
+
+            return new ClassIL(typeBuilder);
         }
 
-        public void Field(String FieldName, Type Type, FieldAttributes Attr = FieldAttributes.Private, Object ConstValue = null)
+        public CtorIL Ctor(Type[] ParamTypes, Action<FuncGenerator> builder, MethodAttributes Attr = MethodAttributes.Public)
+        {
+            constructorBuilder = typeBuilder.DefineConstructor(Attr, CallingConventions.Standard, ParamTypes);
+
+            builder?.Invoke(new FuncGenerator(constructorBuilder.GetILGenerator()));
+
+            return new CtorIL(constructorBuilder);
+        }
+
+        public FieldIL Field(String FieldName, Type Type, FieldAttributes Attr = FieldAttributes.Private, Object ConstValue = null)
         {
             fieldBuilder = typeBuilder.DefineField(FieldName, Type, Attr);
-            if (ConstValue != null)
-                fieldBuilder.SetConstant(ConstValue);
+
+            if (ConstValue != null) fieldBuilder.SetConstant(ConstValue);
+
+            return new FieldIL(fieldBuilder);
         }
 
-        public void Property(String PropertyName, Type Type, PropertyAttributes Attr = PropertyAttributes.None)
+        public PropertyIL Property(String PropertyName, Type Type, PropertyAttributes Attr = PropertyAttributes.None)
         {
             propertyBuilder = typeBuilder.DefineProperty(PropertyName, Attr, Type, null);
+
+            return new PropertyIL(propertyBuilder);
         }
 
-        public void Method(String MethodName, Action<FuncGenerator> builder, Type RetType = null, Type[] ParamTypes = null, MethodAttributes Attr = MethodAttributes.Public)
+        public MethodIL Method(String MethodName, Action<FuncGenerator> builder, Type RetType = null, Type[] ParamTypes = null, MethodAttributes Attr = MethodAttributes.Public)
         {
             methodBuilder = typeBuilder.DefineMethod(MethodName, Attr, RetType, ParamTypes);
 
             builder?.Invoke(new FuncGenerator(methodBuilder.GetILGenerator()));
+
+            return new MethodIL(methodBuilder);
         }
 
         public void get_Item(Type Type)
@@ -104,19 +117,17 @@ namespace BigCookieKit.Reflect
         }
 
 #if NET452
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Save()
         {
             SaveClass();
             assemblyBuilder.Save($"{assmblyName.Name}.dll");
         }
-
 #endif
 
-        public void Build()
+        public object Build()
         {
-            _instance = Activator.CreateInstance(_dymaticType);
+            return _instance = Activator.CreateInstance(_dymaticType);
         }
 
         public void CreateProperty(String FieldName, Type FieldType)
@@ -130,8 +141,7 @@ namespace BigCookieKit.Reflect
         public FastDynamic InitEntity()
         {
             SaveClass();
-            Build();
-            return FastDynamic.GetFastDynamic(_instance);
+            return FastDynamic.GetFastDynamic(Build());
         }
 
         public static T DynamicMethod<T>(String MethodName, Action<FuncGenerator> builder) where T : class
