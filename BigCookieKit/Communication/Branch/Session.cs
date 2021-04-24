@@ -24,10 +24,11 @@ namespace BigCookieKit.Communication
 
         public XSocket Server { get; set; }
 
-        public Handle ReceiveHandle { get; set; }
+        public Handle RecHandle { get; set; }
 
         public Handle SendHandle { get; set; }
 
+        #region Internal the variable
         internal EofStream BufferBody;
 
         internal EofStream BufferHead;
@@ -36,7 +37,8 @@ namespace BigCookieKit.Communication
 
         internal int ReceiveCapacity;
 
-        internal int ReadOffset;
+        internal int ReceiveOffset;
+        #endregion
 
         internal static Func<SocketAsyncEventArgs, bool> EnsureFree =
             SmartBuilder.DynamicMethod<Func<SocketAsyncEventArgs, bool>>("EnsureFree", il =>
@@ -81,12 +83,16 @@ namespace BigCookieKit.Communication
 
         public bool Disconnect()
         {
-            Client.Shutdown(SocketShutdown.Both);
+            try
+            {
+                if (Client.Connected)
+                    Client.Shutdown(SocketShutdown.Both);
+            }
+            catch
+            {
+                return false;
+            }
             return true;
-            //if (!EnsureSafe()) return false;
-            //Communication.Buffer.SetBuffer(SendHandle, new byte[] { 255, 0 });
-            //Client.SendAsync(SendHandle);
-            //return ValidationState();
         }
 
         private bool ValidationState()

@@ -17,16 +17,16 @@ namespace BigCookieKit
         /// <typeparam name="TEnum">枚举类型</typeparam>
         /// <param name="em">枚举对象</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static String Remark<TEnum>(this TEnum em) where TEnum : Enum
+        
+        public static String ToDisplay<TEnum>(this TEnum em) where TEnum : Enum
         {
             Type type = em.GetType();
             FieldInfo field = type.GetField(em.ToString());
             if (field != null)
             {
-                var attrs = field.GetCustomAttributes(typeof(RemarkAttribute), true) as RemarkAttribute[];
+                var attrs = field.GetCustomAttributes(typeof(DisplayAttribute), true) as DisplayAttribute[];
                 if (attrs != null && attrs.Length > 0)
-                    return attrs[0].Remark;
+                    return attrs[0].Value;
             }
             return "";
         }
@@ -41,7 +41,7 @@ namespace BigCookieKit
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="Entity">实体对象</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static Boolean ModelValidation<TEntity>(this TEntity Entity)
         {
             StringBuilder strBuilder = new StringBuilder();
@@ -89,7 +89,7 @@ namespace BigCookieKit
 
         #region 私有
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         static bool BasicValidation<T>(FastProperty propertie, T attr, StringBuilder strBuilder) where T : BasicAttribute
         {
             if (attr.NotNull() && attr.Message.NotNull())
@@ -121,7 +121,7 @@ namespace BigCookieKit
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         static bool StringValidation(FastProperty propertie, StringRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;
@@ -144,7 +144,7 @@ namespace BigCookieKit
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         static bool NumericValidation(FastProperty propertie, NumericRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;
@@ -172,7 +172,7 @@ namespace BigCookieKit
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         static bool DecimalValidation(FastProperty propertie, DecimalRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;

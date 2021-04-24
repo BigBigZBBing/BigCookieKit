@@ -8,7 +8,7 @@ namespace BigCookieKit.Reflect
     internal static partial class ManagerGX
     {
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal static void EmitValue<T>(this EmitBasic basic, T value)
         {
             if (value == null)
@@ -90,7 +90,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal static void EmitValue(this EmitBasic basic, Object value, Type type)
         {
             if (type == typeof(String))
@@ -168,7 +168,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal static void IntegerMap(this EmitBasic basic, Int64 value)
         {
             switch (value)
@@ -204,7 +204,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal static void PopArray(this EmitBasic basic, Type type)
         {
             if (type == typeof(String))
@@ -265,7 +265,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal static void PushArray(this EmitBasic basic, Type type)
         {
             if (type == typeof(String))

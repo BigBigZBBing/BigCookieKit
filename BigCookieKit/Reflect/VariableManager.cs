@@ -13,14 +13,14 @@ namespace BigCookieKit.Reflect
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Output()
         {
             base.Emit(OpCodes.Ldloc_S, this.instance);
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Input()
         {
             base.Emit(OpCodes.Stloc_S, this.instance);

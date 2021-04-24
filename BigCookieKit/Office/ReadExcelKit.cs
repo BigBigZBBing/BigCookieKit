@@ -17,7 +17,7 @@ namespace BigCookieKit.Office
     /// <summary>
     /// Excal读写 只适用xlsx(性能是NPOI的几倍)
     /// </summary>
-    public class ReadExcelKit
+    public class ReadExcelKit : XmlReadKit
     {
         /// <summary>
         /// 执行Log
@@ -115,7 +115,6 @@ namespace BigCookieKit.Office
         /// <summary>
         /// 加载共享字符串
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LoadShareString()
         {
             var entry = zip.GetEntry("xl/sharedStrings.xml");
@@ -139,7 +138,6 @@ namespace BigCookieKit.Office
         /// <summary>
         /// 加载数值类型
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LoadNumberFormat()
         {
             var entry = zip.GetEntry("xl/styles.xml");
@@ -164,7 +162,6 @@ namespace BigCookieKit.Office
         /// <summary>
         /// 获取单元格样式
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LoadCellStyle()
         {
             var entry = zip.GetEntry("xl/styles.xml");
@@ -188,7 +185,6 @@ namespace BigCookieKit.Office
         /// <summary>
         /// 获取工作簿
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void LoadWorkBook()
         {
             var entry = zip.GetEntry("xl/workbook.xml");
@@ -217,141 +213,15 @@ namespace BigCookieKit.Office
         /// 获取所有工作簿
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public List<WorkBook> GetWorkBook()
         {
             return wookbooks;
         }
 
         /// <summary>
-        /// 读取数据表
+        /// 获取数据表集合
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public DataTable ReadDataTable()
-        {
-            try
-            {
-                DataTable dt = new DataTable();
-
-                current = current ?? configs.FirstOrDefault();
-
-                var sheet = $"sheet{current.SheetIndex}";
-
-                var entry = zip.GetEntry($"xl/worksheets/{sheet}.xml");
-
-                XDocument doc = null;
-                if (!cache.ContainsKey(sheet))
-                {
-                    XmlReader xmlReader = XmlReader.Create(entry.Open());
-                    doc = XDocument.Load(xmlReader);
-                    cache.Add(sheet, doc);
-                }
-                else doc = cache[sheet];
-
-                var rows = doc.Root.Elements().FirstOrDefault(e => e.Name.LocalName.Equals("sheetData", StringComparison.OrdinalIgnoreCase));
-
-                bool isBuildColumn = false;
-
-                foreach (var row in rows.Elements())
-                {
-                    if (!isBuildColumn)
-                    {
-                        //Excel的行索引
-                        var rowIndex = int.Parse(row.Attribute("r")?.Value);
-                        //列数字索引
-                        int colIndex = current.StartColumnIndex ?? 0;
-
-                        //如果没设置列头行 就取开始行的列数
-                        if (current.ColumnNameRow.IsNull() && rowIndex != current.StartRow)
-                            continue;
-
-                        foreach (var col in row.Elements())
-                        {
-                            //列数字索引
-                            var colNumIndex = colIndex++;
-
-                            //过滤开始列的索引
-                            if (current.StartColumnIndex > colNumIndex)
-                                continue;
-
-                            //过滤结束列的索引
-                            if (current.EndColumnIndex.NotNull() && current.EndColumnIndex < colNumIndex)
-                                continue;
-
-                            //生成列头
-                            if (current.ColumnNameRow.IsNull())
-                            {
-                                isBuildColumn = true;
-                                dt.Columns.Add(new DataColumn());
-                            }
-                            else if (current.ColumnNameRow.NotNull() && current.ColumnNameRow == rowIndex)
-                            {
-                                isBuildColumn = true;
-                                var type = col.Attribute("t")?.Value;
-                                dt.Columns.Add(FormColumn(col, type));
-                            }
-                        }
-                    }
-                    else
-                        break;
-                }
-
-                foreach (var row in rows.Elements())
-                {
-                    //Excel的行索引
-                    var rowIndex = int.Parse(row.Attribute("r")?.Value);
-
-                    //过滤开始行的索引
-                    if (current.StartRow > rowIndex)
-                        continue;
-
-                    //过滤结束行的索引
-                    if (current.EndRow.NotNull() && current.EndRow < rowIndex)
-                        continue;
-
-                    //列数字索引
-                    int colIndex = current.StartColumnIndex ?? 0;
-
-                    List<object> Set = new List<object>();
-                    foreach (var col in row.Elements())
-                    {
-                        //列英文索引
-                        var position = col.Attribute("r").Value;
-                        var colEnIndex = ExcelHelper.ColumnToIndex(string.Join("", CellPosition(position)));
-
-                        //前面出现其他列 则跳过
-                        if (colEnIndex < colIndex) continue;
-
-                        //列数字索引
-                        var colNumIndex = colIndex++;
-
-                        //过滤开始列的索引
-                        if (current.StartColumnIndex > colNumIndex)
-                            continue;
-
-                        //过滤结束列的索引
-                        if (current.EndColumnIndex.NotNull() && current.EndColumnIndex < colNumIndex)
-                            continue;
-
-                        var type = col.Attribute("t")?.Value;
-                        var value = FromValue(col, type);
-
-                        Set.Add(value);
-                    }
-                    dt.Rows.Add(Set.ToArray());
-                }
-
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                ExecuteLog.Add($"[ReadDataTable]:[{ex.Message}]");
-            }
-            return null;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public DataSet ReadDataSet()
         {
             DataSet dataSet = new DataSet();
@@ -360,7 +230,7 @@ namespace BigCookieKit.Office
                 current = config;
                 try
                 {
-                    dataSet.Tables.Add(ReadDataTable());
+                    dataSet.Tables.Add(XmlReadDataTable());
                 }
                 catch (Exception ex)
                 {
@@ -371,231 +241,10 @@ namespace BigCookieKit.Office
         }
 
         /// <summary>
-        /// 读取数据集合
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [Obsolete("请使用 XmlReaderSet 读取得到更佳的性能")]
-        public IEnumerable<object[]> ReadSet()
-        {
-            DataTable dt = new DataTable();
-
-            current = current ?? configs.FirstOrDefault();
-
-            var sheet = $"sheet{current.SheetIndex}";
-
-            var entry = zip.GetEntry($"xl/worksheets/{sheet}.xml");
-
-            XDocument doc = null;
-            if (!cache.ContainsKey(sheet))
-            {
-                XmlReader xmlReader = XmlReader.Create(entry.Open());
-                doc = XDocument.Load(xmlReader);
-                cache.Add(sheet, doc);
-            }
-            else doc = cache[sheet];
-
-            var rows = doc.Root.Elements().FirstOrDefault(e => e.Name.LocalName == "sheetData");
-
-            foreach (var row in rows.Elements())
-            {
-                var Set = new List<object>();
-
-                //Excel的行索引
-                var rowIndex = int.Parse(row.Attribute("r").Value);
-
-                //过滤开始行的索引
-                if (current.StartRow > rowIndex)
-                    continue;
-
-                //过滤结束行的索引
-                if (current.EndRow.NotNull() && current.EndRow < rowIndex)
-                    continue;
-
-                //列数字索引
-                int colIndex = current.StartColumnIndex ?? 0;
-
-                foreach (var col in row.Elements())
-                {
-                    //列数字索引
-                    var colNumIndex = colIndex++;
-
-                    //过滤开始列的索引
-                    if (current.StartColumnIndex > colNumIndex)
-                        continue;
-
-                    //过滤结束列的索引
-                    if (current.EndColumnIndex.NotNull() && current.EndColumnIndex < colNumIndex)
-                        continue;
-
-                    var type = col.Attribute("t")?.Value;
-                    Set.Add(FromValue(col, type));
-                }
-
-                yield return Set.ToArray();
-            }
-        }
-
-        /// <summary>
-        /// 获取表头
-        /// </summary>
-        /// <param name="col"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        DataColumn FormColumn(XElement col, string type)
-        {
-            try
-            {
-                var value = FromValue(col, type);
-                if (value == DBNull.Value)
-                {
-                    return new DataColumn();
-                }
-                return new DataColumn(value.ToString(), value.GetType());
-            }
-            catch (Exception ex)
-            {
-                ExecuteLog.Add($"[FormColumn]:[{ex.Message}]");
-                return new DataColumn();
-            }
-        }
-
-        /// <summary>
-        /// 根据数据类型获取数据
-        /// </summary>
-        /// <param name="col"></param>
-        /// <param name="type"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        object FromValue(XElement col, string type)
-        {
-            try
-            {
-                //共享字符串
-                if (type == "s")
-                    return sharedStrings[int.Parse(GetV(col))];
-                //字符串
-                if (type == "str")
-                    return GetV(col);
-
-                //索引数值类型格式
-                var style = col.Attribute("s")?.Value;
-                if (style.NotNull())
-                {
-                    var numFmt = cellXfs[int.Parse(style)];
-                    var fixedValue = FixedFormat(col, numFmt);
-                    //未命中固定样式
-                    if (fixedValue.IsNull())
-                    {
-                        var format = numFmts?[numFmt];
-                        return ParseFormat(col, format);
-                    }
-                    else
-                    {
-                        return fixedValue;
-                    }
-                }
-            }
-            catch (System.Exception ex)
-            {
-                ExecuteLog.Add($"[FromValue]:[{ex.Message}]");
-            }
-
-            return DBNull.Value;
-        }
-
-        /// <summary>
-        /// 固定的数值格式类型
-        /// </summary>
-        /// <param name="numFmt"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        object FixedFormat(XElement col, string numFmt)
-        {
-            try
-            {
-                if (ExcelSSF.FixedNumFmt.ContainsKey(numFmt))
-                {
-                    var type = ExcelSSF.FixedNumFmt[numFmt];
-                    if (type == typeof(DateTime))
-                    {
-                        return fmtParseDateTime(GetV(col));
-                    }
-                    else if (GetV(col).TryParse(type, out object value))
-                    {
-                        return value;
-                    }
-                }
-            }
-            catch (System.Exception ex)
-            {
-                ExecuteLog.Add($"[FixedFormat]:[{ex.Message}]");
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// 转换数值格式类型
-        /// </summary>
-        /// <param name="col"></param>
-        /// <param name="format"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        object ParseFormat(XElement col, string format)
-        {
-            try
-            {
-                //判断是否是浮点数
-                if (format.AllOwn("0", "0."))
-                {
-                    if (GetV(col).TryParse<decimal>(out object value))
-                    {
-                        return value;
-                    }
-                }
-                //判断是否是整数型
-                if (format.AllOwn("0"))
-                {
-                    if (GetV(col).TryParse<int>(out object value1))
-                    {
-                        return value1;
-                    }
-                    if (GetV(col).TryParse<long>(out object value2))
-                    {
-                        return value2;
-                    }
-                }
-                //判断是否是日期格式
-                if (format.AllOwn("y", "m") || format.AllOwn("m", "d"))
-                {
-                    return fmtParseDateTime(GetV(col));
-                }
-                //判断是否是时间格式
-                if (format.AllOwn("h", "m"))
-                {
-                    if (GetV(col).TryParse<TimeSpan>(out object value))
-                    {
-                        return value;
-                    }
-                }
-            }
-            catch (System.Exception ex)
-            {
-                ExecuteLog.Add($"[ParseFormat]:[{ex.Message}]");
-            }
-
-            return DBNull.Value;
-        }
-
-        /// <summary>
         /// 获取列英文索引
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         IEnumerable<char> CellPosition(string position)
         {
             for (int i = 0; i < position.Length; i++)
@@ -605,206 +254,278 @@ namespace BigCookieKit.Office
             }
         }
 
-        /// <summary>
-        /// 获取结果值
-        /// </summary>
-        /// <param name="element"></param>
-        /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        string GetV(XElement element)
-        {
-            return element.Element(XName.Get("v", "http://schemas.openxmlformats.org/spreadsheetml/2006/main"))?.Value;
-        }
-
         #region XmlReader方案
 
         /// <summary>
         /// 读取数据表
         /// </summary>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+
         public DataTable XmlReadDataTable()
         {
-            try
-            {
-                DataTable dt = new DataTable();
-
-                current = current ?? configs.FirstOrDefault();
-
-                var sheet = $"sheet{current.SheetIndex}";
-
-                var entry = zip.GetEntry($"xl/worksheets/{sheet}.xml");
-
-                XmlPacket packet = null;
-                if (!cache.ContainsKey(sheet))
-                {
-                    XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
-                    packet = xmlReadKit.Read("sheetData");
-                    xmlcache.Add(sheet, packet);
-                }
-                else packet = xmlcache[sheet];
-
-                bool isBuildColumn = false;
-
-                foreach (var row in packet.Node)
-                {
-                    if (!isBuildColumn)
-                    {
-                        //Excel的行索引
-                        var rowIndex = int.Parse(row.GetAttr("r").Text);
-                        //列数字索引
-                        int colIndex = current.StartColumnIndex ?? 0;
-
-                        //如果没设置列头行 就取开始行的列数
-                        if (current.ColumnNameRow.IsNull() && rowIndex != current.StartRow)
-                            continue;
-
-                        foreach (var col in row.Node)
-                        {
-                            //列英文索引
-                            //var position = col.Attribute("r").Value;
-                            //var colEnIndex = CellPosition(position).ToString();
-
-                            //列数字索引
-                            var colNumIndex = colIndex++;
-
-                            //过滤开始列的索引
-                            if (current.StartColumnIndex > colNumIndex)
-                                continue;
-
-                            //过滤结束列的索引
-                            if (current.EndColumnIndex.NotNull() && current.EndColumnIndex < colNumIndex)
-                                continue;
-
-                            //生成列头
-                            if (current.ColumnNameRow.IsNull())
-                            {
-                                isBuildColumn = true;
-                                dt.Columns.Add(new DataColumn());
-                            }
-                            else if (current.ColumnNameRow.NotNull() && current.ColumnNameRow == rowIndex)
-                            {
-                                isBuildColumn = true;
-                                var type = col.GetAttr("t").Text;
-                                dt.Columns.Add(FormColumn(col, type));
-                            }
-                        }
-                    }
-                    else
-                        break;
-                }
-
-                foreach (var row in packet.Node)
-                {
-                    //Excel的行索引
-                    var rowIndex = int.Parse(row.GetAttr("r").Text);
-
-                    //过滤开始行的索引
-                    if (current.StartRow > rowIndex)
-                        continue;
-
-                    //过滤结束行的索引
-                    if (current.EndRow.NotNull() && current.EndRow < rowIndex)
-                        continue;
-
-                    //列数字索引
-                    int colIndex = current.StartColumnIndex ?? 0;
-
-                    List<object> Set = new List<object>();
-                    foreach (var col in row.Node)
-                    {
-                        //列英文索引
-                        var position = col.GetAttr("r").Text;
-                        var colEnIndex = ExcelHelper.ColumnToIndex(string.Join("", CellPosition(position)));
-
-                        //前面出现其他列 则跳过
-                        if (colEnIndex < colIndex) continue;
-
-                        //列数字索引
-                        var colNumIndex = colIndex++;
-
-                        //过滤开始列的索引
-                        if (current.StartColumnIndex > colNumIndex)
-                            continue;
-
-                        //过滤结束列的索引
-                        if (current.EndColumnIndex.NotNull() && current.EndColumnIndex < colNumIndex)
-                            continue;
-
-                        var type = col.GetAttr("t").Text;
-                        var value = FromValue(col, type);
-
-                        Set.Add(value);
-                    }
-                    dt.Rows.Add(Set.ToArray());
-                }
-
-                return dt;
-            }
-            catch (Exception ex)
-            {
-                ExecuteLog.Add($"[ReadDataTable]:[{ex.Message}]");
-            }
-            return null;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public IEnumerable<object[]> XmlReaderSet()
-        {
-            DataTable dt = new DataTable();
-
             current = current ?? configs.FirstOrDefault();
 
             var sheet = $"sheet{current.SheetIndex}";
 
             var entry = zip.GetEntry($"xl/worksheets/{sheet}.xml");
 
-            XmlPacket packet = null;
-            if (!cache.ContainsKey(sheet))
+            DataTable dt = new DataTable();
+            DataRow ndr = default;
+            IDictionary<int, string> Columns = new Dictionary<int, string>();
+
+            XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
+            bool readColumns = false;
+            bool readData = false;
+            bool isValue = false;
+
+            int rowIndex = default;
+            int colIndex = default;
+            string dataType = default;
+            string xfs = default;
+            xmlReadKit.XmlReadXlsx("sheetData", (node, attrs, content) =>
             {
-                XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
-                packet = xmlReadKit.Read("sheetData");
-                xmlcache.Add(sheet, packet);
-            }
-            else packet = xmlcache[sheet];
-
-            foreach (var row in packet.Node)
-            {
-                var Set = new List<object>();
-
-                //Excel的行索引
-                var rowIndex = int.Parse(row.GetAttr("r").Text);
-
-                //过滤开始行的索引
-                if (current.StartRow > rowIndex)
-                    continue;
-
-                //过滤结束行的索引
-                if (current.EndRow.NotNull() && current.EndRow < rowIndex)
-                    continue;
-
-                //列数字索引
-                int colIndex = current.StartColumnIndex ?? 0;
-
-                foreach (var col in row.Node)
+                switch (node)
                 {
-                    //列数字索引
-                    var colNumIndex = colIndex++;
-
-                    //过滤开始列的索引
-                    if (current.StartColumnIndex > colNumIndex)
-                        continue;
-
-                    //过滤结束列的索引
-                    if (current.EndColumnIndex.NotNull() && current.EndColumnIndex < colNumIndex)
-                        continue;
-
-                    var type = col.GetAttr("t").Text;
-                    Set.Add(FromValue(col, type));
+                    case "end":
+                        if (ndr != null) dt.Rows.Add(ndr);
+                        break;
+                    case "row":
+                        rowIndex = int.Parse(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
+                        if (current.StartRow <= current.ColumnNameRow) throw new XlsxRowConfigException();
+                        if (rowIndex == current.ColumnNameRow)
+                            readColumns = true;
+                        if (rowIndex > current.EndRow)
+                            return false;
+                        if (rowIndex >= current.StartRow)
+                        {
+                            readColumns = false;
+                            readData = true;
+                            if (ndr != null) dt.Rows.Add(ndr);
+                            ndr = dt.NewRow();
+                        }
+                        break;
+                    case "c":
+                        if (readColumns || readData)
+                        {
+                            string colEn = new string(CellPosition(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text).ToArray());
+                            colIndex = ExcelHelper.ColumnToIndex(colEn).Value;
+                            dataType = attrs.FirstOrDefault(x => x.Name.Equals("t", StringComparison.OrdinalIgnoreCase)).Text;
+                            xfs = attrs.FirstOrDefault(x => x.Name.Equals("s", StringComparison.OrdinalIgnoreCase)).Text;
+                        }
+                        break;
+                    case "v":
+                        if (colIndex >= current.StartColumnIndex
+                        && (current.EndColumnIndex != null ? colIndex <= current.EndColumnIndex : true))
+                            isValue = true;
+                        break;
+                    case "f":
+                        break;
+                    case "text":
+                        if (isValue)
+                        {
+                            if (readColumns)
+                            {
+                                if (dataType == "s")
+                                {
+                                    dt.Columns.Add(sharedStrings[int.Parse(content)], typeof(string));
+                                    Columns.Add(colIndex, sharedStrings[int.Parse(content)]);
+                                }
+                                else
+                                {
+                                    dt.Columns.Add(content, typeof(string));
+                                    Columns.Add(colIndex, content);
+                                }
+                            }
+                            if (readData)
+                            {
+                                if (dataType == "s")
+                                    ndr[Columns[colIndex]] = sharedStrings[int.Parse(content)];
+                                else
+                                    ndr[Columns[colIndex]] = content;
+                            }
+                            isValue = false;
+                        }
+                        break;
+                    default:
+                        isValue = false;
+                        break;
                 }
+                return true;
+            });
+            return dt;
+        }
 
-                yield return Set.ToArray();
-            }
+        public IEnumerable<object[]> XmlReaderSet()
+        {
+            current = current ?? configs.FirstOrDefault();
+
+            var sheet = $"sheet{current.SheetIndex}";
+
+            var entry = zip.GetEntry($"xl/worksheets/{sheet}.xml");
+
+            List<object[]> list = new List<object[]>();
+            List<object> temp = null;
+
+            XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
+            bool readData = false;
+            bool isValue = false;
+
+            int rowIndex = default;
+            int colIndex = default;
+            string dataType = default;
+            string xfs = default;
+            xmlReadKit.XmlReadXlsx("sheetData", (node, attrs, content) =>
+            {
+                switch (node)
+                {
+                    case "end":
+                        if (temp != null) list.Add(temp.ToArray());
+                        break;
+                    case "row":
+                        rowIndex = int.Parse(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
+                        if (rowIndex > current.EndRow)
+                            return false;
+                        if (rowIndex >= current.StartRow)
+                        {
+                            readData = true;
+                            if (temp != null) list.Add(temp.ToArray());
+                            temp = new List<object>();
+                        }
+                        break;
+                    case "c":
+                        if (readData)
+                        {
+                            string colEn = new string(CellPosition(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text).ToArray());
+                            colIndex = ExcelHelper.ColumnToIndex(colEn).Value;
+                            dataType = attrs.FirstOrDefault(x => x.Name.Equals("t", StringComparison.OrdinalIgnoreCase)).Text;
+                            xfs = attrs.FirstOrDefault(x => x.Name.Equals("s", StringComparison.OrdinalIgnoreCase)).Text;
+                        }
+                        break;
+                    case "v":
+                        if (colIndex >= current.StartColumnIndex
+                        && (current.EndColumnIndex != null ? colIndex <= current.EndColumnIndex : true))
+                            isValue = true;
+                        break;
+                    case "f":
+                        break;
+                    case "text":
+                        if (isValue)
+                        {
+                            if (readData)
+                            {
+                                if (dataType == "s")
+                                    temp.Add(sharedStrings[int.Parse(content)]);
+                                else
+                                    temp.Add(content);
+                            }
+                            isValue = false;
+                        }
+                        break;
+                    default:
+                        isValue = false;
+                        break;
+                }
+                return true;
+            });
+
+            return list;
+        }
+
+        public IEnumerable<IDictionary<string, object>> XmlReaderDictionary()
+        {
+            current = current ?? configs.FirstOrDefault();
+
+            var sheet = $"sheet{current.SheetIndex}";
+
+            var entry = zip.GetEntry($"xl/worksheets/{sheet}.xml");
+
+            List<IDictionary<string, object>> dicList = new List<IDictionary<string, object>>();
+            IDictionary<int, string> Columns = new Dictionary<int, string>();
+            IDictionary<string, object> temp = null;
+
+            XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
+            bool readColumns = false;
+            bool readData = false;
+            bool isValue = false;
+
+            int rowIndex = default;
+            int colIndex = default;
+            string dataType = default;
+            string xfs = default;
+            xmlReadKit.XmlReadXlsx("sheetData", (node, attrs, content) =>
+            {
+                switch (node)
+                {
+                    case "end":
+                        if (temp != null) dicList.Add(temp);
+                        break;
+                    case "row":
+                        rowIndex = int.Parse(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
+                        if (current.StartRow <= current.ColumnNameRow) throw new XlsxRowConfigException();
+                        if (rowIndex == current.ColumnNameRow)
+                            readColumns = true;
+                        if (rowIndex > current.EndRow)
+                            return false;
+                        if (rowIndex >= current.StartRow)
+                        {
+                            readColumns = false;
+                            readData = true;
+                            if (temp != null) dicList.Add(temp);
+                            temp = new Dictionary<string, object>();
+                        }
+                        break;
+                    case "c":
+                        if (readColumns || readData)
+                        {
+                            string colEn = new string(CellPosition(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text).ToArray());
+                            colIndex = ExcelHelper.ColumnToIndex(colEn).Value;
+                            dataType = attrs.FirstOrDefault(x => x.Name.Equals("t", StringComparison.OrdinalIgnoreCase)).Text;
+                            xfs = attrs.FirstOrDefault(x => x.Name.Equals("s", StringComparison.OrdinalIgnoreCase)).Text;
+                        }
+                        break;
+                    case "v":
+                        if (colIndex >= current.StartColumnIndex
+                        && (current.EndColumnIndex != null ? colIndex <= current.EndColumnIndex : true))
+                            isValue = true;
+                        break;
+                    case "f":
+                        break;
+                    case "text":
+                        if (isValue)
+                        {
+                            if (readColumns)
+                            {
+                                if (dataType == "s")
+                                {
+                                    Columns.Add(colIndex, sharedStrings[int.Parse(content)]);
+                                }
+                                else
+                                {
+                                    Columns.Add(colIndex, content);
+                                }
+                            }
+                            if (readData)
+                            {
+                                if (dataType == "s")
+                                {
+                                    temp.Add(Columns[colIndex], sharedStrings[int.Parse(content)]);
+                                }
+                                else
+                                {
+                                    temp.Add(Columns[colIndex], content);
+                                }
+                            }
+                            isValue = false;
+                        }
+                        break;
+                    default:
+                        isValue = false;
+                        break;
+                }
+                return true;
+            });
+
+            return dicList;
         }
 
         /// <summary>
@@ -813,7 +534,7 @@ namespace BigCookieKit.Office
         /// <param name="col"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+
         DataColumn FormColumn(XmlPacket col, string type)
         {
             try
@@ -832,7 +553,6 @@ namespace BigCookieKit.Office
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         object FromValue(XmlPacket col, string type)
         {
             try
@@ -870,7 +590,6 @@ namespace BigCookieKit.Office
             return DBNull.Value;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         object FixedFormat(XmlPacket col, string numFmt)
         {
             try
@@ -896,7 +615,6 @@ namespace BigCookieKit.Office
             return null;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         object ParseFormat(XmlPacket col, string format)
         {
             try
@@ -940,7 +658,6 @@ namespace BigCookieKit.Office
             return DBNull.Value;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         string GetV(XmlPacket element)
         {
             return element.Node.FirstOrDefault(x => x.Info.Name.Equals("v", StringComparison.OrdinalIgnoreCase)).Info.Text;

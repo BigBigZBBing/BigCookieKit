@@ -93,7 +93,7 @@ namespace BigCookieKit.Communication
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private void ShakeHandAsync()
         {
             var evetArgs = ShakeHandEventPool.Pop();
@@ -106,7 +106,7 @@ namespace BigCookieKit.Communication
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         void ProcessAccept(SocketAsyncEventArgs e)
         {
             ShakeHandEventArgs eventArgs = (ShakeHandEventArgs)e;
@@ -144,7 +144,7 @@ namespace BigCookieKit.Communication
             ShakeHandAsync();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private void AsyncDispatchCenter(object sender, SocketAsyncEventArgs e)
         {
             switch (e.LastOperation)
@@ -160,14 +160,14 @@ namespace BigCookieKit.Communication
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         void ProcessSend(SocketAsyncEventArgs e)
         {
             SendEventArgs eventArgs = (SendEventArgs)e;
             UserTokenSession UserToken = (UserTokenSession)eventArgs.UserToken;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         void ProcessReceive(SocketAsyncEventArgs e)
         {
             ReceiveEventArgs eventArgs = (ReceiveEventArgs)e;
@@ -177,8 +177,7 @@ namespace BigCookieKit.Communication
                 //解码回调
                 eventArgs.Decode((packet) =>
                 {
-                    if (packet.Mode == MessageMode.MessageByte
-                    || packet.Mode == MessageMode.MessageShort
+                    if (packet.Mode == MessageMode.MessageShort
                     || packet.Mode == MessageMode.MessageInt)
                         OnReceive?.Invoke(UserToken, packet);
                 });

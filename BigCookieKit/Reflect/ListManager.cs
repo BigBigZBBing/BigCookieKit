@@ -12,28 +12,28 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Add(LocalBuilder value)
         {
             Call("Add", value);
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Contains(LocalBuilder value)
         {
             Call("Contains", value);
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void RemoveAt(LocalBuilder value)
         {
             Call("RemoveAt", value);
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public FieldInt32 GetCount()
         {
             return new FieldInt32(Call("get_Count").ReturnRef(), generator);

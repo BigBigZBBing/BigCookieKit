@@ -18,7 +18,7 @@ namespace BigCookieKit
         /// <param name="dr"></param>
         /// <param name="filed">列名</param>
         /// <param name="value">值</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static void CellSetValue(this DataRow dr, string filed, object value)
         {
             Type filedType = dr.Table.Columns[filed].DataType;
@@ -46,7 +46,7 @@ namespace BigCookieKit
         /// <param name="dr"></param>
         /// <param name="filed"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static T CellGetValue<T>(this DataRow dr, string filed, DbValueFormat format = DbValueFormat.None)
         {
             Type filedType = dr.Table.Columns[filed].DataType;

@@ -26,7 +26,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="Num">数字</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static String MoneyUpper(this decimal num)
         {
             string str1 = "零壹贰叁肆伍陆柒捌玖";            //0-9所对应的汉字 
@@ -135,7 +134,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="cmd">命令行</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static String RunShell(string cmd)
         {
             Process process = new Process();
@@ -161,7 +159,6 @@ namespace BigCookieKit
         /// <typeparam name="T">目标类型</typeparam>
         /// <param name="element">Xml元素</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T XmlToEntity<T>(this XElement element) where T : class, new()
         {
             T obj = Activator.CreateInstance(typeof(T)) as T;
@@ -208,7 +205,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string FirstLower(this string str)
         {
             if (str.NotNull())
@@ -225,7 +221,6 @@ namespace BigCookieKit
         /// <typeparam name="TTarget">目标类型</typeparam>
         /// <param name="source"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TTarget MapTo<TSource, TTarget>(this TSource source)
             where TTarget : class
             where TSource : class
@@ -264,7 +259,6 @@ namespace BigCookieKit
         /// <param name="value">被格式化的字符串</param>
         /// <param name="paramters"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string RulesFormat(this string value, params string[] paramters)
         {
             for (int i = 0; i < paramters.Length; i++)

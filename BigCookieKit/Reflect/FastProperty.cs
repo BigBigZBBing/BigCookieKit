@@ -51,7 +51,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Set(Object value)
         {
             if (Instance == null)
@@ -62,7 +62,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public Object Get()
         {
             if (Instance == null)
@@ -73,7 +73,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Set(Object instance, Object value)
         {
             if (instance == null)
@@ -84,7 +84,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public Object Get(Object instance)
         {
             if (instance == null)
@@ -111,13 +111,13 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public Object Invoke(Object instance)
         {
             return getter?.Invoke(instance);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private Func<Object, Object> CreateGetterEmit(PropertyInfo property)
         {
             if (property == null)
@@ -163,7 +163,7 @@ namespace BigCookieKit.Reflect
             this.setFunc = CreatePropertySetter(propertyInfo);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private Action<Object, Object> CreatePropertySetter(PropertyInfo property)
         {
             if (property == null)
@@ -198,7 +198,7 @@ namespace BigCookieKit.Reflect
             return (Action<Object, Object>)dm.CreateDelegate(typeof(Action<Object, Object>));
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private static void EmitCastToReference(ILGenerator il, Type type)
         {
             if (type.IsValueType)
@@ -211,7 +211,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Invoke(Object instance, Object value)
         {
             this.setFunc?.Invoke(instance, value);

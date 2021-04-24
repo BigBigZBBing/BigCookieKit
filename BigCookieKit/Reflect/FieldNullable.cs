@@ -35,7 +35,7 @@ namespace BigCookieKit.Reflect
             return NullValue;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public FieldBoolean HasValue()
         {
             LocalBuilder Has = DeclareLocal(typeof(Boolean));
@@ -45,7 +45,7 @@ namespace BigCookieKit.Reflect
             return new FieldBoolean(Has, generator);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public CanCompute<T> Value()
         {
             LocalBuilder Original = generator.DeclareLocal(typeof(T));
@@ -55,7 +55,7 @@ namespace BigCookieKit.Reflect
             return new CanCompute<T>(Original, generator);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public CanCompute<T> GetValueOrDefault()
         {
             LocalBuilder Default = generator.DeclareLocal(typeof(T));

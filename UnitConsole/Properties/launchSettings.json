@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UnitConsole": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

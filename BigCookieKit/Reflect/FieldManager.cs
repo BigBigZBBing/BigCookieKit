@@ -14,7 +14,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public FieldObject AsObject()
         {
             var temp = this.NewObject();
@@ -32,7 +32,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public virtual MethodManager Call(String methodName, params LocalBuilder[] parameters)
         {
             return this.ReflectMethod(methodName, identity, parameters);

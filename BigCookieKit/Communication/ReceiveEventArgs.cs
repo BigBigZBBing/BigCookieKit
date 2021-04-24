@@ -26,7 +26,7 @@ namespace BigCookieKit.Communication
         /// 解封包
         /// </summary>
         /// <param name="callback"></param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal void Decode(Action<Packet> callback)
         {
             UserTokenSession UserToken = this.UserToken as UserTokenSession;
@@ -55,14 +55,13 @@ namespace BigCookieKit.Communication
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         bool PacketCommand(Action<Packet> bytes)
         {
             UserTokenSession UserToken = this.UserToken as UserTokenSession;
             switch (UserToken.Cache.Mode)
             {
                 //如果是消息包就回调
-                case MessageMode.MessageByte:
                 case MessageMode.MessageShort:
                 case MessageMode.MessageInt:
                     bytes?.Invoke(UserToken.Cache);
@@ -80,7 +79,7 @@ namespace BigCookieKit.Communication
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         void SocketDisconect()
         {
             UserTokenSession UserToken = this.UserToken as UserTokenSession;
@@ -95,7 +94,7 @@ namespace BigCookieKit.Communication
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         void SocketReconect()
         {
             UserTokenSession UserToken = this.UserToken as UserTokenSession;

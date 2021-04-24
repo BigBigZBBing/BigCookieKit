@@ -21,7 +21,7 @@ namespace TcpServerExmaple
             {
                 string res = Encoding.UTF8.GetString(packet);
                 Console.WriteLine($"[{user.UserHost}:{user.UserPort}]:{res}");
-                user.SendMessage("收到~");
+                //user.SendMessage("收到~");
                 HttpListener httpListener = new HttpListener();
             };
 
@@ -30,7 +30,7 @@ namespace TcpServerExmaple
                 Console.WriteLine($"{user.UserHost}:{user.UserPort}离开~");
             };
 
-            tcpServer.Handle = new EasyHandle();
+            //tcpServer.Handle = new EasyHandle();
             //tcpServer.Handle.AddPipe<TestPipe>();
 
             tcpServer.Start();

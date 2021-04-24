@@ -13,13 +13,17 @@ namespace BigCookieKit.XML
     public class XmlPacket
     {
         #region 内部参数
+
         internal XmlPacket Parent { get; set; }
+
         internal PacketState State { get; set; }
+
         #endregion
+
         public XmlInfo Info;
+
         public IList<XmlPacket> Node { get; set; }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public XmlAttribute GetAttr(string key)
         {
             var attrs = Info.Attributes;

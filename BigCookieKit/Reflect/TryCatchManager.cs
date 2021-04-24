@@ -14,7 +14,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public TryCatchManager Catch(Action<LocalBuilder> builder)
         {
             generator.BeginCatchBlock(typeof(Exception));
@@ -25,7 +25,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public TryCatchManager Finally(Action builder)
         {
             generator.BeginFinallyBlock();
@@ -34,7 +34,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void TryEnd()
         {
             generator.EndExceptionBlock();

@@ -15,7 +15,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="ZipFilePath">Zip文件目标路径</param>
         /// <param name="DirPath">文件夹路径</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static Boolean DirToFormZipPacket(String zipFilePath, String dirPath)
         {
             FileInfo zipFile = new FileInfo(zipFilePath);
@@ -36,7 +36,7 @@ namespace BigCookieKit
         /// <param name="zipFilePath">Zip文件目标路径</param>
         /// <param name="filesPath">所有的文件路径</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static Boolean FileToFormZipPacket(String zipFilePath, params String[] filesPath)
         {
             FileInfo zipFile = new FileInfo(zipFilePath);

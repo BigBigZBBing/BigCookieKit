@@ -90,7 +90,7 @@ namespace BigCookieKit.Communication
             return new IPEndPoint(address.FirstOrDefault(), Port);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void StartConnect()
         {
             Client = new Socket(AddressFamily, SocketType.Stream, ProtocolType.Tcp);
@@ -105,7 +105,7 @@ namespace BigCookieKit.Communication
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         void AsyncDispatchCenter(object sender, SocketAsyncEventArgs e)
         {
             switch (e.LastOperation)
@@ -121,7 +121,7 @@ namespace BigCookieKit.Communication
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         void ProcessConnect(SocketAsyncEventArgs e)
         {
             ShakeHandEventArgs eventArgs = (ShakeHandEventArgs)e;
@@ -156,7 +156,7 @@ namespace BigCookieKit.Communication
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         void ProcessSend(SocketAsyncEventArgs e)
         {
             SendEventArgs eventArgs = (SendEventArgs)e;
@@ -176,7 +176,7 @@ namespace BigCookieKit.Communication
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         void ProcessReceive(SocketAsyncEventArgs e)
         {
             ReceiveEventArgs eventArgs = (ReceiveEventArgs)e;

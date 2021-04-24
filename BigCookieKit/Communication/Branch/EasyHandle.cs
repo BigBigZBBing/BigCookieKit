@@ -10,7 +10,6 @@ namespace BigCookieKit.Communication
 {
     public class EasyHandle : Handle
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void Encode(byte[] bytes)
         {
             byte[] stream = new byte[bytes.Length + 2];
@@ -19,7 +18,6 @@ namespace BigCookieKit.Communication
             Communication.Buffer.SetBuffer(this, stream);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void Decode(Action<byte[]> packet)
         {
             Session session = (Session)UserToken;
@@ -38,11 +36,10 @@ namespace BigCookieKit.Communication
                     eofbody.Clear();
                 }
             }
-            if (session.ReadOffset < BytesTransferred) goto loop;
-            session.ReadOffset = 0;
+            if (session.ReceiveOffset < BytesTransferred) goto loop;
+            session.ReceiveOffset = 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool EnsureHeadComplete()
         {
             Session session = (Session)UserToken;
@@ -50,24 +47,23 @@ namespace BigCookieKit.Communication
             if (eofhead.Count < 2)
             {
                 int just = 2 - eofhead.Count;
-                if (session.ReadOffset + just > BytesTransferred)
+                if (session.ReceiveOffset + just > BytesTransferred)
                 {
-                    int remain = BytesTransferred - session.ReadOffset;
-                    eofhead.AddRange(MemoryBuffer.Slice(session.ReadOffset, remain));
-                    session.ReadOffset += remain;
+                    int remain = BytesTransferred - session.ReceiveOffset;
+                    eofhead.AddRange(MemoryBuffer.Slice(session.ReceiveOffset, remain));
+                    session.ReceiveOffset += remain;
                     return false;
                 }
                 else
                 {
-                    eofhead.AddRange(MemoryBuffer.Slice(session.ReadOffset, just));
-                    session.ReadOffset += 2;
+                    eofhead.AddRange(MemoryBuffer.Slice(session.ReceiveOffset, just));
+                    session.ReceiveOffset += 2;
                     return true;
                 }
             }
             return true;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool EnsureBodyComplete()
         {
             Session session = (Session)UserToken;
@@ -75,17 +71,17 @@ namespace BigCookieKit.Communication
             if (eofbody.Count < session.ReceiveCapacity)
             {
                 int just = session.ReceiveCapacity - eofbody.Count;
-                if (session.ReadOffset + just > BytesTransferred)
+                if (session.ReceiveOffset + just > BytesTransferred)
                 {
-                    int remain = BytesTransferred - session.ReadOffset;
-                    eofbody.AddRange(MemoryBuffer.Slice(session.ReadOffset, remain));
-                    session.ReadOffset += remain;
+                    int remain = BytesTransferred - session.ReceiveOffset;
+                    eofbody.AddRange(MemoryBuffer.Slice(session.ReceiveOffset, remain));
+                    session.ReceiveOffset += remain;
                     return false;
                 }
                 else
                 {
-                    eofbody.AddRange(MemoryBuffer.Slice(session.ReadOffset, just));
-                    session.ReadOffset += just;
+                    eofbody.AddRange(MemoryBuffer.Slice(session.ReceiveOffset, just));
+                    session.ReceiveOffset += just;
                     return true;
                 }
             }

@@ -18,7 +18,6 @@ namespace BigCookieKit
         /// <param name="obj">对象</param>
         /// <param name="def">是否包含默认值</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean IsNull(this Object obj, Boolean def = true)
         {
             if (obj == null)
@@ -41,7 +40,6 @@ namespace BigCookieKit
         /// <param name="obj">对象</param>
         /// <param name="def">是否包含默认值</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean NotNull(this Object obj, Boolean def = true)
         {
             return !obj.IsNull(def);
@@ -54,7 +52,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="collection">集合</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean Exist<T>(this IEnumerable<T> collection)
         {
             if (collection.IsNull() || collection.Count().IsNull())
@@ -70,7 +67,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="collection">集合</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean NotExist<T>(this IEnumerable<T> collection)
         {
             return !collection.Exist();
@@ -84,7 +80,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="ds"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean Exist(this DataSet ds)
         {
             if (ds.IsNull() || ds.Tables.IsNull() || ds.Tables.Count.IsNull())
@@ -100,7 +95,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="ds"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean NotExist(this DataSet ds)
         {
             return !ds.Exist();
@@ -116,7 +110,6 @@ namespace BigCookieKit
         /// <param name="ds"></param>
         /// <param name="index">Tables的索引</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean Exist(this DataSet ds, Int32 index)
         {
             if (ds.IsNull() || ds.Tables.IsNull() || ds.Tables.Count.IsNull() || ds.Tables[index].NotExist())
@@ -133,7 +126,6 @@ namespace BigCookieKit
         /// <param name="ds"></param>
         /// <param name="index">Tables的索引</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean NotExist(this DataSet ds, Int32 index)
         {
             return !ds.Exist(index);
@@ -147,7 +139,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean Exist(this DataTable dt)
         {
             if (dt.IsNull() || dt.Rows.IsNull() || dt.Rows.Count.IsNull())
@@ -163,19 +154,17 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean NotExist(this DataTable dt)
         {
             return !dt.Exist();
         }
 
         /// <summary>
-        /// 保证字符串都拥有
+        /// 判断字符片段在目标字符串中都存在
         /// </summary>
         /// <param name="str"></param>
         /// <param name="parameters">参数顺序代表{0} {1}</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean AllOwn(this String str, params String[] parameters)
         {
             foreach (var item in parameters)
@@ -193,7 +182,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean IsClass(this Object obj)
         {
             if (obj.GetType().BaseType == typeof(Object))
@@ -208,7 +196,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean IsValue(this Object obj)
         {
             if ((obj as ValueType) != null)
@@ -223,7 +210,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean IsStruct(this Object obj)
         {
             if (obj.GetType().BaseType == typeof(ValueType))
@@ -238,7 +224,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Boolean IsEnum(this Object obj)
         {
             if (obj.GetType().BaseType == typeof(Enum))
@@ -246,6 +231,34 @@ namespace BigCookieKit
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 转成字符串(默认为NULL)
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static String ToStr(this Object obj)
+        {
+            if (obj.NotNull())
+            {
+                return obj.ToString();
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 转成字符串(默认为空字符串)
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static String ToStrEmpty(this Object obj)
+        {
+            if (obj.NotNull())
+            {
+                return obj.ToString();
+            }
+            return "";
         }
     }
 }

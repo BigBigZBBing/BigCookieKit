@@ -2,12 +2,14 @@ using BigCookieKit;
 using BigCookieKit.Office;
 using BigCookieKit.XML;
 using BigCookieSequelize;
+using MiniExcelLibs;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
@@ -68,11 +70,11 @@ namespace NUnitBigCookieKit
             TestEnum test2 = TestEnum.False;
 
             //""
-            test.Remark();
+            test.ToDisplay();
             //"正确"
-            test1.Remark();
+            test1.ToDisplay();
             //"错误"
-            test2.Remark();
+            test2.ToDisplay();
 
             Assert.IsTrue(true);
         }
@@ -155,7 +157,7 @@ namespace NUnitBigCookieKit
         //[Test]
         //public void NpoiKitUnit()
         //{
-        //    string path = @"C:\Users\zbb58\Desktop\test.xlsx";
+        //    string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
         //    NpoiKit npoiKit = new NpoiKit(path);
         //    npoiKit.CreateConfig(config =>
         //    {
@@ -194,91 +196,6 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void ExcelDataTableKitUnit()
-        {
-            string path = @"C:\Users\zbb58\Desktop\test2.xlsx";
-            ReadExcelKit excelKit = new ReadExcelKit(path);
-            excelKit.AddConfig(config =>
-            {
-                config.SheetIndex = 1;
-                config.ColumnNameRow = 1;
-                config.StartRow = 2;
-                //config.EndRow = 700;
-                //config.StartColumn = "A";
-                //config.EndColumn = "B";
-            });
-            DataTable dt = excelKit.ReadDataTable();
-        }
-
-        [Test]
-        public void ExcelDataSetKitUnit()
-        {
-            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
-            ReadExcelKit excelKit = new ReadExcelKit(path);
-            excelKit.AddConfig(config =>
-            {
-                config.SheetIndex = 1;
-                config.StartRow = 1;
-                config.EndRow = 2;
-                config.StartColumn = "A";
-                config.EndColumn = "A";
-            });
-            excelKit.AddConfig(config =>
-            {
-                config.SheetIndex = 1;
-                config.StartRow = 4;
-                config.EndRow = 53;
-                config.StartColumn = "A";
-                config.EndColumn = "D";
-            });
-            excelKit.AddConfig(config =>
-            {
-                config.SheetIndex = 1;
-                config.StartRow = 3;
-                config.EndRow = 4;
-                config.StartColumn = "G";
-                config.EndColumn = "G";
-            });
-            DataSet ds = excelKit.ReadDataSet();
-        }
-
-        [Test]
-        public void ExcelSetKitUnit()
-        {
-            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
-            ReadExcelKit excelKit = new ReadExcelKit(path);
-            excelKit.AddConfig(config =>
-            {
-                config.SheetIndex = 1;
-                config.ColumnNameRow = 1;
-                //config.StartRow = 2;
-            });
-            var rows = excelKit.ReadSet();
-
-            //自行转换成DataTable
-            DataTable dt = new DataTable();
-            foreach (var item in rows)
-            {
-                if (dt.Columns.Count == 0)
-                {
-                    foreach (var item1 in item)
-                        dt.Columns.Add(item1.ToString());
-                }
-                else
-                {
-                    int columnIndex = 0;
-                    foreach (var item1 in item)
-                    {
-                        if (dt.Columns[columnIndex].DataType != item1.GetType())
-                            dt.Columns[columnIndex].DataType = item1.GetType();
-                        columnIndex++;
-                    }
-                    dt.Rows.Add(item);
-                }
-            }
-        }
-
-        [Test]
         public void SequelizeUnit()
         {
             using (MySqlConnection connection = new MySqlConnection("Server=localhost;Port=3306;Database=dbTest;Uid=root;Pwd=zhangbingbin5896;"))
@@ -310,7 +227,7 @@ namespace NUnitBigCookieKit
         public void ZipUnit()
         {
             Kit.DirToFormZipPacket(@"C:\Users\zbb58\Desktop\test.zip", @"C:\Users\zbb58\Desktop\Program");
-            //Kit.FileToFormZipPacket(@"C:\Users\zbb58\Desktop\test.zip", @"C:\Users\zbb58\Desktop\test.xlsx");
+            //Kit.FileToFormZipPacket(@"C:\Users\zbb58\Desktop\test.zip", @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx");
         }
 
         [Test]
@@ -320,55 +237,53 @@ namespace NUnitBigCookieKit
             XmlReadKit xmlReadKit = new XmlReadKit(path);
             //如果单应用于Xml结构 没有属性 设置不读属性 性能提升大
             xmlReadKit.IsReadAttributes = false;
-            var packet = xmlReadKit.Read("sheetData");
+            var packet = xmlReadKit.XmlRead("sheetData");
         }
 
         [Test]
         public void XmlReadSetUnit()
         {
-            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
+            string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                config.ColumnNameRow = 1;
+                config.StartRow = 1;
+                //config.EndRow = 100;
+                //config.StartColumn = "B";
+                //config.EndColumn = "B";
             });
             var rows = excelKit.XmlReaderSet();
-
-            //自行转换成DataTable
-            DataTable dt = new DataTable();
-            foreach (var item in rows)
-            {
-                if (dt.Columns.Count == 0)
-                {
-                    foreach (var item1 in item)
-                        dt.Columns.Add(item1.ToString());
-                }
-                else
-                {
-                    int columnIndex = 0;
-                    foreach (var item1 in item)
-                    {
-                        if (dt.Columns[columnIndex].DataType != item1.GetType())
-                            dt.Columns[columnIndex].DataType = item1.GetType();
-                        columnIndex++;
-                    }
-                    dt.Rows.Add(item);
-                }
-            }
         }
 
         [Test]
-        public void XmlReadDataTableKitUnit()
+        public void XmlReadDictionaryUnit()
         {
-            string path = @"C:\Users\zbb58\Desktop\test.xlsx";
+            string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
                 config.ColumnNameRow = 1;
                 config.StartRow = 2;
-                config.EndRow = 700;
+                //config.EndRow = 100;
+                //config.StartColumn = "B";
+                //config.EndColumn = "B";
+            });
+            var dics = excelKit.XmlReaderDictionary();
+        }
+
+        [Test]
+        public void XmlReadDataTableKitUnit()
+        {
+            string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
+            ReadExcelKit excelKit = new ReadExcelKit(path);
+            excelKit.AddConfig(config =>
+            {
+                config.SheetIndex = 1;
+                config.ColumnNameRow = 1;
+                config.StartRow = 2;
+                config.EndRow = 100;
             });
             DataTable dt = excelKit.XmlReadDataTable();
         }
@@ -421,39 +336,68 @@ namespace NUnitBigCookieKit
 
             var index = Kit.FastIndexOf(t1, t2);
         }
-    }
 
-    public struct TestStruct
-    {
-        public string filed { get; set; }
-    }
+        [Test]
+        public void MiniExcelUnit()
+        {
+            string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
+            var rows = MiniExcel.Query(path);
 
-    public enum TestEnum
-    {
-        None,
-        [Remark("正确")]
-        True,
-        [Remark("错误")]
-        False
-    }
+            //自行转换成DataTable
+            DataTable dt = new DataTable();
+            foreach (var item in rows)
+            {
+                if (dt.Columns.Count == 0)
+                {
+                    foreach (var item1 in (IDictionary<string, object>)item)
+                        dt.Columns.Add(item1.Key);
+                }
+                else
+                {
+                    DataRow ndr = dt.NewRow();
+                    foreach (var item1 in (IDictionary<string, object>)item)
+                    {
+                        if (dt.Columns[item1.Key].DataType != item1.Value.GetType())
+                            dt.Columns[item1.Key].DataType = item1.Value.GetType();
+                        ndr[item1.Key] = item1.Value;
+                    }
+                    dt.Rows.Add(ndr);
+                }
+            }
+        }
 
-    public class Test1
-    {
-        public string attr1 { get; set; }
-        public string attr2 { get; set; }
-        public List<Test2> Test2 { get; set; }
-    }
+        public struct TestStruct
+        {
+            public string filed { get; set; }
+        }
 
-    public class Test2
-    {
-        public string attr3 { get; set; }
-        public string attr4 { get; set; }
-        public List<Field> Field { get; set; }
-    }
+        public enum TestEnum
+        {
+            None,
+            [Display("正确")]
+            True,
+            [Display("错误")]
+            False
+        }
 
-    public class Field
-    {
-        public string attr5 { get; set; }
-        public string attr6 { get; set; }
+        public class Test1
+        {
+            public string attr1 { get; set; }
+            public string attr2 { get; set; }
+            public List<Test2> Test2 { get; set; }
+        }
+
+        public class Test2
+        {
+            public string attr3 { get; set; }
+            public string attr4 { get; set; }
+            public List<Field> Field { get; set; }
+        }
+
+        public class Field
+        {
+            public string attr5 { get; set; }
+            public string attr6 { get; set; }
+        }
     }
 }

@@ -11,14 +11,14 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public FieldBoolean IsNull()
         {
             return this.IsNull(this);
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public FieldBoolean IsNullOrEmpty()
         {
             Output();
@@ -26,28 +26,28 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static FieldBoolean operator ==(FieldString field, String value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static FieldBoolean operator ==(FieldString field, LocalBuilder value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static FieldBoolean operator ==(FieldString field, FieldString value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static FieldBoolean operator !=(FieldString field, String value)
         {
             return ManagerGX.Comparer(
@@ -56,7 +56,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static FieldBoolean operator !=(FieldString field, LocalBuilder value)
         {
             return ManagerGX.Comparer(
@@ -65,7 +65,7 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static FieldBoolean operator !=(FieldString field, FieldString value)
         {
             return ManagerGX.Comparer(
@@ -74,21 +74,21 @@ namespace BigCookieKit.Reflect
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static FieldString operator +(FieldString field, String value)
         {
             return ManagerGX.Compute(field, value, OpCodes.Add);
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static VariableManager operator +(FieldString field, LocalBuilder value)
         {
             return ManagerGX.Compute(field, value, OpCodes.Add);
         }
 
         
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public static FieldString operator +(FieldString field, FieldString value)
         {
             return ManagerGX.Compute(field, value, OpCodes.Add);

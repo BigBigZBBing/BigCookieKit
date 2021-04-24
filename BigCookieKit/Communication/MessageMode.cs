@@ -12,9 +12,8 @@ namespace BigCookieKit.Communication
     public enum MessageMode
     {
         None = 0,
-        MessageByte = 1,
-        MessageShort = 2,
-        MessageInt = 3,
+        MessageShort = 1,
+        MessageInt = 2,
         Disconect = 0xFF,
         Reconnect = 0xFE,
     }

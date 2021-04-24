@@ -105,25 +105,25 @@ namespace BigCookieKit.Reflect
         public Label DefineLabel() => generator.DefineLabel();
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void EmitCall(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes) =>
             generator.EmitCall(opcode, methodInfo, optionalParameterTypes);
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void EmitCalli(OpCode opcode, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type[] optionalParameterTypes) =>
             generator.EmitCalli(opcode, callingConvention, returnType, parameterTypes, optionalParameterTypes);
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void EmitWriteLine(string value) => generator.EmitWriteLine(value);
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void EmitWriteLine(FieldInfo fld) => generator.EmitWriteLine(fld);
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void EmitWriteLine(LocalBuilder localBuilder) => generator.EmitWriteLine(localBuilder);
 
 
@@ -139,7 +139,7 @@ namespace BigCookieKit.Reflect
         public void UsingNamespace(string usingNamespace) => generator.UsingNamespace(usingNamespace);
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private void DispatchEmit<T>(OpCode opcode, T value)
         {
             CheckOverLength(ref opcode);
@@ -148,7 +148,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private void DispatchEmit(OpCode opcode)
         {
             if (CacheManager.retValue) generator.Emit(OpCodes.Pop);
@@ -156,7 +156,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private void CheckOverLength(ref OpCode opcode)
         {
 
@@ -191,7 +191,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private LocalBuilder RedirectLocal(Type localType, Boolean pinned = false)
         {
             var local = generator.DeclareLocal(localType, pinned);
@@ -199,7 +199,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private Delegate CacheMethod<T>()
         {
             if (emitMethod.ContainsKey(typeof(T)))

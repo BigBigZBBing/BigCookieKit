@@ -17,7 +17,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public AssertManager ElseIF(LocalBuilder assert, Action builder)
         {
             context.Add(new Tuple<LocalBuilder, Action>(assert, builder));
@@ -25,7 +25,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public AssertManager ElseIF<T>(FieldManager<T> assert, Action builder)
         {
             context.Add(new Tuple<LocalBuilder, Action>(assert, builder));
@@ -33,7 +33,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Else(Action<ILGenerator> builder)
         {
             Label end = generator.DefineLabel();
@@ -56,7 +56,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void IFEnd()
         {
             Label end = generator.DefineLabel();

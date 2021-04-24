@@ -12,7 +12,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="m_float"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetPrecision(this float m_float)
         {
             return GetPrecision((decimal)m_float);
@@ -23,7 +22,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="m_float"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetPrecision(this double m_float)
         {
             return GetPrecision((decimal)m_float);
@@ -34,7 +32,6 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="m_float"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetPrecision(this decimal m_float)
         {
             var str = m_float.ToString();

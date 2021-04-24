@@ -7,13 +7,14 @@ using System.Text;
 namespace BigCookieKit
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public class RemarkAttribute : Attribute
+    public class DisplayAttribute
+        : Attribute
     {
-        private string remark;
-        public string Remark { get => remark; set => remark = value; }
-        public RemarkAttribute(string remark)
+        public string Value { get; set; }
+
+        public DisplayAttribute(string value)
         {
-            this.Remark = remark;
+            this.Value = value;
         }
     }
 }

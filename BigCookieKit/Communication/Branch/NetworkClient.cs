@@ -55,7 +55,7 @@ namespace BigCookieKit.Communication
                 Mode = CurrSocket.Mode,
                 Encoder = Encoder,
                 RemoteEndPoint = GetAddress(),
-                ReceiveHandle = Handle?.New().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter) ?? Protocol switch
+                RecHandle = Handle?.New().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter) ?? Protocol switch
                 {
                     NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     NetworkProtocol.Udp => throw new NotImplementedException(),
@@ -92,7 +92,7 @@ namespace BigCookieKit.Communication
                 session.UserHost = string.Join("|", AllHost.Select(x => x.ToString()).ToArray());
                 session.UserPort = EndPoint.Port;
                 session.OperationTime = DateTime.Now;
-                session.ReceiveHandle.UserToken = session;
+                session.RecHandle.UserToken = session;
 
                 ThreadPool.QueueUserWorkItem(e => OnConnect?.Invoke(session));
 
@@ -102,8 +102,8 @@ namespace BigCookieKit.Communication
                 }
 
                 if (!session.Client
-                        .ReceiveAsync(session.ReceiveHandle))
-                    ((ICilent)this).ProcessReceive(session.ReceiveHandle);
+                        .ReceiveAsync(session.RecHandle))
+                    ((ICilent)this).ProcessReceive(session.RecHandle);
             }
             else
             {
@@ -116,10 +116,10 @@ namespace BigCookieKit.Communication
             Session session = (Session)e.UserToken;
             if (e.SocketError == SocketError.Success && e.BytesTransferred > 0)
             {
-                session.ReceiveHandle
+                session.RecHandle
                 .Decode(packet =>
                 {
-                    session.ReceiveHandle.PipeStart(delegate
+                    session.RecHandle.PipeStart(delegate
                     {
                         OnCallBack?.Invoke(session, packet);
                     });

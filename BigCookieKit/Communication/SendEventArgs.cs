@@ -22,7 +22,7 @@ namespace BigCookieKit.Communication
         internal Action<SocketAsyncEventArgs> SendAction { get; set; }
 
         //消息封包
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal void Encode(byte[] message)
         {
             var len = message.Length;
@@ -62,7 +62,7 @@ namespace BigCookieKit.Communication
         /// <summary>
         /// 请求断开封包
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal void Disconnect()
         {
             Span<byte> packet;
@@ -76,7 +76,7 @@ namespace BigCookieKit.Communication
         /// <summary>
         /// 请求重连封包
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal void Reconnection()
         {
             Span<byte> packet;

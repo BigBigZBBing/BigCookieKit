@@ -105,7 +105,7 @@ namespace BigCookieKit.Reflect
 
 #if NET452
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Save()
         {
             SaveClass();

@@ -19,9 +19,6 @@ namespace TcpClientExmaple
                 {
                     Console.ReadLine();
                     user.SendMessage(RamdomString());
-                    user.SendMessage(RamdomString());
-                    user.SendMessage(RamdomString());
-                    user.SendMessage(RamdomString());
                     //string str = Console.ReadLine();
                     //switch (str)
                     //{
@@ -40,7 +37,7 @@ namespace TcpClientExmaple
                 Console.WriteLine(Encoding.UTF8.GetString(packet));
             };
 
-            client.Handle = new EasyHandle();
+            //client.Handle = new EasyHandle();
             client.Start();
 
             Thread.Sleep(-1);

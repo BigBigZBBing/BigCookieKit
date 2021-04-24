@@ -88,7 +88,7 @@ namespace BigCookieKit.Communication
         /// 消息包
         /// </summary>
         /// <param name="message"></param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void SendMessage(byte[] message)
         {
             ShakeHandEvent.SendEventArgs.Encode(message);

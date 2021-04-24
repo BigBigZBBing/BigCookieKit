@@ -23,9 +23,8 @@
     <AssemblyVersion>1.0.*</AssemblyVersion>
     <FileVersion>1.0.2021.0407</FileVersion>
     <Version>1.0.2021.0407</Version>
-    <PackageReleaseNotes>修复Network类TcpHandle解包的Bug 优化性能IO在1K以内IO性能极限化
-增加EasyHandle降低解决粘包的复杂度，增加IO性能
-Http和Udp协议使用NoneHandle处理器</PackageReleaseNotes>
+    <PackageReleaseNotes>Excel读取组件去除中间多余环节直接隐射结果集 增加了59%的性能效率
+Emit操作库增加更多的功能</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netcoreapp3.1'">
@@ -74,6 +73,7 @@ Http和Udp协议使用NoneHandle处理器</PackageReleaseNotes>
 
   <ItemGroup>
     <Folder Include="ORM\" />
+    <Folder Include="Contract\" />
   </ItemGroup>
 
 </Project>

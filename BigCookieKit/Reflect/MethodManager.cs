@@ -13,7 +13,7 @@ namespace BigCookieKit.Reflect
             ReturnType = returnType;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public LocalBuilder ReturnRef()
         {
             CacheManager.retValue = false;

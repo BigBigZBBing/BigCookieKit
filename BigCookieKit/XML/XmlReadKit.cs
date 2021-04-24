@@ -1,5 +1,7 @@
-﻿using System;
+﻿using BigCookieKit.Office;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -39,8 +41,10 @@ namespace BigCookieKit.XML
             IgnoreComments = true,
             IgnoreProcessingInstructions = true,
             IgnoreWhitespace = true,
-            Async = true
+            XmlResolver = null,
         };
+
+        public XmlReadKit() { }
 
         public XmlReadKit(Stream stream)
         {
@@ -55,15 +59,8 @@ namespace BigCookieKit.XML
             _read = XmlReader.Create(current, settings);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public XmlPacket Read(string mainNode)
-        {
-            return XmlRead(mainNode);
-        }
-
         #region 内存树方案
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private XmlPacket XmlRead(string Node)
+        public XmlPacket XmlRead(string Node)
         {
             XmlPacket packet = null;
             while (_read.Read())
@@ -118,122 +115,60 @@ namespace BigCookieKit.XML
             }
             return packet;
         }
-        #endregion
 
-        #region 递归方案
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [Obsolete("递归产生的调用函数产生的开销和异步回调产生的开销过大 此方案弃用")]
-        private XmlPacket XmlReadRoot(string Node)
+        public void XmlReadXlsx(string Node, Func<string, XmlAttribute[], string, bool> callback)
         {
-            XmlPacket packet = new XmlPacket();
-            bool switchover = false;
-            while (switchover || _read.Read())
+            bool start = false;
+            while (_read.Read())
             {
                 switch (_read.NodeType)
                 {
                     case XmlNodeType.Element:
-                        if (_read.Name.Equals(Node, StringComparison.OrdinalIgnoreCase))
+                        if (_read.Name == Node) start = true;
+                        if (start)
                         {
-                            ReadContentFrom();
-                            packet.Node = XmlReadNode(ref switchover);
-                        }
-                        break;
-                    case XmlNodeType.Text:
-                        if (_read.HasValue)
-                        {
-                            _callback?.Invoke(_read.Value);
-                            _callback = null;
-                            return null;
-                        }
-                        break;
-                    case XmlNodeType.EndElement:
-                        if (_read.Name.Equals(Node, StringComparison.OrdinalIgnoreCase))
-                        {
-                            return packet;
-                        }
-                        break;
-                }
-                if (_read.EOF) throw new EndOfStreamException();
-            }
-            return packet;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [Obsolete("递归产生的调用函数产生的开销和异步回调产生的开销过大 此方案弃用")]
-        private XmlPacket[] XmlReadNode(ref bool switchover)
-        {
-            List<XmlPacket> packetSet = new List<XmlPacket>();
-            XmlPacket packet = null;
-            while (switchover || _read.Read())
-            {
-                //关闭轨道切换
-                switchover = false;
-                switch (_read.NodeType)
-                {
-                    case XmlNodeType.Element:
-                        packet = new XmlPacket();
-                        _callback = value =>
-                        {
-                            packet.Info.HasValue = true;
-                            packet.Info.Text = value;
-                        };
-                        ReadContentFrom();
-                        if (_read.IsEmptyElement)
-                        {
-                            if (packet.NotNull())
+                            if (!callback(_read.Name, XmlReadAttr(), null))
                             {
-                                packetSet.Add(packet);
-                                packet = null;
+                                callback("end", null, null);
+                                return;
                             }
                         }
-                        else
-                        {
-                            packet.Node = XmlReadNode(ref switchover);
-                        }
                         break;
                     case XmlNodeType.Text:
-                        if (_read.HasValue)
+                        if (start && _read.HasValue)
                         {
-                            _callback?.Invoke(_read.Value);
-                            _callback = null;
-                            return null;
+                            if (!callback("text", XmlReadAttr(), _read.Value))
+                            {
+                                return;
+                            }
                         }
                         break;
                     case XmlNodeType.EndElement:
-                        if (packet.NotNull())
-                        {
-                            packetSet.Add(packet);
-                            packet = null;
-                        }
-                        else
-                        {
-                            //打开轨道切换
-                            switchover = true;
-                            return packetSet.ToArray();
-                        }
+                        if (_read.Name == Node) return;
                         break;
                 }
-                if (_read.EOF) throw new EndOfStreamException();
             }
-            return packetSet.ToArray();
         }
-        #endregion
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private XmlAttribute[] XmlReadNodeAttr()
+        private void XmlReadNodeAttr()
         {
-            if (!IsReadAttributes) return null;
-            _curr.Info.Attributes = new XmlAttribute[_read.AttributeCount];
+            if (!IsReadAttributes) return;
+            _curr.Info.Attributes = XmlReadAttr();
+        }
+
+        public XmlAttribute[] XmlReadAttr()
+        {
+            if (_read.AttributeCount == 0) return null;
+            var attrs = new XmlAttribute[_read.AttributeCount];
             for (int index = 0; index < _read.AttributeCount; index++)
             {
                 _read.MoveToAttribute(index);
-                _curr.Info.Attributes[index].Name = _read.Name;
-                _curr.Info.Attributes[index].Text = _read.Value;
+                attrs[index].Name = _read.Name;
+                attrs[index].Text = _read.Value;
             }
-            return xmlAttrs;
+            return attrs;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void ReadContentFrom()
         {
             _curr.Info.Name = _read.Name;
@@ -243,7 +178,6 @@ namespace BigCookieKit.XML
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void EndReadFrom()
         {
 
@@ -253,6 +187,8 @@ namespace BigCookieKit.XML
             _curr.State = PacketState.End;
             _curr = _curr.Parent;
         }
+
+        #endregion
 
         protected virtual void Dispose(bool disposing)
         {

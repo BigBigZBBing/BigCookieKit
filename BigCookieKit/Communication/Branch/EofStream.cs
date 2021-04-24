@@ -59,7 +59,7 @@ namespace BigCookieKit.Communication
             set { m_offset = value; }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Add(byte item)
         {
             EnsureCapacity();
@@ -67,7 +67,7 @@ namespace BigCookieKit.Communication
             m_offset++;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void AddRange(Memory<byte> items)
         {
             EnsureCapacity(items.Length);
@@ -75,7 +75,7 @@ namespace BigCookieKit.Communication
             m_offset += items.Length;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void AddRange(ReadOnlyMemory<byte> items)
         {
             EnsureCapacity(items.Length);
@@ -83,19 +83,19 @@ namespace BigCookieKit.Communication
             m_offset += items.Length;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public void Clear()
         {
             m_offset = 0;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public byte[] ToArray()
         {
             return m_bytes.Slice(0, m_offset).ToArray();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         private void EnsureCapacity(int increment = 1)
         {
             var max = m_offset + increment;

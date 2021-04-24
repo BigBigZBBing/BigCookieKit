@@ -67,7 +67,7 @@ namespace BigCookieKit.Communication
         /// </summary>
         /// <param name="tmpStream"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal int LoadHead(Span<byte> stream)
         {
             Span<byte> tmpStream = stream;
@@ -138,7 +138,7 @@ namespace BigCookieKit.Communication
         /// </summary>
         /// <param name="tmpStream"></param>
         /// <returns></returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         internal int LoadBody(Span<byte> stream)
         {
             Span<byte> tmpStream = stream;
