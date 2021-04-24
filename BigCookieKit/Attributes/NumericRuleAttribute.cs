@@ -11,30 +11,31 @@ namespace BigCookieKit
     /// 整数规则
     /// </summary>
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public class NumericRuleAttribute : BasicAttribute
+    public class NumericRuleAttribute 
+        : BasicAttribute
     {
-        public NumericRuleAttribute(string Name) : base(Name)
+        public NumericRuleAttribute(string Name = "") : base(Name)
         {
         }
 
         /// <summary>
         /// 大于
         /// </summary>
-        public int? Greater { get; set; }
+        public object Greater { get; set; }
 
         /// <summary>
         /// 小于
         /// </summary>
-        public int? Less { get; set; }
+        public object Less { get; set; }
 
         /// <summary>
         /// 等于
         /// </summary>
-        public int? Equal { get; set; }
+        public object Equal { get; set; }
 
         /// <summary>
         /// 不等于
         /// </summary>
-        public int? NoEqual { get; set; }
+        public object NoEqual { get; set; }
     }
 }

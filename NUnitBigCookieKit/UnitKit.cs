@@ -23,25 +23,18 @@ namespace NUnitBigCookieKit
         {
         }
 
+        /// <summary>
+        /// 模型类校验单元测试
+        /// </summary>
         [Test]
         public void VerifyUnit()
         {
-            //TestModel testModel = new TestModel();
-            //testModel.Id = 100;//不填通不过
-            ////testModel.Name = "张";//通不过
-            ////testModel.Name = "张三";//通过
-            ////testModel.Name = "张as";//通不过
-            ////testModel.Name = "张三三";//通过
-            ////testModel.Name = "张三三三三";//通不过
-            //testModel.Old = 1;//通过
-            ////testModel.Old = 12;//通不过
-            //testModel.Old1 = 10;//通过
-            ////testModel.Old1 = 8;//通不过
-            //testModel.Old2 = 8;//通过
-            //testModel.Old2 = 7;//通不过
+            VerifyModel model = new VerifyModel();
+            //model.StrField = "jskdlfjlsdjlflsdlfjlsdlkf";
+            //model.IntField = 10;
+            //model.DecimalField = 10.5264m;
 
-            //testModel.ModelValidation();
-            Assert.IsTrue(true);
+            Assert.IsTrue(model.ModelValidation());
         }
 
         [Test]
@@ -56,8 +49,8 @@ namespace NUnitBigCookieKit
             //值类型
             int test1 = 0;
             //默认值和NULL都为true
-            test1.IsNull();
-            test1.NotNull();
+            test1.IsNull(false);
+            test1.NotNull(false);
 
             Assert.IsTrue(true);
         }
@@ -153,19 +146,6 @@ namespace NUnitBigCookieKit
             {
             }
         }
-
-        //[Test]
-        //public void NpoiKitUnit()
-        //{
-        //    string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
-        //    NpoiKit npoiKit = new NpoiKit(path);
-        //    npoiKit.CreateConfig(config =>
-        //    {
-        //        config.ColumnNameRow = 1;
-        //        config.StartRow = 2;
-        //    });
-        //    DataTable dt = npoiKit.ToDataTable(npoiKit.GetSheet("Sheet1"));
-        //}
 
         [Test]
         public void TypeAssertUnit()
@@ -274,16 +254,23 @@ namespace NUnitBigCookieKit
         }
 
         [Test]
-        public void XmlReadDataTableKitUnit()
+        public void XmlReadDataTableUnit()
         {
             string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                config.ColumnNameRow = 1;
+                //config.ColumnNameRow = 1;
                 config.StartRow = 2;
-                config.EndRow = 100;
+                //config.EndRow = 100;
+                config.ColumnSetting = new[] {
+                    new ColumnConfig(){ ColumnName="Id", ColumnType=typeof(int), NormalType= ColumnNormal.Increment },
+                    new ColumnConfig(){ ColumnName="UniqueNo", ColumnType=typeof(Guid), NormalType= ColumnNormal.Guid },
+                    new ColumnConfig(){ ColumnName="CreateTime", ColumnType=typeof(DateTime), NormalType= ColumnNormal.NowDate },
+                    new ColumnConfig(){ ColumnName="测试1", ColumnType=typeof(string), Column="A" },
+                    new ColumnConfig(){ ColumnName="测试2", ColumnType=typeof(string), Column="B" },
+                };
             });
             DataTable dt = excelKit.XmlReadDataTable();
         }
@@ -378,6 +365,21 @@ namespace NUnitBigCookieKit
             True,
             [Display("错误")]
             False
+        }
+
+        public class VerifyModel
+        {
+            [RequiredRule("DateTimeFieldName", Message = "{0}{3}")]
+            public DateTime? DateTimeField { get; set; }
+
+            [StringRule("StrFieldName", MaxLength = 10, Message = "{1}的{3}", Required = true)]
+            public string StrField { get; set; }
+
+            [NumericRule("IntFieldName", Equal = 10, Message = "{1}的{3}错误")]
+            public int? IntField { get; set; }
+
+            [DecimalRule("DecimalFieldName", Equal = 10.526, Precision = 3, Message = "{1}的{3}错误")]
+            public decimal? DecimalField { get; set; }
         }
 
         public class Test1

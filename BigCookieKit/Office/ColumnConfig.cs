@@ -11,9 +11,10 @@ namespace BigCookieKit.Office
     /// </summary>
     public enum ColumnNormal
     {
+        Default,
         Guid,
         NowDate,
-        DBNull
+        Increment,
     }
 
     public class ColumnConfig
@@ -29,7 +30,7 @@ namespace BigCookieKit.Office
             }
             set
             {
-                StartColumnIndex = ExcelHelper.ColumnToIndex(value);
+                ColumnIndex = ExcelHelper.ColumnToIndex(value);
                 _Column = value;
             }
         }
@@ -37,7 +38,7 @@ namespace BigCookieKit.Office
         /// <summary>
         /// 列的索引 由1开始
         /// </summary>
-        public int? StartColumnIndex { get; set; }
+        public int? ColumnIndex { get; set; }
 
         /// <summary>
         /// 列的类型
@@ -52,7 +53,17 @@ namespace BigCookieKit.Office
         /// <summary>
         /// 默认值
         /// </summary>
-        public ColumnNormal Normal { get; set; }
+        public ColumnNormal NormalType { get; set; }
+
+        /// <summary>
+        /// 默认值
+        /// </summary>
+        public object DefaultValue { get; set; }
+
+        /// <summary>
+        /// 是否可空
+        /// </summary>
+        public bool IsAllowNull { get; set; } = true;
 
         string _Column;
     }

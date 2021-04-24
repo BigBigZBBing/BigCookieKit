@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace BigCookieKit
 {
@@ -16,19 +14,17 @@ namespace BigCookieKit
         /// <para/>String判断IsNullOrEmpty
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="def">是否包含默认值</param>
+        /// <param name="def">是否为默认值也当做NULL</param>
         /// <returns></returns>
         public static Boolean IsNull(this Object obj, Boolean def = true)
         {
-            if (obj == null)
-                return true;
-            else if (def && obj.GetType() == typeof(String))
+            if (obj == null) return true;
+            else if (def && obj.IsValue())
             {
-                return obj?.ToString() == "";
-            }
-            else if (obj.IsValue() && def && obj == Activator.CreateInstance(obj.GetType()))
-            {
-                return true;
+                if (Equals(obj, Activator.CreateInstance(obj.GetType())))
+                {
+                    return true;
+                }
             }
             return false;
         }

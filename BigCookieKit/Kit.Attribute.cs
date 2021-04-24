@@ -17,7 +17,7 @@ namespace BigCookieKit
         /// <typeparam name="TEnum">枚举类型</typeparam>
         /// <param name="em">枚举对象</param>
         /// <returns></returns>
-        
+
         public static String ToDisplay<TEnum>(this TEnum em) where TEnum : Enum
         {
             Type type = em.GetType();
@@ -35,13 +35,14 @@ namespace BigCookieKit
         /// <para>验证模型</para>
         /// <para>(未设置错误消息不验证)</para>
         /// <para>{0}属性名称</para>
-        /// <para>{1}属性值</para>
-        /// <para>{2}错误描述</para>
+        /// <para>{1}特性备注</para>
+        /// <para>{2}属性值</para>
+        /// <para>{3}错误描述</para>
         /// </summary>
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="Entity">实体对象</param>
         /// <returns></returns>
-        
+
         public static Boolean ModelValidation<TEntity>(this TEntity Entity)
         {
             StringBuilder strBuilder = new StringBuilder();
@@ -52,6 +53,13 @@ namespace BigCookieKit
                 {
                     foreach (PropertyInfo propertie in properties)
                     {
+                        if (propertie.GetCustomAttribute(typeof(RequiredRuleAttribute)).NotNull())
+                        {
+                            var attr = propertie.GetCustomAttribute(typeof(RequiredRuleAttribute)) as RequiredRuleAttribute;
+                            if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
+                                continue;
+                        }
+
                         if (propertie.PropertyType == typeof(string)
                             && propertie.GetCustomAttribute(typeof(StringRuleAttribute)).NotNull())
                         {
@@ -60,7 +68,8 @@ namespace BigCookieKit
                                 continue;
                         }
 
-                        if ((propertie.PropertyType == typeof(int) || propertie.PropertyType == typeof(long))
+                        if ((propertie.PropertyType == typeof(int) || propertie.PropertyType == typeof(long)
+                            || propertie.PropertyType == typeof(int?) || propertie.PropertyType == typeof(long?))
                             && propertie.GetCustomAttribute(typeof(NumericRuleAttribute)).NotNull())
                         {
                             var attr = propertie.GetCustomAttribute(typeof(NumericRuleAttribute)) as NumericRuleAttribute;
@@ -68,7 +77,8 @@ namespace BigCookieKit
                                 continue;
                         }
 
-                        if ((propertie.PropertyType == typeof(float) || propertie.PropertyType == typeof(double) || propertie.PropertyType == typeof(decimal))
+                        if ((propertie.PropertyType == typeof(float) || propertie.PropertyType == typeof(double) || propertie.PropertyType == typeof(decimal)
+                            || propertie.PropertyType == typeof(float?) || propertie.PropertyType == typeof(double?) || propertie.PropertyType == typeof(decimal?))
                             && propertie.GetCustomAttribute(typeof(DecimalRuleAttribute)).NotNull())
                         {
                             var attr = propertie.GetCustomAttribute(typeof(DecimalRuleAttribute)) as DecimalRuleAttribute;
@@ -89,7 +99,7 @@ namespace BigCookieKit
 
         #region 私有
 
-        
+
         static bool BasicValidation<T>(FastProperty propertie, T attr, StringBuilder strBuilder) where T : BasicAttribute
         {
             if (attr.NotNull() && attr.Message.NotNull())
@@ -97,9 +107,9 @@ namespace BigCookieKit
                 Type Type = propertie.PropertyType;
                 string Name = propertie.PropertyName;
                 object Value = propertie.Get();
-                if (attr.Required.NotNull() && attr.Required.Value == true && Value.IsNull())
+                if (attr.Required == true && Value.IsNull())
                 {
-                    strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Required)));
+                    strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", "必须赋值"));
                     return false;
                 }
                 if (attr is StringRuleAttribute)
@@ -121,85 +131,85 @@ namespace BigCookieKit
             return true;
         }
 
-        
+
         static bool StringValidation(FastProperty propertie, StringRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;
             object Value = propertie.Get();
-            if (attr.MinLength.NotNull() && Value.NotNull() && Value.ToString().Length < attr.MinLength)
+            if (attr.MinLength.NotNull() && Value.NotNull() && Value.ToString().Length < (int?)attr.MinLength)
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.MinLength)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能少于{attr.MinLength}位"));
                 return false;
             }
-            if (attr.MaxLength.NotNull() && Value.NotNull() && Value.ToString().Length > attr.MaxLength)
+            if (attr.MaxLength.NotNull() && Value.NotNull() && Value.ToString().Length > (int?)attr.MaxLength)
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.MaxLength)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能超过{attr.MaxLength}位"));
                 return false;
             }
             if (attr.RegExp.NotNull() && Value.NotNull() && !Regex.IsMatch(Value.ToString(), attr.RegExp))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.RegExp)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"正则匹配失败"));
                 return false;
             }
             return true;
         }
 
-        
+
         static bool NumericValidation(FastProperty propertie, NumericRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;
             object Value = propertie.Get();
-            if (attr.Greater.NotNull() && Value.NotNull() && Convert.ToInt64(Value) > attr.Greater)
+            if (attr.Greater.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) > Convert.ToDecimal(attr.Greater))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Greater)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能大于{attr.Greater}"));
                 return false;
             }
-            if (attr.Less.NotNull() && Value.NotNull() && Convert.ToInt64(Value) < attr.Less)
+            if (attr.Less.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) < Convert.ToDecimal(attr.Less))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Less)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能小于{attr.Less}"));
                 return false;
             }
-            if (attr.Equal.NotNull() && Value.NotNull() && Convert.ToInt64(Value) == attr.Equal)
+            if (attr.Equal.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.Equal))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Equal)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能等于{attr.Equal}"));
                 return false;
             }
-            if (attr.NoEqual.NotNull() && Value.NotNull() && Convert.ToInt64(Value) != attr.NoEqual)
+            if (attr.NoEqual.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.NoEqual))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.NoEqual)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"必须等于{attr.NoEqual}"));
                 return false;
             }
             return true;
         }
 
-        
+
         static bool DecimalValidation(FastProperty propertie, DecimalRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;
             object Value = propertie.Get();
-            if (attr.Greater.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) > attr.Greater)
+            if (attr.Greater.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) > Convert.ToDecimal(attr.Greater))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Greater)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能大于{attr.Greater}"));
                 return false;
             }
-            if (attr.Less.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) < attr.Less)
+            if (attr.Less.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) < Convert.ToDecimal(attr.Less))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Less)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能小于{attr.Less}"));
                 return false;
             }
-            if (attr.Equal.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) == attr.Equal)
+            if (attr.Equal.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.Equal))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Equal)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能等于{attr.Equal}"));
                 return false;
             }
-            if (attr.NoEqual.NotNull() && Value.NotNull() && Convert.ToDecimal(Value) != attr.NoEqual)
+            if (attr.NoEqual.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.NoEqual))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.NoEqual)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"必须等于{attr.NoEqual}"));
                 return false;
             }
-            if (attr.Precision.NotNull() && Value.NotNull() && Convert.ToDecimal(Value).GetPrecision() > attr.Precision)
+            if (attr.Precision.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value).GetPrecision() > (int?)attr.Precision)
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, Value ?? "NULL", nameof(attr.Precision)));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"精度不能超过{attr.Precision}"));
                 return false;
             }
             return true;

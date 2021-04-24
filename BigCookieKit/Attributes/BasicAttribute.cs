@@ -4,7 +4,8 @@ using System.Text;
 
 namespace BigCookieKit.Attributes
 {
-    public abstract class BasicAttribute : Attribute
+    public abstract class BasicAttribute 
+        : Attribute
     {
         internal BasicAttribute(string Name)
         {
@@ -24,7 +25,7 @@ namespace BigCookieKit.Attributes
         /// <summary>
         /// 必填
         /// </summary>
-        public bool? Required { get; set; }
+        public bool Required { get; set; }
     }
 
 

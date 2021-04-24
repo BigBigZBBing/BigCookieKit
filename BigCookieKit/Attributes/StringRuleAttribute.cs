@@ -6,22 +6,23 @@ namespace BigCookieKit
     /// <summary>
     /// 字符串规则
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public class StringRuleAttribute : BasicAttribute
+    [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = true)]
+    public class StringRuleAttribute 
+        : BasicAttribute
     {
-        public StringRuleAttribute(string Name) : base(Name)
+        public StringRuleAttribute(string Name = "") : base(Name)
         {
         }
 
         /// <summary>
         /// 最大长度
         /// </summary>
-        public int? MaxLength { get; set; }
+        public object MaxLength { get; set; }
 
         /// <summary>
         /// 最小长度
         /// </summary>
-        public int? MinLength { get; set; }
+        public object MinLength { get; set; }
 
         /// <summary>
         /// 正则表达式

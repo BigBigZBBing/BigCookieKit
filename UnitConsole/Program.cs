@@ -22,31 +22,6 @@ namespace UnitConsole
     {
         static void Main(string[] args)
         {
-            //Chain<ChaimUnitModel> stream = new Chain<ChaimUnitModel>();
-            //for (int i = 0; i < short.MaxValue; i++)
-            //{
-            //    stream.Add(new ChaimUnitModel()
-            //    {
-            //        Name = "张炳彬" + i,
-            //        Old = i
-            //    });
-            //}
-            //var expression = stream.Where(x => x.Old > 30);
-            //var array = stream.ToArray();
-
-            List<ChaimUnitModel> list = new List<ChaimUnitModel>();
-            for (int i = 0; i < short.MaxValue; i++)
-            {
-                list.Add(new ChaimUnitModel()
-                {
-                    Name = "张炳彬" + i,
-                    Old = i
-                });
-            }
-            var expression = list.Where(x => x.Old > 30);
-            var array = list.ToArray();
-
-            Console.ReadKey();
 
             //BenchmarkRunner.Run<ReflectCompare>();
 

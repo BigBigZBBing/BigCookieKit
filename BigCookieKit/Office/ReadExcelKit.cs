@@ -222,7 +222,7 @@ namespace BigCookieKit.Office
         /// 获取数据表集合
         /// </summary>
         /// <returns></returns>
-        public DataSet ReadDataSet()
+        public DataSet XmlReadDataSet()
         {
             DataSet dataSet = new DataSet();
             foreach (var config in configs)
@@ -263,6 +263,8 @@ namespace BigCookieKit.Office
 
         public DataTable XmlReadDataTable()
         {
+
+
             current = current ?? configs.FirstOrDefault();
 
             var sheet = $"sheet{current.SheetIndex}";
@@ -272,6 +274,48 @@ namespace BigCookieKit.Office
             DataTable dt = new DataTable();
             DataRow ndr = default;
             IDictionary<int, string> Columns = new Dictionary<int, string>();
+
+            var changing = new List<Action<DataRowChangeEventArgs>>();
+            if (current.ColumnSetting != null)
+            {
+                foreach (var item in current.ColumnSetting)
+                {
+                    var dc = dt.Columns.Add(item.ColumnName, item.ColumnType);
+                    if (item.Column != null)
+                        Columns.Add(item.ColumnIndex.Value, item.ColumnName);
+                    dc.AllowDBNull = item.IsAllowNull;
+                    switch (item.NormalType)
+                    {
+                        case ColumnNormal.Guid:
+                            dc.DefaultValue = Guid.NewGuid();
+                            changing.Add(e => { dc.DefaultValue = Guid.NewGuid(); });
+                            break;
+                        case ColumnNormal.NowDate:
+                            dc.DefaultValue = DateTime.Now;
+                            break;
+                        case ColumnNormal.Increment:
+                            int increment = item.DefaultValue == null ? 0 : Convert.ToInt32(item.DefaultValue);
+                            dc.DefaultValue = increment;
+                            changing.Add(e => { dc.DefaultValue = ++increment; });
+                            break;
+                        case ColumnNormal.Default:
+                            if (item.DefaultValue != null) dc.DefaultValue = item.DefaultValue;
+                            break;
+                    }
+                }
+                dt.RowChanging += RowChanging;
+            }
+
+            void RowChanging(object sender, DataRowChangeEventArgs e)
+            {
+                if (e.Action == DataRowAction.Add)
+                {
+                    foreach (var item in changing)
+                    {
+                        item(e);
+                    }
+                }
+            }
 
             XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
             bool readColumns = false;
@@ -283,75 +327,80 @@ namespace BigCookieKit.Office
             string dataType = default;
             string xfs = default;
             xmlReadKit.XmlReadXlsx("sheetData", (node, attrs, content) =>
-            {
-                switch (node)
                 {
-                    case "end":
-                        if (ndr != null) dt.Rows.Add(ndr);
-                        break;
-                    case "row":
-                        rowIndex = int.Parse(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
-                        if (current.StartRow <= current.ColumnNameRow) throw new XlsxRowConfigException();
-                        if (rowIndex == current.ColumnNameRow)
-                            readColumns = true;
-                        if (rowIndex > current.EndRow)
-                            return false;
-                        if (rowIndex >= current.StartRow)
-                        {
-                            readColumns = false;
-                            readData = true;
+                    switch (node)
+                    {
+                        case "end":
                             if (ndr != null) dt.Rows.Add(ndr);
-                            ndr = dt.NewRow();
-                        }
-                        break;
-                    case "c":
-                        if (readColumns || readData)
-                        {
-                            string colEn = new string(CellPosition(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text).ToArray());
-                            colIndex = ExcelHelper.ColumnToIndex(colEn).Value;
-                            dataType = attrs.FirstOrDefault(x => x.Name.Equals("t", StringComparison.OrdinalIgnoreCase)).Text;
-                            xfs = attrs.FirstOrDefault(x => x.Name.Equals("s", StringComparison.OrdinalIgnoreCase)).Text;
-                        }
-                        break;
-                    case "v":
-                        if (colIndex >= current.StartColumnIndex
-                        && (current.EndColumnIndex != null ? colIndex <= current.EndColumnIndex : true))
-                            isValue = true;
-                        break;
-                    case "f":
-                        break;
-                    case "text":
-                        if (isValue)
-                        {
-                            if (readColumns)
+                            break;
+                        case "row":
+                            rowIndex = int.Parse(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
+                            if (current.StartRow <= current.ColumnNameRow) throw new XlsxRowConfigException();
+                            if (current.ColumnSetting == null
+                            && rowIndex == current.ColumnNameRow)
+                                readColumns = true;
+                            if (rowIndex > current.EndRow)
+                                return false;
+                            if (rowIndex >= current.StartRow)
                             {
-                                if (dataType == "s")
-                                {
-                                    dt.Columns.Add(sharedStrings[int.Parse(content)], typeof(string));
-                                    Columns.Add(colIndex, sharedStrings[int.Parse(content)]);
-                                }
-                                else
-                                {
-                                    dt.Columns.Add(content, typeof(string));
-                                    Columns.Add(colIndex, content);
-                                }
+                                readColumns = false;
+                                readData = true;
+                                if (ndr != null) dt.Rows.Add(ndr);
+                                ndr = dt.NewRow();
                             }
-                            if (readData)
+                            break;
+                        case "c":
+                            if (readColumns || readData)
                             {
-                                if (dataType == "s")
-                                    ndr[Columns[colIndex]] = sharedStrings[int.Parse(content)];
-                                else
-                                    ndr[Columns[colIndex]] = content;
+                                string colEn = new string(CellPosition(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text).ToArray());
+                                colIndex = ExcelHelper.ColumnToIndex(colEn).Value;
+                                dataType = attrs.FirstOrDefault(x => x.Name.Equals("t", StringComparison.OrdinalIgnoreCase)).Text;
+                                xfs = attrs.FirstOrDefault(x => x.Name.Equals("s", StringComparison.OrdinalIgnoreCase)).Text;
                             }
+                            break;
+                        case "v":
+                            if (colIndex >= current.StartColumnIndex
+                            && (current.EndColumnIndex != null ? colIndex <= current.EndColumnIndex : true))
+                                isValue = true;
+                            break;
+                        case "f":
+                            break;
+                        case "text":
+                            if (isValue)
+                            {
+                                if (readColumns)
+                                {
+                                    if (dataType == "s")
+                                    {
+                                        dt.Columns.Add(sharedStrings[int.Parse(content)], typeof(string));
+                                        Columns.Add(colIndex, sharedStrings[int.Parse(content)]);
+                                    }
+                                    else
+                                    {
+                                        dt.Columns.Add(content, typeof(string));
+                                        Columns.Add(colIndex, content);
+                                    }
+                                }
+                                if (readData)
+                                {
+                                    if (Columns.ContainsKey(colIndex))
+                                        if (dataType == "s")
+                                            ndr[Columns[colIndex]] = sharedStrings[int.Parse(content)];
+                                        else
+                                            ndr[Columns[colIndex]] = content;
+                                }
+                                isValue = false;
+                            }
+                            break;
+                        default:
                             isValue = false;
-                        }
-                        break;
-                    default:
-                        isValue = false;
-                        break;
-                }
-                return true;
-            });
+                            break;
+                    }
+                    return true;
+                });
+
+            dt.RowChanging -= RowChanging;
+
             return dt;
         }
 

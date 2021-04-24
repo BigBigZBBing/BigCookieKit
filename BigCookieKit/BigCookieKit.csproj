@@ -23,8 +23,11 @@
     <AssemblyVersion>1.0.*</AssemblyVersion>
     <FileVersion>1.0.2021.0407</FileVersion>
     <Version>1.0.2021.0407</Version>
-    <PackageReleaseNotes>Excel读取组件去除中间多余环节直接隐射结果集 增加了59%的性能效率
-Emit操作库增加更多的功能</PackageReleaseNotes>
+    <PackageReleaseNotes>Excel读取组件去除中间多余环节直接映射结果集 增加了59%的性能效率
+Emit操作库增加更多的功能
+Excel读取增加转DataTable的配置列功能
+模型校验功能修复
+</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netcoreapp3.1'">
@@ -32,26 +35,26 @@ Emit操作库增加更多的功能</PackageReleaseNotes>
     <DefineConstants>NETCORE31</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
-    <LangVersion>8.0</LangVersion>
+    <!--<LangVersion>8.0</LangVersion>-->
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|netcoreapp3.1'">
     <OutputPath>.\bin\Release\</OutputPath>
     <DefineConstants>NETCORE31</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8.0</LangVersion>
+    <!--<LangVersion>8.0</LangVersion>-->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|net5'">
     <OutputPath>.\bin\Debug\</OutputPath>
     <DefineConstants>NETCORE5</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8.0</LangVersion>
+    <!--<LangVersion>8.0</LangVersion>-->
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|net5'">
     <OutputPath>.\bin\Release\</OutputPath>
     <DefineConstants>NETCORE5</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <LangVersion>8.0</LangVersion>
+    <!--<LangVersion>8.0</LangVersion>-->
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1' Or '$(TargetFramework)'=='net5'">
