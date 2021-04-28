@@ -7,20 +7,21 @@ namespace BigCookieKit
     /// <summary>
     /// DataTable取值格式化
     /// </summary>
+    [Flags]
     public enum DbValueFormat
     {
-        None,
+        None = 0,
         /// <summary>
         /// 去除头尾空格
         /// </summary>
-        DisTrim,
+        DisTrim = 1,
         /// <summary>
         /// 去除换行符
         /// </summary>
-        DisBreak,
+        DisBreak = 1 << 1,
         /// <summary>
         /// 去除制表符
         /// </summary>
-        DisTabs,
+        DisTabs = 1 << 2,
     }
 }

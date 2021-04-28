@@ -14,11 +14,15 @@ namespace BigCookieKit
         /// <para/>String判断IsNullOrEmpty
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="def">是否为默认值也当做NULL</param>
+        /// <param name="def">是否判断默认值</param>
         /// <returns></returns>
         public static Boolean IsNull(this Object obj, Boolean def = true)
         {
             if (obj == null) return true;
+            else if (def && obj.GetType() == typeof(string))
+            {
+                return (string)obj == "";
+            }
             else if (def && obj.IsValue())
             {
                 if (Equals(obj, Activator.CreateInstance(obj.GetType())))
@@ -255,6 +259,21 @@ namespace BigCookieKit
                 return obj.ToString();
             }
             return "";
+        }
+
+        public static bool Exist(this Enum source, params Enum[] range)
+        {
+            if (range.Length == 0) return false;
+            else if (range.Length == 1)
+            {
+                return source == range[0];
+            }
+            int r = Convert.ToInt32(range[0]);
+            for (int i = 1; i < range.Length; i++)
+            {
+                r |= Convert.ToInt32(range[i]);
+            }
+            return !((Convert.ToInt32(source) & r) == 0);//也可写作return (Convert.ToInt32(source) & r) == Convert.ToInt32(source);
         }
     }
 }

@@ -1,4 +1,5 @@
 using BigCookieKit;
+using BigCookieKit.File;
 using BigCookieKit.Office;
 using BigCookieKit.XML;
 using BigCookieSequelize;
@@ -9,8 +10,10 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
 
@@ -18,6 +21,8 @@ namespace NUnitBigCookieKit
 {
     public class UnitKit
     {
+        public readonly string resource = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources");
+
         [SetUp]
         public void Setup()
         {
@@ -37,26 +42,41 @@ namespace NUnitBigCookieKit
             Assert.IsTrue(model.ModelValidation());
         }
 
+        /// <summary>
+        /// 空值断言单元测试
+        /// </summary>
         [Test]
         public void NullAssertUnit()
         {
+            //类型
+            VerifyModel model = null;
+            model.IsNull();
+            model.NotNull();
+
             //引用类型
-            string test = null;
+            string str = "";
             //默认值和NULL都为true
-            test.IsNull();
-            test.NotNull();
+            str.IsNull();
+            str.NotNull();
+            str.IsNull(false);
+            str.NotNull(false);
 
             //值类型
-            int test1 = 0;
+            int value = 0;
             //默认值和NULL都为true
-            test1.IsNull(false);
-            test1.NotNull(false);
+            value.IsNull();
+            value.IsNull(false);
+            value.NotNull();
+            value.NotNull(false);
 
             Assert.IsTrue(true);
         }
 
+        /// <summary>
+        /// 获取特性附带值单元测试
+        /// </summary>
         [Test]
-        public void EnumRemarkUnit()
+        public void EnumDisplayUnit()
         {
             TestEnum test = TestEnum.None;
             TestEnum test1 = TestEnum.True;
@@ -72,26 +92,42 @@ namespace NUnitBigCookieKit
             Assert.IsTrue(true);
         }
 
+        /// <summary>
+        /// 集合断言单元测试
+        /// </summary>
         [Test]
         public void ExistCountAssertUnit()
         {
             List<string> test = new List<string>();
-            ICollection<string> test1 = new List<string>();
-            IEnumerable<string> test2 = new List<string>();
-            Dictionary<string, string> test3 = new Dictionary<string, string>();
-
             test.Exist();
             test.NotExist();
+
+            ICollection<string> test1 = new List<string>();
             test1.Exist();
             test1.NotExist();
+
+            IEnumerable<string> test2 = new List<string>();
             test2.Exist();
             test2.NotExist();
+
+            Dictionary<string, string> test3 = new Dictionary<string, string>();
             test3.Exist();
             test3.NotExist();
+
+            DataTable test4 = new DataTable();
+            test4.Exist();
+            test4.NotExist();
+
+            DataSet test5 = new DataSet();
+            test5.Exist();
+            test5.NotExist();
 
             Assert.IsTrue(true);
         }
 
+        /// <summary>
+        /// DataRow安全取值赋值单元测试
+        /// </summary>
         [Test]
         public void DataRowSetValueUnit()
         {
@@ -103,29 +139,32 @@ namespace NUnitBigCookieKit
             DataRow dr = dt.NewRow();
             dr["Filed1"] = null;
             //dr["Filed2"] = null;//值类型赋值null会报错
-            //dr.CellSetValue("Filed2", null);//自动会解决问题
+            dr.CellSetValue("Filed2", null);//自动会解决问题
 
             dt.Rows.Add(dr);
         }
 
+        /// <summary>
+        /// Xml转成实体单元测试
+        /// </summary>
         [Test]
         public void XmlToEntityUnit()
         {
             var ele = XElement.Parse($@"
-<Test1 attr1=""attr1"" attr2=""attr2"">
-	<Test2 attr3=""attr3"" attr4=""attr4"">
-		<Field attr5=""attr5"" attr6=""attr6"">
-		</Field>
-		<Field attr5=""attr5"" attr6=""attr6"">
-		</Field>
-		<Field attr5=""attr5"" attr6=""attr6"">
-		</Field>
-	</Test2>
-</Test1>");
+<Root attr1=""attr1"" attr2=""attr2"">
+	<Node attr3=""attr3"" attr4=""attr4"">
+		<Field attr5=""attr5"" attr6=""attr6"" />
+		<Field attr5=""attr5"" attr6=""attr6"" />
+		<Field attr5=""attr5"" attr6=""attr6"" />
+	</Node>
+</Root>");
 
-            Test1 test1 = ele.XmlToEntity<Test1>();
+            XmlRoot test1 = ele.XmlToEntity<XmlRoot>();
         }
 
+        /// <summary>
+        /// 金额数字转大写单元测试
+        /// </summary>
         [Test]
         public void MoneyToUpperUnit()
         {
@@ -134,6 +173,9 @@ namespace NUnitBigCookieKit
             string temp = test.MoneyUpper();
         }
 
+        /// <summary>
+        /// 尝试转换单元测试
+        /// </summary>
         [Test]
         public void TryParseUnit()
         {
@@ -147,6 +189,9 @@ namespace NUnitBigCookieKit
             }
         }
 
+        /// <summary>
+        /// 基础类型断言单元测试
+        /// </summary>
         [Test]
         public void TypeAssertUnit()
         {
@@ -210,20 +255,13 @@ namespace NUnitBigCookieKit
             //Kit.FileToFormZipPacket(@"C:\Users\zbb58\Desktop\test.zip", @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx");
         }
 
-        [Test]
-        public void XmlReadUnit()
-        {
-            string path = @"C:\Users\zbb58\Desktop\sheet1.xml";
-            XmlReadKit xmlReadKit = new XmlReadKit(path);
-            //如果单应用于Xml结构 没有属性 设置不读属性 性能提升大
-            xmlReadKit.IsReadAttributes = false;
-            var packet = xmlReadKit.XmlRead("sheetData");
-        }
-
+        /// <summary>
+        /// Xml流读取Excel2007转集合单元测试
+        /// </summary>
         [Test]
         public void XmlReadSetUnit()
         {
-            string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
+            string path = Path.Combine(resource, "test.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
@@ -236,10 +274,13 @@ namespace NUnitBigCookieKit
             var rows = excelKit.XmlReaderSet();
         }
 
+        /// <summary>
+        /// Xml流读取Excel2007转字典单元测试
+        /// </summary>
         [Test]
         public void XmlReadDictionaryUnit()
         {
-            string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
+            string path = Path.Combine(resource, "test.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
@@ -253,10 +294,13 @@ namespace NUnitBigCookieKit
             var dics = excelKit.XmlReaderDictionary();
         }
 
+        /// <summary>
+        /// Xml流读取Excel2007转DataTable单元测试
+        /// </summary>
         [Test]
         public void XmlReadDataTableUnit()
         {
-            string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
+            string path = Path.Combine(resource, "test.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
@@ -275,6 +319,9 @@ namespace NUnitBigCookieKit
             DataTable dt = excelKit.XmlReadDataTable();
         }
 
+        /// <summary>
+        /// Actor模型（并集线程）单元测试
+        /// </summary>
         [Test]
         public void ActorModelUnit()
         {
@@ -294,6 +341,9 @@ namespace NUnitBigCookieKit
             Console.WriteLine("完成");
         }
 
+        /// <summary>
+        /// 阻塞并行单元测试
+        /// </summary>
         [Test]
         public void ActionBlockUnit()
         {
@@ -301,7 +351,7 @@ namespace NUnitBigCookieKit
             var block = new ActionBlock<int>(index =>
             {
                 Console.WriteLine(index);
-                Thread.Sleep(500);
+                Task.Delay(500);
             }, new ExecutionDataflowBlockOptions()
             {
                 MaxDegreeOfParallelism = 100,
@@ -315,6 +365,9 @@ namespace NUnitBigCookieKit
             Console.WriteLine("完成");
         }
 
+        /// <summary>
+        /// 在一堆集合中找出一组连续性集合的位置单元测试
+        /// </summary>
         [Test]
         public void FastIndexOfUnit()
         {
@@ -324,10 +377,69 @@ namespace NUnitBigCookieKit
             var index = Kit.FastIndexOf(t1, t2);
         }
 
+        /// <summary>
+        /// 深拷贝(性能飘逸)单元测试
+        /// </summary>
+        [Test]
+        public void DeepCopyUnit()
+        {
+            DeepCopyModel model = new DeepCopyModel();
+            model.Field1 = "klsdjflsdlflsdf";
+            model.Field2 = 100;
+            model.Field3 = 101;
+            model.Field4 = 105;
+            model.Field5 = 106;
+            model.Field6 = 106.45f;
+            model.Field7 = 106.46f;
+            model.Field8 = 106.4646598d;
+            model.Field9 = 106.4646599d;
+            model.Field10 = 106.46465996548m;
+            model.Field11 = 106.46465996549m;
+            model.Field12 = DateTime.Now;
+            model.Field13 = DateTime.Now.AddDays(1);
+            model.Field14 = TimeSpan.FromSeconds(30);
+            model.Field15 = TimeSpan.FromSeconds(40);
+            model.Field16 = TestEnum.True;
+            model.Field17 = TestEnum.False;
+            model.Field18 = 'A';
+            model.Field19 = 'B';
+            model.Field20 = new byte[] { 0, 1, 2, 3, 4 };
+
+            var newmodel = model.MapTo<DeepCopyModel, DeepCopyModel>();
+            newmodel.Field2 = 5464646;
+        }
+
+        /// <summary>
+        /// 使用命令行单元测试
+        /// </summary>
+        [Test]
+        public void RunCmdUnit()
+        {
+            var str = Kit.RunShell("ipconfig");
+        }
+
+        /// <summary>
+        /// 操作Ini文件
+        /// </summary>
+        [Test]
+        public void IniMapUnit()
+        {
+            string path = Path.Combine(resource, "iniTest.ini");
+            IniMap iniMap = new IniMap(path);
+            iniMap["nember"]["Name"] = "张炳彬";
+            iniMap["nember1"]["Name1"] = "张炳彬";
+            iniMap.Remove("nember");
+            iniMap.Remove("nember1");
+            iniMap.Save();
+        }
+
+
+        #region 性能比较单元测试
+
         [Test]
         public void MiniExcelUnit()
         {
-            string path = @"C:\Users\zbb58\Desktop\Excel测试文件\test.xlsx";
+            string path = Path.Combine(resource, "test.xlsx");
             var rows = MiniExcel.Query(path);
 
             //自行转换成DataTable
@@ -352,6 +464,8 @@ namespace NUnitBigCookieKit
                 }
             }
         }
+
+        #endregion
 
         public struct TestStruct
         {
@@ -382,24 +496,48 @@ namespace NUnitBigCookieKit
             public decimal? DecimalField { get; set; }
         }
 
-        public class Test1
+        public class XmlRoot
         {
             public string attr1 { get; set; }
             public string attr2 { get; set; }
-            public List<Test2> Test2 { get; set; }
+            public List<XmlNode> Node { get; set; }
         }
 
-        public class Test2
+        public class XmlNode
         {
             public string attr3 { get; set; }
             public string attr4 { get; set; }
-            public List<Field> Field { get; set; }
+            public List<XmlField> Field { get; set; }
         }
 
-        public class Field
+        public class XmlField
         {
             public string attr5 { get; set; }
             public string attr6 { get; set; }
+        }
+
+        public class DeepCopyModel
+        {
+            public string Field1 { get; set; }
+            public int Field2 { get; set; }
+            public int? Field3 { get; set; }
+            public long Field4 { get; set; }
+            public long? Field5 { get; set; }
+            public float Field6 { get; set; }
+            public float? Field7 { get; set; }
+            public double Field8 { get; set; }
+            public double? Field9 { get; set; }
+            public decimal Field10 { get; set; }
+            public decimal? Field11 { get; set; }
+            public DateTime Field12 { get; set; }
+            public DateTime? Field13 { get; set; }
+            public TimeSpan Field14 { get; set; }
+            public TimeSpan? Field15 { get; set; }
+            public TestEnum Field16 { get; set; }
+            public TestEnum? Field17 { get; set; }
+            public char Field18 { get; set; }
+            public char? Field19 { get; set; }
+            public byte[] Field20 { get; set; }
         }
     }
 }
