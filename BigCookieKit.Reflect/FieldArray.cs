@@ -7,7 +7,7 @@ namespace BigCookieKit.Reflect
     public class FieldArray<T> : FieldManager<T[]>
     {
         internal Int32 Length { get; set; }
-        internal FieldInt32 ILLength { get; set; }
+        internal CanCompute<Int32> ILLength { get; set; }
 
         internal FieldArray(LocalBuilder stack, ILGenerator generator, Int32 Length) : base(stack, generator)
         {
@@ -15,7 +15,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
+
         public FieldBoolean IsNull()
         {
             return this.IsNull(this);
@@ -23,7 +23,7 @@ namespace BigCookieKit.Reflect
 
         public LocalBuilder this[Int32 index]
         {
-            
+
             get
             {
                 var value = DeclareLocal(typeof(T));
@@ -33,7 +33,7 @@ namespace BigCookieKit.Reflect
                 Emit(OpCodes.Stloc_S, value);
                 return value;
             }
-            
+
             set
             {
                 Emit(OpCodes.Ldloc_S, instance);
@@ -44,7 +44,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
+
         public LocalBuilder GetValue(CanCompute<Int32> index)
         {
             var value = DeclareLocal(typeof(T));
@@ -56,7 +56,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
+
         public void SetValue(CanCompute<Int32> index, LocalBuilder value)
         {
             Emit(OpCodes.Ldloc_S, instance);
@@ -66,7 +66,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
+
         public FieldBoolean Exists(LocalBuilder value)
         {
             var result = this.NewBoolean();
@@ -88,8 +88,8 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
-        public FieldInt32 FindIndex(LocalBuilder value)
+
+        public CanCompute<Int32> FindIndex(LocalBuilder value)
         {
             var result = this.NewInt32(-1);
             Label trueTo = DefineLabel();
@@ -110,8 +110,8 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
-        public void Copy(FieldArray<T> target, FieldInt32 length)
+
+        public void Copy(FieldArray<T> target, CanCompute<Int32> length)
         {
             this.For(0, length, (int1, tab) =>
             {
@@ -123,8 +123,8 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
-        public FieldInt32 GetLength()
+
+        public CanCompute<Int32> GetLength()
         {
             if ((object)ILLength == null)
             {
@@ -134,7 +134,7 @@ namespace BigCookieKit.Reflect
                     Output();
                     Emit(OpCodes.Ldlen);
                     Emit(OpCodes.Stloc_S, temp);
-                    ILLength = new FieldInt32(temp, generator);
+                    ILLength = new CanCompute<Int32>(temp, generator);
                 }
                 else
                     ILLength = this.NewInt32(Length);

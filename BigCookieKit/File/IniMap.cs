@@ -11,6 +11,8 @@ namespace BigCookieKit.File
     {
         private FileInfo info { get; set; }
 
+        public List<Section> Sections = new List<Section>();
+
         public IniMap(string path)
         {
             info = new FileInfo(path);
@@ -19,43 +21,40 @@ namespace BigCookieKit.File
             using StreamReader stream = info.OpenText();
             while (!stream.EndOfStream)
             {
-                string str = stream.ReadLine().Trim();
-                if (str.Length > 0)
+                string line = stream.ReadLine().Trim();
+                if (line.Length > 0)
                 {
-                    var section = Regex.Match(str, "(?<=\\[).*(?=])");
+                    var section = Regex.Match(line, "(?<=^\\[).*(?=])");
 
                     if (section.Success)
                     {
                         Section nRoot = new Section();
                         nRoot.Name = section.Value;
-                        Roots.Add(nRoot);
+                        Sections.Add(nRoot);
+                        break;
                     }
 
-                    if (str.IndexOf("=") > -1)
+                    if (line.IndexOf("=") > -1)
                     {
-                        var kv = str.Split("=");
-                        var last = Roots.Last();
-                        Node node = new Node();
-                        node.Key = kv[0];
-                        node.Value = kv[1];
-                        last.Nodes.Add(node);
+                        var kv = line.Split("=");
+                        var last = Sections.Last();
+                        last.Parameters.Add(new Parameter(kv[0], kv[1]));
+                        break;
                     }
                 }
             }
         }
 
-        public List<Section> Roots = new List<Section>();
-
         public Section this[string section]
         {
             get
             {
-                var res = Roots.FirstOrDefault(x => x.Name.Equals(section, StringComparison.OrdinalIgnoreCase));
+                var res = Sections.FirstOrDefault(x => x.Name.Equals(section, StringComparison.OrdinalIgnoreCase));
                 if (res.IsNull())
                 {
                     Section nRoot = new Section();
                     nRoot.Name = section;
-                    nRoot.ToMap = e => Roots.Add(e);
+                    nRoot.ToMap = e => Sections.Add(e);
                     return nRoot;
                 }
                 return res;
@@ -64,16 +63,16 @@ namespace BigCookieKit.File
 
         public void Remove(string section)
         {
-            Roots.Remove(Roots.FirstOrDefault(x => x.Name.Equals(section, StringComparison.OrdinalIgnoreCase)));
+            Sections.Remove(Sections.FirstOrDefault(x => x.Name.Equals(section, StringComparison.OrdinalIgnoreCase)));
         }
 
         public void Save()
         {
             using StreamWriter sw = info.CreateText();
-            foreach (var root in Roots)
+            foreach (var root in Sections)
             {
                 sw.WriteLine($"[{root.Name}]");
-                foreach (var node in root.Nodes)
+                foreach (var node in root.Parameters)
                 {
                     sw.WriteLine($"{node.Key}={node.Value}");
                 }
@@ -93,23 +92,20 @@ namespace BigCookieKit.File
         /// <summary>
         /// 小节点
         /// </summary>
-        public List<Node> Nodes = new List<Node>();
+        public List<Parameter> Parameters = new List<Parameter>();
 
         public string this[string key]
         {
             get
             {
-                return Nodes.FirstOrDefault(x => x.Key.Equals(key, StringComparison.OrdinalIgnoreCase))?.Value;
+                return Parameters.FirstOrDefault(x => x.Key.Equals(key, StringComparison.OrdinalIgnoreCase))?.Value;
             }
             set
             {
-                var node = Nodes.FirstOrDefault(x => x.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
+                var node = Parameters.FirstOrDefault(x => x.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
                 if (node.IsNull())
                 {
-                    node = new Node();
-                    node.Key = key;
-                    node.Value = value;
-                    Nodes.Add(node);
+                    Parameters.Add(new Parameter(key, value));
                     ToMap(this);
                     return;
                 }
@@ -119,12 +115,18 @@ namespace BigCookieKit.File
 
         public void Remove(string key)
         {
-            Nodes.Remove(Nodes.FirstOrDefault(x => x.Key.Equals(key, StringComparison.OrdinalIgnoreCase)));
+            Parameters.Remove(Parameters.FirstOrDefault(x => x.Key.Equals(key, StringComparison.OrdinalIgnoreCase)));
         }
     }
 
-    public class Node
+    public class Parameter
     {
+        internal Parameter(string Key, string Value)
+        {
+            this.Key = Key;
+            this.Value = Value;
+        }
+
         /// <summary>
         /// 键
         /// </summary>

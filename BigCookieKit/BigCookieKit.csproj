@@ -35,32 +35,27 @@ Excel读取增加转DataTable的配置列功能
     <DefineConstants>NETCORE31</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
-    <!--<LangVersion>8.0</LangVersion>-->
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|netcoreapp3.1'">
     <OutputPath>.\bin\Release\</OutputPath>
     <DefineConstants>NETCORE31</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!--<LangVersion>8.0</LangVersion>-->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|net5'">
     <OutputPath>.\bin\Debug\</OutputPath>
     <DefineConstants>NETCORE5</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!--<LangVersion>8.0</LangVersion>-->
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|net5'">
     <OutputPath>.\bin\Release\</OutputPath>
     <DefineConstants>NETCORE5</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!--<LangVersion>8.0</LangVersion>-->
   </PropertyGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp3.1' Or '$(TargetFramework)'=='net5'">
     <PackageReference Include="System.Threading.Tasks.Dataflow" Version="5.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <!--<PackageReference Include="NPOI" Version="2.5.2" />-->
   </ItemGroup>
 
   <ItemGroup>
@@ -77,6 +72,11 @@ Excel读取增加转DataTable的配置列功能
   <ItemGroup>
     <Folder Include="ORM\" />
     <Folder Include="Contract\" />
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BigCookieKit.Reflect\BigCookieKit.Reflect.csproj" />
   </ItemGroup>
 
 </Project>

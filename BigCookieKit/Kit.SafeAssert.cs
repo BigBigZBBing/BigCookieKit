@@ -184,7 +184,7 @@ namespace BigCookieKit
         /// <returns></returns>
         public static Boolean IsClass(this Object obj)
         {
-            if (obj.GetType().BaseType == typeof(Object))
+            if (obj.GetType().IsClass)
             {
                 return true;
             }
@@ -198,7 +198,7 @@ namespace BigCookieKit
         /// <returns></returns>
         public static Boolean IsValue(this Object obj)
         {
-            if ((obj as ValueType) != null)
+            if (obj.GetType().IsValueType)
             {
                 return true;
             }
@@ -212,7 +212,7 @@ namespace BigCookieKit
         /// <returns></returns>
         public static Boolean IsStruct(this Object obj)
         {
-            if (obj.GetType().BaseType == typeof(ValueType))
+            if (obj.GetType().IsValueType)
             {
                 return true;
             }
@@ -226,7 +226,21 @@ namespace BigCookieKit
         /// <returns></returns>
         public static Boolean IsEnum(this Object obj)
         {
-            if (obj.GetType().BaseType == typeof(Enum))
+            if (obj.GetType().IsEnum)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 是否为数组
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static Boolean IsArray(this Object obj)
+        {
+            if (obj.GetType().IsArray)
             {
                 return true;
             }

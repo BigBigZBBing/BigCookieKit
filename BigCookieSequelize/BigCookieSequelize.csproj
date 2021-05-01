@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net5</TargetFramework>
     <Version>1.0.2021.0407</Version>
     <Copyright>©2021-2021 Big.Cookie</Copyright>
     <Description>仿nodejs的Sequelize框架</Description>

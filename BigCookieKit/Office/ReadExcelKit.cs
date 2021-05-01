@@ -1,4 +1,5 @@
-﻿using BigCookieKit.XML;
+﻿using BigCookieKit.Reflect;
+using BigCookieKit.XML;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -22,7 +23,7 @@ namespace BigCookieKit.Office
         /// <summary>
         /// 执行Log
         /// </summary>
-        public List<string> ExecuteLog { get; set; }
+        public List<string> ExecuteLog { get; set; } = new List<string>();
 
         /// <summary>
         /// Excel分解成zip文件
@@ -52,30 +53,15 @@ namespace BigCookieKit.Office
         /// <summary>
         /// Excel配置
         /// </summary>
-        private List<ExcelConfig> configs { get; set; }
+        private List<ExcelConfig> configs { get; set; } = new List<ExcelConfig>();
 
         /// <summary>
         /// 当前配置
         /// </summary>
         private ExcelConfig current { get; set; }
 
-        private Dictionary<string, XDocument> cache { get; set; }
-        private Dictionary<string, XmlPacket> xmlcache { get; set; }
-
-        public ReadExcelKit(string filePath)
+        private ReadExcelKit()
         {
-            cache = new Dictionary<string, XDocument>();
-
-            xmlcache = new Dictionary<string, XmlPacket>();
-
-            configs = new List<ExcelConfig>();
-
-            if (string.IsNullOrEmpty(filePath)) throw new FileNotFoundException(nameof(filePath));
-
-            ExecuteLog = new List<string>();
-
-            zip = ZipFile.OpenRead(filePath);
-
             LoadShareString();
 
             LoadWorkBook();
@@ -83,6 +69,19 @@ namespace BigCookieKit.Office
             LoadNumberFormat();
 
             LoadCellStyle();
+        }
+
+        public ReadExcelKit(string filePath) : base()
+        {
+            if (string.IsNullOrEmpty(filePath)) throw new FileNotFoundException(nameof(filePath));
+
+            zip = ZipFile.OpenRead(filePath);
+        }
+
+        public ReadExcelKit(Stream stream) : base()
+        {
+            stream.Seek(0, SeekOrigin.Begin);
+            zip = new ZipArchive(stream);
         }
 
         /// <summary>

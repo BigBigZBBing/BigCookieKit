@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
@@ -34,9 +35,9 @@ namespace BigCookieKit.Reflect
 
         
         
-        public FieldInt32 GetCount()
+        public CanCompute<Int32> GetCount()
         {
-            return new FieldInt32(Call("get_Count").ReturnRef(), generator);
+            return new CanCompute<Int32>(Call("get_Count").ReturnRef(), generator);
         }
     }
 }

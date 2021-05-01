@@ -418,13 +418,12 @@ namespace BigCookieSequelize
                 props.Add(dc.ColumnName, dc.DataType);
 
             builder = new SmartBuilder("CacheDynamic");
-            builder.Assembly();
             builder.Class(dt.TableName);
             // 主架 [2021-1-23 zhangbingbin]
             var main = props.Keys.Where(x => x.IndexOf("->", StringComparison.OrdinalIgnoreCase) == -1);
             foreach (var item in main)
             {
-                builder.CreateProperty(item, props[item]);
+                builder.Property(item, props[item]);
             }
             // 分割表级 [2021-1-23 zhangbingbin]
             Table = props.Keys.Where(x => x.IndexOf("->", StringComparison.OrdinalIgnoreCase) > -1).Select(x =>
@@ -443,7 +442,7 @@ namespace BigCookieSequelize
             {
                 CreateModel(Erji.Where(x => x.Table == item), builder);
             }
-            builder.SaveClass();
+            builder.SaveType();
             builder.Build();
             var instance = Activator.CreateInstance(typeof(List<>)
                 .MakeGenericType(builder.Instance.GetType()));
@@ -461,13 +460,12 @@ namespace BigCookieSequelize
         {
             var TableName = cols.FirstOrDefault().Table;
             SmartBuilder m_builder = new SmartBuilder("CacheDynamic");
-            m_builder.Assembly();
             m_builder.Class("_" + TableName);
 
             foreach (var item in cols)
             {
                 var toType = props[$"({item.Prev}){item.Table}->{item.Field}"];
-                m_builder.CreateProperty(item.Field, toType);
+                m_builder.Property(item.Field, toType);
             }
 
             // 是否有子查询 [2021-1-23 zhangbingbin]
@@ -475,11 +473,11 @@ namespace BigCookieSequelize
             foreach (var item in next.Select(x => x.Table).Distinct())
                 CreateModel(next.Where(x => x.Table == item), m_builder);
 
-            m_builder.SaveClass();
+            m_builder.SaveType();
             m_builder.Build();
             var momeryType = m_builder.Instance.GetType();
             var ListType = typeof(List<>).MakeGenericType(momeryType);
-            build.CreateProperty(TableName, ListType);
+            build.Property(TableName, ListType);
         }
 
         /// <summary>

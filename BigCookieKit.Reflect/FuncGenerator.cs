@@ -12,61 +12,61 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
-        public void For(Int32 init, LocalBuilder length, Action<FieldInt32, TabManager> build)
+
+        public void For(Int32 init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
         {
             ManagerGX.For(this, init, length, build);
         }
 
 
-        
-        public void For(LocalBuilder init, LocalBuilder length, Action<FieldInt32, TabManager> build)
+
+        public void For(LocalBuilder init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
         {
             ManagerGX.For(this, init, length, build);
         }
 
 
-        
-        public void For(Int32 init, Int32 length, Action<FieldInt32, TabManager> build)
+
+        public void For(Int32 init, Int32 length, Action<CanCompute<Int32>, TabManager> build)
         {
             ManagerGX.For(this, init, length, build);
         }
 
-        
-        public void Forr(Int32 init, LocalBuilder length, Action<FieldInt32, TabManager> build)
+
+        public void Forr(Int32 init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
         {
             ManagerGX.Forr(this, init, length, build);
         }
 
 
-        
-        public void Forr(LocalBuilder init, LocalBuilder length, Action<FieldInt32, TabManager> build)
-        {
-            ManagerGX.Forr(this, init, length, build);
-        }
 
-        
-        public void Forr(Int32 init, Int32 length, Action<FieldInt32, TabManager> build)
+        public void Forr(LocalBuilder init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
         {
             ManagerGX.Forr(this, init, length, build);
         }
 
 
-        
+        public void Forr(Int32 init, Int32 length, Action<CanCompute<Int32>, TabManager> build)
+        {
+            ManagerGX.Forr(this, init, length, build);
+        }
+
+
+
         public AssertManager IF(LocalBuilder assert, Action builder)
         {
             return new AssertManager(generator, new Tuple<LocalBuilder, Action>(assert, builder));
         }
 
 
-        
+
         public AssertManager IF<T>(FieldManager<T> assert, Action builder)
         {
             return new AssertManager(generator, new Tuple<LocalBuilder, Action>(assert, builder));
         }
 
 
-        
+
         public void While(Action assert, Action<TabManager> builder)
         {
             var START = DefineLabel();
@@ -82,7 +82,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
+
         public TryCatchManager Try(Action builder)
         {
             BeginExceptionBlock();
@@ -91,7 +91,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
+
         public void Return() => Emit(OpCodes.Ret);
     }
 }
