@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<x:styleSheet xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main" >
+    <x:fonts>
+      <x:font />
+    </x:fonts>
+    <x:fills>
+      <x:fill />
+    </x:fills>
+    <x:borders>
+      <x:border />
+    </x:borders>
+    <x:cellStyleXfs>
+      <x:xf />
+    </x:cellStyleXfs>
+    <x:cellXfs>
+      <x:xf />
+      <x:xf numFmtId="14" applyNumberFormat="1" />
+    </x:cellXfs>
+</x:styleSheet>

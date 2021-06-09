@@ -63,6 +63,24 @@ Excel读取增加转DataTable的配置列功能
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Resources\xlsx\.rels" />
+    <None Remove="Resources\xlsx\sharedStrings.xml" />
+    <None Remove="Resources\xlsx\styles.xml" />
+    <None Remove="Resources\xlsx\workbook.xml" />
+    <None Remove="Resources\xlsx\workbook.xml.rels" />
+    <None Remove="Resources\xlsx\[Content_Types].xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\xlsx\.rels" />
+    <EmbeddedResource Include="Resources\xlsx\sharedStrings.xml" />
+    <EmbeddedResource Include="Resources\xlsx\styles.xml" />
+    <EmbeddedResource Include="Resources\xlsx\workbook.xml" />
+    <EmbeddedResource Include="Resources\xlsx\workbook.xml.rels" />
+    <EmbeddedResource Include="Resources\xlsx\[Content_Types].xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
@@ -72,7 +90,6 @@ Excel读取增加转DataTable的配置列功能
   <ItemGroup>
     <Folder Include="ORM\" />
     <Folder Include="Contract\" />
-    <Folder Include="Resources\" />
   </ItemGroup>
 
   <ItemGroup>

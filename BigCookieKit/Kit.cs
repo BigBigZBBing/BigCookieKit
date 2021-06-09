@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -232,16 +233,34 @@ namespace BigCookieKit
 
             deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, IL =>
             {
-                var sourceEntity = IL.NewEntity<TSource>(IL.ArgumentRef<TSource>(0));
-                var targetEntity = IL.NewEntity<TTarget>();
-                foreach (var sourceItem in typeof(TSource).GetProperties())
+
+
+                if (source is IDictionary)
                 {
-                    var targetItem = typeof(TTarget).GetProperty(sourceItem.Name);
-                    if (targetItem == null || sourceItem.PropertyType != targetItem.PropertyType)
-                        continue;
-                    targetEntity.SetValue(sourceItem.Name, sourceEntity.GetValue(sourceItem.Name));
+
                 }
-                targetEntity.Output();
+                if (source is Stream)
+                {
+                    var _source = IL.NewObject(IL.ArgumentRef<TSource>(0));
+                    var _target = IL.NewObject(new MemoryStream());
+                    _source.Call("CopyTo", _target);
+                    _target.Output();
+                }
+                else if (source.IsClass())
+                {
+                    var _source = IL.NewEntity<TSource>(IL.ArgumentRef<TSource>(0));
+                    var _target = IL.NewEntity<TTarget>();
+                    foreach (var sourceItem in typeof(TSource).GetProperties())
+                    {
+                        var targetItem = typeof(TTarget).GetProperty(sourceItem.Name);
+                        if (targetItem == null || sourceItem.PropertyType != targetItem.PropertyType)
+                            continue;
+                        _target.SetValue(sourceItem.Name, _source.GetValue(sourceItem.Name));
+                    }
+                    _target.Output();
+                }
+                else throw new TypeAccessException();
+
                 IL.Return();
             });
 

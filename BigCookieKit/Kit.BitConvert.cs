@@ -103,9 +103,9 @@ namespace BigCookieKit
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static String BitToString(Byte[] data)
+        public static String BitToString(Byte[] data, Encoding encoding = default)
         {
-            return Encoding.UTF8.GetString(data);
+            return (encoding ?? Encoding.UTF8).GetString(data);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

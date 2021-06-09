@@ -198,7 +198,8 @@ namespace BigCookieKit
         /// <returns></returns>
         public static Boolean IsValue(this Object obj)
         {
-            if (obj.GetType().IsValueType)
+            Type type = obj.GetType();
+            if (type.IsValueType)
             {
                 return true;
             }
@@ -212,7 +213,8 @@ namespace BigCookieKit
         /// <returns></returns>
         public static Boolean IsStruct(this Object obj)
         {
-            if (obj.GetType().IsValueType)
+            Type type = obj.GetType();
+            if (!type.IsPrimitive && !type.IsEnum && type.IsValueType)
             {
                 return true;
             }

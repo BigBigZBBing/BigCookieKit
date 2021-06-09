@@ -1,6 +1,7 @@
 using BigCookieKit;
 using BigCookieKit.File;
 using BigCookieKit.Office;
+using BigCookieKit.Resources;
 using BigCookieKit.XML;
 using BigCookieSequelize;
 using MiniExcelLibs;
@@ -431,6 +432,53 @@ namespace NUnitBigCookieKit
             iniMap.Remove("nember");
             iniMap.Remove("nember1");
             iniMap.Save();
+        }
+
+        [Test]
+        public void CommonUnit()
+        {
+            var info = Common.GetXlsxResource("[Content_Types].xml");
+        }
+
+        [Test]
+        public void WriteExcelUnit()
+        {
+            string path1 = @"C:\Users\zbb58\Desktop\Execl≤‚ ‘\unitExcel1.xlsx";
+            using (WriteExcelKit writeExcel = new WriteExcelKit(path1))
+            {
+                DataSet ds = new DataSet();
+                DataTable dt = new DataTable();
+
+                dt.Columns.Add("Field1");
+                dt.Columns.Add("Field2");
+                dt.Columns.Add("Field3");
+                dt.Columns.Add("Field4");
+
+                dt.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+                dt.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+                dt.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+                dt.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+                dt.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+
+                ds.Tables.Add(dt);
+
+                DataTable dt1 = new DataTable();
+
+                dt1.Columns.Add("Field1");
+                dt1.Columns.Add("Field2");
+                dt1.Columns.Add("Field3");
+                dt1.Columns.Add("Field4");
+
+                dt1.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+                dt1.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+                dt1.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+                dt1.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+                dt1.Rows.Add(new object[] { "value1", "value2", "value3", "value4" });
+
+                ds.Tables.Add(dt1);
+
+                writeExcel.Save(ds);
+            }
         }
 
 

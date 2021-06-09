@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieEntityFrameworkKit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieSequelize", "BigCookieSequelize\BigCookieSequelize.csproj", "{B4F21A00-7D87-4F13-830B-4AEE7C08028B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCookieKit.Reflect", "BigCookieKit.Reflect\BigCookieKit.Reflect.csproj", "{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Reflect", "BigCookieKit.Reflect\BigCookieKit.Reflect.csproj", "{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MiniExcelLibs", "..\..\..\..\Desktop\github参考项目\MiniExcel\src\MiniExcel\MiniExcelLibs.csproj", "{35BAB82A-76C2-4FA6-BC17-517A000C9B2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35BAB82A-76C2-4FA6-BC17-517A000C9B2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35BAB82A-76C2-4FA6-BC17-517A000C9B2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35BAB82A-76C2-4FA6-BC17-517A000C9B2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35BAB82A-76C2-4FA6-BC17-517A000C9B2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

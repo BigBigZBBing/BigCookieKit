@@ -298,7 +298,7 @@ namespace BigCookieKit.IO
         /// 根据索引回调节点
         /// </summary>
         /// <param name="position"></param>
-        internal void CallBackByNode(int position)
+        internal async void CallBackByNode(int position)
         {
             if (this.m_position == position)
             {
@@ -310,7 +310,7 @@ namespace BigCookieKit.IO
         /// 根据表达式回调节点
         /// </summary>
         /// <param name="expression"></param>
-        internal void CallBackByExpression(Func<T, bool> expression, List<T> list)
+        internal async void CallBackByExpression(Func<T, bool> expression, List<T> list)
         {
             if (expression(this.m_item))
             {
@@ -322,7 +322,7 @@ namespace BigCookieKit.IO
         /// 尾部指针回调
         /// </summary>
         /// <param name="currnode"></param>
-        internal void RefreshBottom(ChainNode<T> currnode)
+        internal async void RefreshBottom(ChainNode<T> currnode)
         {
             this.bottom = currnode;
         }

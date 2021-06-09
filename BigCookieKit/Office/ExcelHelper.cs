@@ -31,7 +31,7 @@ namespace BigCookieKit.Office
         /// <returns></returns>
         public static string IndexToColumn(int index)
         {
-            if (index <= 0) return null;
+            if (index < 0) return null;
             string column = "";
             do
             {

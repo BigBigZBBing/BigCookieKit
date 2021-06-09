@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MiniExcel" Version="0.13.2" />
     <PackageReference Include="NPOI" Version="2.5.2" />
     <PackageReference Include="nunit" Version="3.13.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />
@@ -19,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\Desktop\github参考项目\MiniExcel\src\MiniExcel\MiniExcelLibs.csproj" />
     <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
     <ProjectReference Include="..\BigCookieSequelize\BigCookieSequelize.csproj" />
   </ItemGroup>
