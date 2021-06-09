@@ -10,10 +10,9 @@
 
 使用SEAE异步方式以及极简化结构实现通信
 
+##### BigCookieKit.Office 高性能读写Excel
 
-##### BigCookieKit.Office 高性能读取Excel
-
-使用OpenXML方式读取Excel数据的方案 性能是Npoi的3倍以上
+使用OpenXML方式读写Excel数据的方案 性能是Npoi的3倍以上
 
 ##### SequelizeStructured 结构化查询结果
 
