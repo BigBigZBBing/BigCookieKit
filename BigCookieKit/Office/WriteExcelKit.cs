@@ -87,6 +87,7 @@ namespace BigCookieKit.Office
                 dynamicTemplate3 += workbook;
                 rId++;
             }
+            dynamicTemplate2 += $"<Relationship Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles\" Target=\"/xl/styles.xml\" Id=\"rId{rId}\" />";
             template.Add("xl/_rels/workbook.xml.rels", template2.RulesFormat(dynamicTemplate2));
             template.Add("xl/workbook.xml", template3.RulesFormat(dynamicTemplate3));
 
@@ -105,14 +106,6 @@ namespace BigCookieKit.Office
             stream.Seek(0, SeekOrigin.Begin);
             stream.Read(bytes, 0, bytes.Length);
             return Kit.BitToString(bytes, Encoding.UTF8);
-        }
-
-        private Stream InputStream(string template)
-        {
-            Stream stream = new MemoryStream();
-            StreamWriter writer = new StreamWriter(stream, Encoding.UTF8);
-            writer.Write(template);
-            return stream;
         }
 
         protected virtual void Dispose(bool disposing)
