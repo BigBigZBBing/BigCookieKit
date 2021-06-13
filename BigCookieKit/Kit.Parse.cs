@@ -20,6 +20,11 @@ namespace BigCookieKit
         {
             value = null;
             string temp = obj.ToString();
+            if (type == typeof(string))
+            {
+                value = temp;
+                return true;
+            }
             MethodInfo methodInfo = type.GetMethod("TryParse", new[] { typeof(string), type.MakeByRefType() });
             var parameters = new object[] { temp, null };
             if (methodInfo.NotNull() && (bool)methodInfo.Invoke(type, parameters))
