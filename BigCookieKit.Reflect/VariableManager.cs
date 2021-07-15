@@ -11,15 +11,11 @@ namespace BigCookieKit.Reflect
         {
             this.instance = stack;
         }
-
-
         
         public void Output()
         {
             base.Emit(OpCodes.Ldloc_S, this.instance);
         }
-
-
         
         public void Input()
         {

@@ -230,19 +230,18 @@ namespace BigCookieKit
             {
                 return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
             }
-
             deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, IL =>
             {
-
-
                 if (source is IDictionary)
                 {
 
                 }
-                if (source is Stream)
+                else if (source is Stream)
                 {
                     var _source = IL.NewObject(IL.ArgumentRef<TSource>(0));
                     var _target = IL.NewObject(new MemoryStream());
+                    var begin = IL.NewObject(SeekOrigin.Begin);
+                    _source.Call("Seek", IL.NewInt64(), begin);
                     _source.Call("CopyTo", _target);
                     _target.Output();
                 }
@@ -252,7 +251,7 @@ namespace BigCookieKit
                     var _target = IL.NewEntity<TTarget>();
                     foreach (var sourceItem in typeof(TSource).GetProperties())
                     {
-                        var targetItem = typeof(TTarget).GetProperty(sourceItem.Name);
+                        var targetItem = typeof(TTarget).GetProperty(sourceItem.Name, BindingFlags.Public | BindingFlags.Instance);
                         if (targetItem == null || sourceItem.PropertyType != targetItem.PropertyType)
                             continue;
                         _target.SetValue(sourceItem.Name, _source.GetValue(sourceItem.Name));

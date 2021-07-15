@@ -105,25 +105,25 @@ namespace BigCookieKit.Reflect
         public Label DefineLabel() => generator.DefineLabel();
 
 
-        
+
         public void EmitCall(OpCode opcode, MethodInfo methodInfo, Type[] optionalParameterTypes) =>
             generator.EmitCall(opcode, methodInfo, optionalParameterTypes);
 
 
-        
+
         public void EmitCalli(OpCode opcode, CallingConventions callingConvention, Type returnType, Type[] parameterTypes, Type[] optionalParameterTypes) =>
             generator.EmitCalli(opcode, callingConvention, returnType, parameterTypes, optionalParameterTypes);
 
 
-        
+
         public void EmitWriteLine(string value) => generator.EmitWriteLine(value);
 
 
-        
+
         public void EmitWriteLine(FieldInfo fld) => generator.EmitWriteLine(fld);
 
 
-        
+
         public void EmitWriteLine(LocalBuilder localBuilder) => generator.EmitWriteLine(localBuilder);
 
 
@@ -139,24 +139,32 @@ namespace BigCookieKit.Reflect
         public void UsingNamespace(string usingNamespace) => generator.UsingNamespace(usingNamespace);
 
 
-        
+
         private void DispatchEmit<T>(OpCode opcode, T value)
         {
             CheckOverLength(ref opcode);
-            if (CacheManager.retValue) generator.Emit(OpCodes.Pop);
+            if (CacheManager.retValue)
+            {
+                generator.Emit(OpCodes.Pop);
+                CacheManager.retValue = false;
+            }
             ((Action<OpCode, T>)CacheMethod<T>()).Invoke(opcode, value);
         }
 
 
-        
+
         private void DispatchEmit(OpCode opcode)
         {
-            if (CacheManager.retValue) generator.Emit(OpCodes.Pop);
+            if (CacheManager.retValue)
+            {
+                generator.Emit(OpCodes.Pop);
+                CacheManager.retValue = false;
+            }
             generator.Emit(opcode);
         }
 
 
-        
+
         private void CheckOverLength(ref OpCode opcode)
         {
 
@@ -191,7 +199,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
+
         private LocalBuilder RedirectLocal(Type localType, Boolean pinned = false)
         {
             var local = generator.DeclareLocal(localType, pinned);
@@ -199,7 +207,7 @@ namespace BigCookieKit.Reflect
         }
 
 
-        
+
         private Delegate CacheMethod<T>()
         {
             if (emitMethod.ContainsKey(typeof(T)))

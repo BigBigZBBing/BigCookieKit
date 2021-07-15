@@ -59,7 +59,7 @@ namespace BigCookieKit
                         desc = ((DisplayAttribute)attrs[0]).Value;
                     }
                 }
-                dic.Add((Int32)Values.GetValue(i), string.IsNullOrEmpty(desc) ? Names[i].ToString() : desc);
+                dic.Add((int)Values.GetValue(i), string.IsNullOrEmpty(desc) ? Names[i].ToString() : desc);
             }
             return dic;
         }
@@ -73,29 +73,5 @@ namespace BigCookieKit
         {
             return ToEnumKeyDisplay(typeof(TEnum));
         }
-
-        //public static IDictionary<String, String> ToEnumValueDisplay(Type type)
-        //{
-        //    if (!type.IsEnum) throw new TypeAccessException();
-        //    string[] Names = Enum.GetNames(type);
-        //    Array Values = Enum.GetValues(type);
-        //    IDictionary<string, string> dic = new Dictionary<String, String>();
-        //    string desc = String.Empty;
-        //    for (Int32 i = 0; i < Values.Length; i++)
-        //    {
-        //        object t = Enum.Parse(type, Values.GetValue(i).ToString());
-        //        MemberInfo[] memInfo = type.GetMember(t.ToString());
-        //        if (memInfo != null && memInfo.Length > 0)
-        //        {
-        //            object[] attrs = memInfo[0].GetCustomAttributes(typeof(DisplayAttribute), false);
-        //            if (attrs != null && attrs.Length > 0)
-        //            {
-        //                desc = ((DisplayAttribute)attrs[0]).Value;
-        //            }
-        //        }
-        //        dic.Add((int)Values.GetValue(i), string.IsNullOrEmpty(desc) ? Names[i].ToString() : desc);
-        //    }
-        //    return dic;
-        //}
     }
 }

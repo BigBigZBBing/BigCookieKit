@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
@@ -8,7 +9,7 @@ namespace BigCookieKit.Reflect
     internal static partial class ManagerGX
     {
 
-        
+
         internal static void EmitValue<T>(this EmitBasic basic, T value)
         {
             if (value == null)
@@ -84,13 +85,21 @@ namespace BigCookieKit.Reflect
                 basic.Emit(OpCodes.Ldc_I8, Convert.ToDateTime(value).Ticks);
                 basic.Emit(OpCodes.Newobj, typeof(DateTime).GetConstructor(new Type[] { typeof(Int64) }));
             }
+            else if (value is Enum)
+            {
+                basic.IntegerMap(Convert.ToInt32(value));
+            }
+            else if (value.GetType() == typeof(MemoryStream))
+            {
+                basic.Emit(OpCodes.Newobj, typeof(MemoryStream).GetConstructor(Type.EmptyTypes));
+            }
             else
             {
                 throw new Exception("not exist datatype!");
             }
         }
 
-        
+
         internal static void EmitValue(this EmitBasic basic, Object value, Type type)
         {
             if (type == typeof(String))
@@ -168,7 +177,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        
+
         internal static void IntegerMap(this EmitBasic basic, Int64 value)
         {
             switch (value)
@@ -204,7 +213,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        
+
         internal static void PopArray(this EmitBasic basic, Type type)
         {
             if (type == typeof(String))
@@ -265,7 +274,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        
+
         internal static void PushArray(this EmitBasic basic, Type type)
         {
             if (type == typeof(String))

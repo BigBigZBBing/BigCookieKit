@@ -21,13 +21,10 @@
     <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <AssemblyVersion>1.0.*</AssemblyVersion>
-    <FileVersion>1.0.2021.0407</FileVersion>
-    <Version>1.0.2021.0407</Version>
-    <PackageReleaseNotes>Excel读取组件去除中间多余环节直接映射结果集 增加了59%的性能效率
-Emit操作库增加更多的功能
-Excel读取增加转DataTable的配置列功能
-模型校验功能修复
-增加操作INI文件方法</PackageReleaseNotes>
+    <FileVersion>1.0.2021.0613</FileVersion>
+    <Version>1.0.2021.0613</Version>
+    <PackageReleaseNotes>完成根据DataSet生成Excel
+优化语法逻辑</PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netcoreapp3.1'">

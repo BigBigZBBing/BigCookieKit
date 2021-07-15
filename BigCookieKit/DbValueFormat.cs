@@ -18,10 +18,10 @@ namespace BigCookieKit
         /// <summary>
         /// 去除换行符
         /// </summary>
-        DisBreak = 1 << 1,
+        DisBreak = 2,
         /// <summary>
         /// 去除制表符
         /// </summary>
-        DisTabs = 1 << 2,
+        DisTabs = 4,
     }
 }

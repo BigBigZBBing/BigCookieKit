@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -384,6 +385,7 @@ namespace NUnitBigCookieKit
         [Test]
         public void DeepCopyUnit()
         {
+            //模型Copy
             DeepCopyModel model = new DeepCopyModel();
             model.Field1 = "klsdjflsdlflsdf";
             model.Field2 = 100;
@@ -408,6 +410,13 @@ namespace NUnitBigCookieKit
 
             var newmodel = model.MapTo<DeepCopyModel, DeepCopyModel>();
             newmodel.Field2 = 5464646;
+
+            //流Copy
+            var stream = new MemoryStream();
+            byte[] bytes = Encoding.UTF8.GetBytes("测试环境");
+            stream.Write(bytes, 0, bytes.Length);
+            var tstram = stream.MapTo<Stream, Stream>();
+
         }
 
         /// <summary>

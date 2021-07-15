@@ -300,7 +300,7 @@ namespace BigCookieKit.Reflect
 
         private static LocalBuilder NewField<T>(EmitBasic basic, T value)
         {
-            LocalBuilder item = basic.DeclareLocal(typeof(T));
+            LocalBuilder item = basic.DeclareLocal(value.GetType());
             basic.EmitValue(value);
             basic.Emit(OpCodes.Stloc_S, item);
             return item;

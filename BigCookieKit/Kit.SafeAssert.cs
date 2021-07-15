@@ -19,13 +19,14 @@ namespace BigCookieKit
         public static Boolean IsNull(this Object obj, Boolean def = true)
         {
             if (obj == null) return true;
-            else if (def && obj.GetType() == typeof(string))
+            Type type = obj.GetType();
+            if (def && type == typeof(string))
             {
                 return (string)obj == "";
             }
             else if (def && obj.IsValue())
             {
-                if (Equals(obj, Activator.CreateInstance(obj.GetType())))
+                if (Equals(obj, Activator.CreateInstance(type)))
                 {
                     return true;
                 }
@@ -214,7 +215,7 @@ namespace BigCookieKit
         public static Boolean IsStruct(this Object obj)
         {
             Type type = obj.GetType();
-            if (!type.IsPrimitive && !type.IsEnum && type.IsValueType)
+            if (!type.IsEnum && type.IsValueType)
             {
                 return true;
             }
@@ -256,7 +257,7 @@ namespace BigCookieKit
         /// <returns></returns>
         public static String ToStr(this Object obj)
         {
-            if (obj.NotNull())
+            if (obj.NotNull(false))
             {
                 return obj.ToString();
             }
@@ -270,26 +271,11 @@ namespace BigCookieKit
         /// <returns></returns>
         public static String ToStrEmpty(this Object obj)
         {
-            if (obj.NotNull())
+            if (obj.NotNull(false))
             {
                 return obj.ToString();
             }
             return "";
-        }
-
-        public static bool Exist(this Enum source, params Enum[] range)
-        {
-            if (range.Length == 0) return false;
-            else if (range.Length == 1)
-            {
-                return source == range[0];
-            }
-            int r = Convert.ToInt32(range[0]);
-            for (int i = 1; i < range.Length; i++)
-            {
-                r |= Convert.ToInt32(range[i]);
-            }
-            return !((Convert.ToInt32(source) & r) == 0);//也可写作return (Convert.ToInt32(source) & r) == Convert.ToInt32(source);
         }
     }
 }
