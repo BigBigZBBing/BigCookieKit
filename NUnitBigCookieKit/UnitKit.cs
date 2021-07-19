@@ -4,7 +4,6 @@ using BigCookieKit.Office;
 using BigCookieKit.Resources;
 using BigCookieKit.XML;
 using BigCookieSequelize;
-using MiniExcelLibs;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -490,45 +489,71 @@ namespace NUnitBigCookieKit
             }
         }
 
+        [Test]
+        public void ListAndDataTableUnit()
+        {
+            List<ListModel> test1 = new List<ListModel>();
+            test1.Add(new ListModel() { Name = "张炳彬", Old = 28, Time = DateTime.Parse("1993-08-31") });
+            test1.Add(new ListModel() { Name = "安得权", Old = 33, Time = DateTime.Parse("1988-12-24") });
+            test1.Add(new ListModel() { Name = "和百东", Old = 28, Time = DateTime.Parse("1990-03-4") });
+
+            var dt = test1.ToDataTable();
+
+            var list = dt.ToEnumerable<ListModel>();
+        }
 
         #region 性能比较单元测试
 
-        [Test]
-        public void MiniExcelUnit()
-        {
-            string path = Path.Combine(resource, "test.xlsx");
-            var rows = MiniExcel.Query(path);
+        //[Test]
+        //public void MiniExcelUnit()
+        //{
+        //    string path = Path.Combine(resource, "test.xlsx");
+        //    var rows = MiniExcel.Query(path);
 
-            //自行转换成DataTable
-            DataTable dt = new DataTable();
-            foreach (var item in rows)
-            {
-                if (dt.Columns.Count == 0)
-                {
-                    foreach (var item1 in (IDictionary<string, object>)item)
-                        dt.Columns.Add(item1.Key);
-                }
-                else
-                {
-                    DataRow ndr = dt.NewRow();
-                    foreach (var item1 in (IDictionary<string, object>)item)
-                    {
-                        if (dt.Columns[item1.Key].DataType != item1.Value.GetType())
-                            dt.Columns[item1.Key].DataType = item1.Value.GetType();
-                        ndr[item1.Key] = item1.Value;
-                    }
-                    dt.Rows.Add(ndr);
-                }
-            }
-        }
+        //    //自行转换成DataTable
+        //    DataTable dt = new DataTable();
+        //    foreach (var item in rows)
+        //    {
+        //        if (dt.Columns.Count == 0)
+        //        {
+        //            foreach (var item1 in (IDictionary<string, object>)item)
+        //                dt.Columns.Add(item1.Key);
+        //        }
+        //        else
+        //        {
+        //            DataRow ndr = dt.NewRow();
+        //            foreach (var item1 in (IDictionary<string, object>)item)
+        //            {
+        //                if (dt.Columns[item1.Key].DataType != item1.Value.GetType())
+        //                    dt.Columns[item1.Key].DataType = item1.Value.GetType();
+        //                ndr[item1.Key] = item1.Value;
+        //            }
+        //            dt.Rows.Add(ndr);
+        //        }
+        //    }
+        //}
 
         #endregion
 
+        public class ListModel
+        {
+            public string Name { get; set; }
+            public int Old { get; set; }
+            public DateTime Time { get; set; }
+
+        }
+
+        /// <summary>
+        /// 断言单元测试模型
+        /// </summary>
         public struct TestStruct
         {
             public string filed { get; set; }
         }
 
+        /// <summary>
+        /// Enum扩展单元测试模型
+        /// </summary>
         public enum TestEnum
         {
             None,
@@ -538,6 +563,9 @@ namespace NUnitBigCookieKit
             False
         }
 
+        /// <summary>
+        /// 校验单元测试模型
+        /// </summary>
         public class VerifyModel
         {
             [RequiredRule("DateTimeFieldName", Message = "{0}{3}")]
@@ -553,6 +581,9 @@ namespace NUnitBigCookieKit
             public decimal? DecimalField { get; set; }
         }
 
+        /// <summary>
+        /// 实体转XML单元测试模型
+        /// </summary>
         public class XmlRoot
         {
             public string attr1 { get; set; }
@@ -560,6 +591,9 @@ namespace NUnitBigCookieKit
             public List<XmlNode> Node { get; set; }
         }
 
+        /// <summary>
+        /// 实体转XML单元测试模型
+        /// </summary>
         public class XmlNode
         {
             public string attr3 { get; set; }
@@ -567,12 +601,18 @@ namespace NUnitBigCookieKit
             public List<XmlField> Field { get; set; }
         }
 
+        /// <summary>
+        /// 实体转XML单元测试模型
+        /// </summary>
         public class XmlField
         {
             public string attr5 { get; set; }
             public string attr6 { get; set; }
         }
 
+        /// <summary>
+        /// 深拷贝单元测试模型
+        /// </summary>
         public class DeepCopyModel
         {
             public string Field1 { get; set; }

@@ -18,7 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\Desktop\github参考项目\MiniExcel\src\MiniExcel\MiniExcelLibs.csproj" />
     <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
     <ProjectReference Include="..\BigCookieSequelize\BigCookieSequelize.csproj" />
   </ItemGroup>

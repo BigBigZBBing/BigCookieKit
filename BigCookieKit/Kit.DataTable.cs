@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -78,6 +80,65 @@ namespace BigCookieKit
                     }
                 }
                 return (T)item;
+            }
+        }
+
+        /// <summary>
+        /// 集合转DataTable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static DataTable ToDataTable<T>(this IEnumerable<T> list)
+        {
+            DataTable dt = new DataTable();
+            bool first = true;
+            Type type = null;
+            PropertyInfo[] properties = null;
+            foreach (var item in list)
+            {
+                if (first)
+                {
+                    type = type ?? item.GetType();
+                    properties = properties ?? type.GetProperties();
+                    foreach (var prop in properties)
+                        dt.Columns.Add(prop.Name, prop.PropertyType);
+                    first = false;
+                }
+                DataRow value = dt.NewRow();
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    value[dc.ColumnName] = properties
+                        .FirstOrDefault(x => x.Name == dc.ColumnName)
+                        .GetValue(item);
+                }
+                dt.Rows.Add(value);
+            }
+            return dt;
+        }
+
+        /// <summary>
+        /// DataTable转集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> ToEnumerable<T>(this DataTable table)
+        {
+            Type type = typeof(T);
+            PropertyInfo[] properties = type.GetProperties();
+            foreach (DataRow dr in table.Rows)
+            {
+                var instance = Activator.CreateInstance(type);
+                foreach (DataColumn dc in table.Columns)
+                {
+                    var prop = properties.FirstOrDefault(x => x.Name == dc.ColumnName);
+                    if (prop != null && dc.DataType == prop.PropertyType)
+                    {
+                        prop.SetValue(instance, dr[dc.ColumnName]);
+                    }
+                }
+                yield return (T)instance;
             }
         }
     }

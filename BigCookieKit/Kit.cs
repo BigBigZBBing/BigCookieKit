@@ -238,6 +238,9 @@ namespace BigCookieKit
                 }
                 else if (source is Stream)
                 {
+                    if (typeof(TTarget).BaseType != typeof(Stream))
+                        throw new TypeAccessException();
+
                     var _source = IL.NewObject(IL.ArgumentRef<TSource>(0));
                     var _target = IL.NewObject(new MemoryStream());
                     var begin = IL.NewObject(SeekOrigin.Begin);
@@ -247,6 +250,9 @@ namespace BigCookieKit
                 }
                 else if (source.IsClass())
                 {
+                    if (typeof(TSource).IsPrimitive || typeof(TTarget).IsPrimitive)
+                        throw new TypeAccessException();
+
                     var _source = IL.NewEntity<TSource>(IL.ArgumentRef<TSource>(0));
                     var _target = IL.NewEntity<TTarget>();
                     foreach (var sourceItem in typeof(TSource).GetProperties())
