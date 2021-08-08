@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -167,12 +166,14 @@ namespace BigCookieKit.Reflect
         }
 
 #if NET452
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Save()
         {
             SaveType();
             assemblyBuilder.Save($"{assmblyName.Name}.dll");
         }
+
 #endif
 
         public object Build()

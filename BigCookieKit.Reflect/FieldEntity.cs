@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
@@ -25,7 +24,6 @@ namespace BigCookieKit.Reflect
 
         public LocalBuilder this[String Name]
         {
-            
             get
             {
                 if (!ContanisKey(Name)) ManagerGX.ShowEx("Entity prop is null;");
@@ -35,7 +33,7 @@ namespace BigCookieKit.Reflect
                 Emit(OpCodes.Stloc_S, item);
                 return item;
             }
-            
+
             set
             {
                 if (!ContanisKey(Name)) ManagerGX.ShowEx("Entity prop is null;");
@@ -45,15 +43,11 @@ namespace BigCookieKit.Reflect
             }
         }
 
-
-        
         public FieldBoolean IsNull()
         {
             return this.IsNull(this);
         }
 
-
-        
         public LocalBuilder GetValue(String FieldName)
         {
             if (!ContanisKey(FieldName)) ManagerGX.ShowEx("Entity property is null;");
@@ -64,8 +58,6 @@ namespace BigCookieKit.Reflect
             return item;
         }
 
-
-        
         public void SetValue(String FieldName, LocalBuilder value)
         {
             if (!ContanisKey(FieldName)) ManagerGX.ShowEx("Entity property is null;");
@@ -74,7 +66,6 @@ namespace BigCookieKit.Reflect
             Emit(OpCodes.Callvirt, EntityBody[FieldName].set);
         }
 
-        
         private Boolean ContanisKey(String Name)
         {
             return EntityBody.ContainsKey(Name);

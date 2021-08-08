@@ -1,12 +1,9 @@
 ﻿using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
     internal static partial class ManagerGX
     {
-
-        
         internal static FieldBoolean Comparer<T>(FieldManager<T> field, T value, params OpCode[] codes)
         {
             var res = field.NewBoolean();
@@ -20,8 +17,6 @@ namespace BigCookieKit.Reflect
             return res;
         }
 
-
-        
         internal static FieldBoolean Comparer<T, T1>(CanCompute<T> field, T1 value, params OpCode[] codes)
             where T : struct
             where T1 : struct
@@ -37,8 +32,6 @@ namespace BigCookieKit.Reflect
             return res;
         }
 
-
-        
         internal static FieldBoolean Comparer<T>(FieldManager<T> field, LocalBuilder value, params OpCode[] codes)
         {
             var res = field.NewBoolean();
@@ -52,8 +45,6 @@ namespace BigCookieKit.Reflect
             return res;
         }
 
-
-        
         internal static FieldBoolean Comparer<T, T1>(FieldManager<T> field, FieldManager<T1> value, params OpCode[] codes)
         {
             var res = field.NewBoolean();
@@ -67,8 +58,6 @@ namespace BigCookieKit.Reflect
             return res;
         }
 
-
-        
         internal static FieldManager<T> Compute<T, T1>(FieldManager<T> field, T1 value, OpCode code)
         {
             field.Output();
@@ -78,8 +67,6 @@ namespace BigCookieKit.Reflect
             return field;
         }
 
-
-        
         internal static VariableManager Compute<T>(FieldManager<T> field, LocalBuilder value, OpCode code)
         {
             field.Output();
@@ -89,8 +76,6 @@ namespace BigCookieKit.Reflect
             return field;
         }
 
-
-        
         internal static FieldManager<T> Compute<T, T1>(FieldManager<T> field, FieldManager<T1> value, OpCode code)
         {
             field.Output();

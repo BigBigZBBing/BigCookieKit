@@ -56,6 +56,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Contract\**" />
+    <Compile Remove="ORM\**" />
+    <EmbeddedResource Remove="Contract\**" />
+    <EmbeddedResource Remove="ORM\**" />
+    <None Remove="Contract\**" />
+    <None Remove="ORM\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Office\NpoiKit.cs" />
   </ItemGroup>
 
@@ -82,11 +91,6 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ORM\" />
-    <Folder Include="Contract\" />
   </ItemGroup>
 
   <ItemGroup>

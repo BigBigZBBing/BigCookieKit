@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BigCookieKit.Reflect
 {
     public class FieldNullable<T> : FieldManager<T> where T : struct
     {
-
         internal MethodInfo ValueInfo { get; set; }
 
         internal MethodInfo HasValueInfo { get; set; }
 
         internal MethodInfo GetValueOrDefaultInfo { get; set; }
-
 
         internal FieldNullable(LocalBuilder stack, ILGenerator generator) : base(ToNullable(stack, generator), generator)
         {
@@ -35,7 +28,6 @@ namespace BigCookieKit.Reflect
             return NullValue;
         }
 
-        
         public FieldBoolean HasValue()
         {
             LocalBuilder Has = DeclareLocal(typeof(Boolean));
@@ -45,7 +37,6 @@ namespace BigCookieKit.Reflect
             return new FieldBoolean(Has, generator);
         }
 
-        
         public CanCompute<T> Value()
         {
             LocalBuilder Original = generator.DeclareLocal(typeof(T));
@@ -55,7 +46,6 @@ namespace BigCookieKit.Reflect
             return new CanCompute<T>(Original, generator);
         }
 
-        
         public CanCompute<T> GetValueOrDefault()
         {
             LocalBuilder Default = generator.DeclareLocal(typeof(T));

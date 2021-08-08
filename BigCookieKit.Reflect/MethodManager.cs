@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
@@ -13,7 +12,6 @@ namespace BigCookieKit.Reflect
             ReturnType = returnType;
         }
 
-        
         public LocalBuilder ReturnRef()
         {
             CacheManager.retValue = false;

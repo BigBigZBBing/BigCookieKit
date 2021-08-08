@@ -407,14 +407,14 @@ namespace NUnitBigCookieKit
             model.Field19 = 'B';
             model.Field20 = new byte[] { 0, 1, 2, 3, 4 };
 
-            var newmodel = model.MapTo<DeepCopyModel, DeepCopyModel>();
+            var newmodel = model.MapTo<DeepCopyModel>();
             newmodel.Field2 = 5464646;
 
             //¡˜Copy
             var stream = new MemoryStream();
             byte[] bytes = Encoding.UTF8.GetBytes("≤‚ ‘ª∑æ≥");
             stream.Write(bytes, 0, bytes.Length);
-            var tstram = stream.MapTo<Stream, Stream>();
+            var tstram = stream.MapTo<Stream>();
 
         }
 
@@ -451,7 +451,7 @@ namespace NUnitBigCookieKit
         [Test]
         public void WriteExcelUnit()
         {
-            string path1 = @"C:\Users\zbb58\Desktop\Execl≤‚ ‘\unitExcel1.xlsx";
+            string path1 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "WriteExcelUnit.xlsx");
             using (WriteExcelKit writeExcel = new WriteExcelKit(path1))
             {
                 DataSet ds = new DataSet();

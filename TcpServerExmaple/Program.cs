@@ -11,7 +11,7 @@ namespace TcpServerExmaple
         static void Main(string[] args)
         {
             NetworkServer tcpServer = new NetworkServer(7447);
-
+            tcpServer.BufferSize = 8192;
             tcpServer.OnConnect = user =>
             {
                 Console.WriteLine($"{user.UserHost}:{user.UserPort}接入~");
@@ -22,7 +22,6 @@ namespace TcpServerExmaple
                 string res = Encoding.UTF8.GetString(packet);
                 Console.WriteLine($"[{user.UserHost}:{user.UserPort}]:{res}");
                 //user.SendMessage("收到~");
-                HttpListener httpListener = new HttpListener();
             };
 
             tcpServer.OnExit = user =>

@@ -2,79 +2,65 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
     internal static partial class ManagerGX
     {
-
-
         internal static FieldString NewString(this EmitBasic basic, String value = default(String))
         {
             return new FieldString(NewField(basic, value), basic);
         }
-
 
         internal static FieldBoolean NewBoolean(this EmitBasic basic, Boolean value = default(Boolean))
         {
             return new FieldBoolean(NewField(basic, value), basic);
         }
 
-
         internal static CanCompute<Byte> NewByte(this EmitBasic basic, Byte value = default(Byte))
         {
             return new CanCompute<Byte>(NewField(basic, value), basic);
         }
-
 
         internal static CanCompute<Int16> NewInt16(this EmitBasic basic, Int16 value = default(Int16))
         {
             return new CanCompute<Int16>(NewField(basic, value), basic);
         }
 
-
         internal static CanCompute<Int32> NewInt32(this EmitBasic basic, Int32 value = default(Int32))
         {
             return new CanCompute<Int32>(NewField(basic, value), basic);
         }
-
 
         internal static CanCompute<Int64> NewInt64(this EmitBasic basic, Int64 value = default(Int64))
         {
             return new CanCompute<Int64>(NewField(basic, value), basic);
         }
 
-
         internal static CanCompute<Single> NewFloat(this EmitBasic basic, Single value = default(Single))
         {
             return new CanCompute<Single>(NewField(basic, value), basic);
         }
-
 
         internal static CanCompute<Double> NewDouble(this EmitBasic basic, Double value = default(Double))
         {
             return new CanCompute<Double>(NewField(basic, value), basic);
         }
 
-
         internal static CanCompute<Decimal> NewDecimal(this EmitBasic basic, Decimal value = default(Decimal))
         {
             return new CanCompute<Decimal>(NewField(basic, value), basic);
         }
-
 
         internal static FieldDateTime NewDateTime(this EmitBasic basic, DateTime value = default(DateTime))
         {
             return new FieldDateTime(NewField(basic, value), basic);
         }
 
-
         internal static FieldObject NewObject(this EmitBasic basic, Object value = default(Object))
         {
             return new FieldObject(NewField(basic, value), basic);
         }
-
 
         internal static FieldEntity<T> NewEntity<T>(this EmitBasic basic)
         {
@@ -84,14 +70,10 @@ namespace BigCookieKit.Reflect
             return new FieldEntity<T>(item, basic);
         }
 
-
-
         internal static FieldEntity<T> NewEntity<T>(this EmitBasic basic, T value)
         {
             return new FieldEntity<T>(basic.MapToEntity(value), basic);
         }
-
-
 
         internal static FieldArray<T> NewArray<T>(this EmitBasic basic, Int32 length = default(Int32))
         {
@@ -102,8 +84,6 @@ namespace BigCookieKit.Reflect
             return new FieldArray<T>(item, basic, length);
         }
 
-
-
         internal static FieldArray<T> NewArray<T>(this EmitBasic basic, LocalBuilder length)
         {
             LocalBuilder item = basic.DeclareLocal(typeof(T[]));
@@ -113,8 +93,6 @@ namespace BigCookieKit.Reflect
             return new FieldArray<T>(item, basic, -1);
         }
 
-
-
         internal static FieldList<T> NewList<T>(this EmitBasic basic)
         {
             LocalBuilder item = basic.DeclareLocal(typeof(List<T>));
@@ -122,8 +100,6 @@ namespace BigCookieKit.Reflect
             basic.Emit(OpCodes.Stloc_S, item);
             return new FieldList<T>(item, basic);
         }
-
-
 
         internal static void For(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
         {
@@ -148,8 +124,6 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-
-
         internal static void For(this EmitBasic basic, Int32 init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
         {
             Label _for = basic.DefineLabel();
@@ -172,7 +146,6 @@ namespace BigCookieKit.Reflect
             basic.Emit(OpCodes.Brtrue, _for);
             basic.MarkLabel(_break);
         }
-
 
         internal static void For(this EmitBasic basic, Int32 init, Int32 length, Action<CanCompute<Int32>, TabManager> build)
         {
@@ -197,7 +170,6 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-
         internal static void Forr(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
         {
             Label _for = basic.DefineLabel();
@@ -219,8 +191,6 @@ namespace BigCookieKit.Reflect
             basic.Emit(OpCodes.Bge, _for);
             basic.MarkLabel(_break);
         }
-
-
 
         internal static void Forr(this EmitBasic basic, Int32 init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
         {
@@ -244,7 +214,6 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-
         internal static void Forr(this EmitBasic basic, Int32 init, Int32 length, Action<CanCompute<Int32>, TabManager> build)
         {
             Label _for = basic.DefineLabel();
@@ -267,8 +236,6 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-
-
         internal static IEnumerable<KeyValuePair<String, FastProperty>> GetProps(PropertyInfo[] Props, Object Instance)
         {
             foreach (var Prop in Props)
@@ -276,8 +243,6 @@ namespace BigCookieKit.Reflect
                 yield return new KeyValuePair<String, FastProperty>(Prop.Name, new FastProperty(Prop, Instance));
             }
         }
-
-
 
         internal static FieldBoolean IsNull(this EmitBasic basic, LocalBuilder value)
         {
@@ -289,14 +254,10 @@ namespace BigCookieKit.Reflect
             return new FieldBoolean(assert, basic);
         }
 
-
-
         internal static void ShowEx(String Message)
         {
             throw new Exception(Message);
         }
-
-
 
         private static LocalBuilder NewField<T>(EmitBasic basic, T value)
         {
@@ -305,8 +266,6 @@ namespace BigCookieKit.Reflect
             basic.Emit(OpCodes.Stloc_S, item);
             return item;
         }
-
-
 
         private static LocalBuilder MapToEntity<T>(this EmitBasic basic, T Entity)
         {
@@ -332,8 +291,6 @@ namespace BigCookieKit.Reflect
             return model;
         }
 
-
-
         private static LocalBuilder MapToEntity(this EmitBasic basic, Object instance, Type type)
         {
             if (instance == null) ManagerGX.ShowEx("entity is not null!");
@@ -356,6 +313,5 @@ namespace BigCookieKit.Reflect
             }
             return model;
         }
-
     }
 }

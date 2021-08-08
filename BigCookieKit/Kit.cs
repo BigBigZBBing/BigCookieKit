@@ -25,7 +25,7 @@ namespace BigCookieKit
         /// 金钱转大写
         /// <para>(保留两位小数)</para>
         /// </summary>
-        /// <param name="Num">数字</param>
+        /// <param name="num">数字</param>
         /// <returns></returns>
         public static String MoneyUpper(this decimal num)
         {
@@ -204,7 +204,7 @@ namespace BigCookieKit
         /// <summary>
         /// 首字母小写
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="str">The string.</param>
         /// <returns></returns>
         public static string FirstLower(this string str)
         {
@@ -219,28 +219,20 @@ namespace BigCookieKit
         /// 深拷贝
         /// </summary>
         /// <typeparam name="TSource">源类型</typeparam>
-        /// <typeparam name="TTarget">目标类型</typeparam>
-        /// <param name="source"></param>
+        /// <param name="source">The source.</param>
         /// <returns></returns>
-        public static TTarget MapTo<TSource, TTarget>(this TSource source)
-            where TTarget : class
+        /// <exception cref="ArgumentException"></exception>
+        public static TSource MapTo<TSource>(this TSource source)
             where TSource : class
         {
-            if (Cache.MapToCache.TryGetValue($"{typeof(TSource).FullName}+{typeof(TTarget).FullName}", out Delegate deleg))
+            if (Cache.MapToCache.TryGetValue($"{typeof(TSource).FullName}+{typeof(TSource).FullName}", out Delegate deleg))
             {
-                return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
+                return ((Func<TSource, TSource>)deleg)?.Invoke(source);
             }
-            deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, IL =>
+            deleg = SmartBuilder.DynamicMethod<Func<TSource, TSource>>(string.Empty, IL =>
             {
-                if (source is IDictionary)
+                if (source is Stream)
                 {
-
-                }
-                else if (source is Stream)
-                {
-                    if (typeof(TTarget).BaseType != typeof(Stream))
-                        throw new TypeAccessException();
-
                     var _source = IL.NewObject(IL.ArgumentRef<TSource>(0));
                     var _target = IL.NewObject(new MemoryStream());
                     var begin = IL.NewObject(SeekOrigin.Begin);
@@ -248,16 +240,25 @@ namespace BigCookieKit
                     _source.Call("CopyTo", _target);
                     _target.Output();
                 }
-                else if (source.IsClass())
+                else if (source is IDictionary)
                 {
-                    if (typeof(TSource).IsPrimitive || typeof(TTarget).IsPrimitive)
-                        throw new TypeAccessException();
+                    var _source = IL.NewObject(IL.ArgumentRef<TSource>(0));
+                    var _target = IL.NewObject(Activator.CreateInstance(typeof(TSource)));
 
+                    var keys = IL.NewObject(_source.GetPropterty("Keys"));
+                    IL.For(0, keys.GetPropterty("Count"), (index, tab) =>
+                    {
+                        index.Output();
+
+                    });
+                }
+                else if (typeof(TSource).IsClass && typeof(TSource).IsPrimitive)
+                {
                     var _source = IL.NewEntity<TSource>(IL.ArgumentRef<TSource>(0));
-                    var _target = IL.NewEntity<TTarget>();
+                    var _target = IL.NewEntity<TSource>();
                     foreach (var sourceItem in typeof(TSource).GetProperties())
                     {
-                        var targetItem = typeof(TTarget).GetProperty(sourceItem.Name, BindingFlags.Public | BindingFlags.Instance);
+                        var targetItem = typeof(TSource).GetProperty(sourceItem.Name, BindingFlags.Public | BindingFlags.Instance);
                         if (targetItem == null || sourceItem.PropertyType != targetItem.PropertyType)
                             continue;
                         _target.SetValue(sourceItem.Name, _source.GetValue(sourceItem.Name));
@@ -269,19 +270,19 @@ namespace BigCookieKit
                 IL.Return();
             });
 
-            if (!Cache.MapToCache.TryAdd($"{typeof(TSource).FullName}+{typeof(TTarget).FullName}", deleg))
+            if (!Cache.MapToCache.TryAdd($"{typeof(TSource).FullName}+{typeof(TSource).FullName}", deleg))
             {
                 throw new ArgumentException();
             }
 
-            return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
+            return ((Func<TSource, TSource>)deleg)?.Invoke(source);
         }
 
         /// <summary>
         /// 规则性格式化 {0} {1} 类似会被全部格式化
         /// </summary>
         /// <param name="value">被格式化的字符串</param>
-        /// <param name="paramters"></param>
+        /// <param name="paramters">The paramters.</param>
         /// <returns></returns>
         public static string RulesFormat(this string value, params string[] paramters)
         {
@@ -292,6 +293,21 @@ namespace BigCookieKit
             return value;
         }
 
+        /// <summary>
+        /// Clones the specified dic.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dic">The dic.</param>
+        /// <returns></returns>
+        public static T Clone<T>(this T dic) where T : IDictionary
+        {
+
+            return default;
+        }
+
+        /// <summary>
+        /// 全局组件缓存
+        /// </summary>
         public static partial class Cache
         {
             /// <summary>

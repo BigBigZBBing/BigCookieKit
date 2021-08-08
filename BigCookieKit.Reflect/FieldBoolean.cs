@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
@@ -10,29 +9,21 @@ namespace BigCookieKit.Reflect
         {
         }
 
-        
-        
         public static FieldBoolean operator ==(FieldBoolean field, Boolean value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
 
-        
-        
         public static FieldBoolean operator ==(FieldBoolean field, LocalBuilder value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
 
-        
-        
         public static FieldBoolean operator ==(FieldBoolean field, FieldBoolean value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
 
-        
-        
         public static FieldBoolean operator !=(FieldBoolean field, Boolean value)
         {
             return ManagerGX.Comparer(
@@ -40,8 +31,6 @@ namespace BigCookieKit.Reflect
                 field.NewInt32(), OpCodes.Ceq);
         }
 
-        
-        
         public static FieldBoolean operator !=(FieldBoolean field, LocalBuilder value)
         {
             return ManagerGX.Comparer(
@@ -49,8 +38,6 @@ namespace BigCookieKit.Reflect
                 field.NewInt32(), OpCodes.Ceq);
         }
 
-        
-        
         public static FieldBoolean operator !=(FieldBoolean field, FieldBoolean value)
         {
             return ManagerGX.Comparer(
@@ -58,8 +45,6 @@ namespace BigCookieKit.Reflect
                 field.NewInt32(), OpCodes.Ceq);
         }
 
-        
-        
         public static FieldBoolean operator |(FieldBoolean field, FieldBoolean value)
         {
             var assert = field.NewBoolean();
@@ -76,8 +61,6 @@ namespace BigCookieKit.Reflect
             return assert;
         }
 
-        
-        
         public static FieldBoolean operator &(FieldBoolean field, FieldBoolean value)
         {
             var assert = field.NewBoolean();

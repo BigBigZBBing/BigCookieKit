@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
@@ -21,7 +20,6 @@ namespace BigCookieKit.Reflect
 
         public MethodInfo SetMethod { get; private set; }
 
-        
         public FastProperty(PropertyInfo propertyInfo, Object Instance = null)
         {
             if (propertyInfo == null)
@@ -50,8 +48,6 @@ namespace BigCookieKit.Reflect
             this.Instance = Instance;
         }
 
-        
-        
         public void Set(Object value)
         {
             if (Instance == null)
@@ -61,8 +57,6 @@ namespace BigCookieKit.Reflect
             this.setter?.Invoke(Instance, value);
         }
 
-        
-        
         public Object Get()
         {
             if (Instance == null)
@@ -72,8 +66,6 @@ namespace BigCookieKit.Reflect
             return this.getter?.Invoke(Instance);
         }
 
-        
-        
         public void Set(Object instance, Object value)
         {
             if (instance == null)
@@ -83,8 +75,6 @@ namespace BigCookieKit.Reflect
             this.setter?.Invoke(instance, value);
         }
 
-        
-        
         public Object Get(Object instance)
         {
             if (instance == null)
@@ -99,7 +89,6 @@ namespace BigCookieKit.Reflect
     {
         private readonly Func<Object, Object> getter;
 
-        
         public PropertyGetterEmit(PropertyInfo propertyInfo)
         {
             if (propertyInfo == null)
@@ -110,14 +99,11 @@ namespace BigCookieKit.Reflect
             this.getter = CreateGetterEmit(propertyInfo);
         }
 
-        
-        
         public Object Invoke(Object instance)
         {
             return getter?.Invoke(instance);
         }
 
-        
         private Func<Object, Object> CreateGetterEmit(PropertyInfo property)
         {
             if (property == null)
@@ -163,7 +149,6 @@ namespace BigCookieKit.Reflect
             this.setFunc = CreatePropertySetter(propertyInfo);
         }
 
-        
         private Action<Object, Object> CreatePropertySetter(PropertyInfo property)
         {
             if (property == null)
@@ -198,7 +183,6 @@ namespace BigCookieKit.Reflect
             return (Action<Object, Object>)dm.CreateDelegate(typeof(Action<Object, Object>));
         }
 
-        
         private static void EmitCastToReference(ILGenerator il, Type type)
         {
             if (type.IsValueType)
@@ -211,7 +195,6 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        
         public void Invoke(Object instance, Object value)
         {
             this.setFunc?.Invoke(instance, value);

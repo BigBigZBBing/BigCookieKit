@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Xml.Linq;
 
 namespace BigCookieKit.Reflect
 {
@@ -31,7 +29,6 @@ namespace BigCookieKit.Reflect
 
         public static FastDynamic GetFastDynamic<T>(T entity) where T : class, new()
         {
-            
             return new FastDynamic()
             {
                 Properties = new ConcurrentDictionary<String, FastProperty>(ManagerGX.GetProps(entity.GetType().GetProperties(), entity)),

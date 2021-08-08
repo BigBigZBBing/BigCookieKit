@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
@@ -13,8 +12,6 @@ namespace BigCookieKit.Reflect
             this.generator = generator;
         }
 
-        
-        
         public TryCatchManager Catch(Action<LocalBuilder> builder)
         {
             generator.BeginCatchBlock(typeof(Exception));
@@ -24,8 +21,6 @@ namespace BigCookieKit.Reflect
             return this;
         }
 
-        
-        
         public TryCatchManager Finally(Action builder)
         {
             generator.BeginFinallyBlock();
@@ -33,8 +28,6 @@ namespace BigCookieKit.Reflect
             return this;
         }
 
-        
-        
         public void TryEnd()
         {
             generator.EndExceptionBlock();

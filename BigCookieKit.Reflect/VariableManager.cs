@@ -1,5 +1,4 @@
 ﻿using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
@@ -11,12 +10,12 @@ namespace BigCookieKit.Reflect
         {
             this.instance = stack;
         }
-        
+
         public void Output()
         {
             base.Emit(OpCodes.Ldloc_S, this.instance);
         }
-        
+
         public void Input()
         {
             base.Emit(OpCodes.Stloc_S, this.instance);

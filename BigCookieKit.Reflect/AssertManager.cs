@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
@@ -16,24 +15,18 @@ namespace BigCookieKit.Reflect
             this.context.Add(context);
         }
 
-
-        
         public AssertManager ElseIF(LocalBuilder assert, Action builder)
         {
             context.Add(new Tuple<LocalBuilder, Action>(assert, builder));
             return this;
         }
 
-
-        
         public AssertManager ElseIF<T>(FieldManager<T> assert, Action builder)
         {
             context.Add(new Tuple<LocalBuilder, Action>(assert, builder));
             return this;
         }
 
-
-        
         public void Else(Action<ILGenerator> builder)
         {
             Label end = generator.DefineLabel();
@@ -55,8 +48,6 @@ namespace BigCookieKit.Reflect
             generator.MarkLabel(end);
         }
 
-
-        
         public void IFEnd()
         {
             Label end = generator.DefineLabel();

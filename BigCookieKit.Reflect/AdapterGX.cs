@@ -1,15 +1,11 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
     internal static partial class ManagerGX
     {
-
-
         internal static void EmitValue<T>(this EmitBasic basic, T value)
         {
             if (value == null)
@@ -99,7 +95,6 @@ namespace BigCookieKit.Reflect
             }
         }
 
-
         internal static void EmitValue(this EmitBasic basic, Object value, Type type)
         {
             if (type == typeof(String))
@@ -177,7 +172,6 @@ namespace BigCookieKit.Reflect
             }
         }
 
-
         internal static void IntegerMap(this EmitBasic basic, Int64 value)
         {
             switch (value)
@@ -212,7 +206,6 @@ namespace BigCookieKit.Reflect
                     break;
             }
         }
-
 
         internal static void PopArray(this EmitBasic basic, Type type)
         {
@@ -273,7 +266,6 @@ namespace BigCookieKit.Reflect
                 throw new Exception("not exist datatype!");
             }
         }
-
 
         internal static void PushArray(this EmitBasic basic, Type type)
         {

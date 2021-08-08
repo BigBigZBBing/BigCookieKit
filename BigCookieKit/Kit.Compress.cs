@@ -11,11 +11,15 @@ namespace BigCookieKit
     public static partial class Kit
     {
         /// <summary>
+        /// 全局压缩方式
+        /// </summary>
+        public static CompressionLevel compressionLevel { get; set; } = CompressionLevel.NoCompression;
+
+        /// <summary>
         /// 文件夹所有文件压缩到Zip
         /// </summary>
         /// <param name="ZipFilePath">Zip文件目标路径</param>
         /// <param name="DirPath">文件夹路径</param>
-        
         public static Boolean DirToFormZipPacket(String zipFilePath, String dirPath)
         {
             FileInfo zipFile = new FileInfo(zipFilePath);
@@ -24,7 +28,7 @@ namespace BigCookieKit
                 DirectoryInfo dir = new DirectoryInfo(dirPath);
                 if (!dir.Exists)
                     return false;
-                ZipFile.CreateFromDirectory(dir.FullName, zipFile.FullName, CompressionLevel.NoCompression, true);
+                ZipFile.CreateFromDirectory(dir.FullName, zipFile.FullName, compressionLevel, true);
                 return true;
             }
             return false;
@@ -36,7 +40,6 @@ namespace BigCookieKit
         /// <param name="zipFilePath">Zip文件目标路径</param>
         /// <param name="filesPath">所有的文件路径</param>
         /// <returns></returns>
-        
         public static Boolean FileToFormZipPacket(String zipFilePath, params String[] filesPath)
         {
             FileInfo zipFile = new FileInfo(zipFilePath);

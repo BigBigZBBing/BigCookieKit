@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
@@ -14,8 +13,6 @@ namespace BigCookieKit.Reflect
             this.Length = Length;
         }
 
-
-
         public FieldBoolean IsNull()
         {
             return this.IsNull(this);
@@ -23,7 +20,6 @@ namespace BigCookieKit.Reflect
 
         public LocalBuilder this[Int32 index]
         {
-
             get
             {
                 var value = DeclareLocal(typeof(T));
@@ -43,8 +39,6 @@ namespace BigCookieKit.Reflect
             }
         }
 
-
-
         public LocalBuilder GetValue(CanCompute<Int32> index)
         {
             var value = DeclareLocal(typeof(T));
@@ -55,8 +49,6 @@ namespace BigCookieKit.Reflect
             return value;
         }
 
-
-
         public void SetValue(CanCompute<Int32> index, LocalBuilder value)
         {
             Emit(OpCodes.Ldloc_S, instance);
@@ -64,8 +56,6 @@ namespace BigCookieKit.Reflect
             Emit(OpCodes.Ldloc_S, value);
             this.PushArray(identity);
         }
-
-
 
         public FieldBoolean Exists(LocalBuilder value)
         {
@@ -87,8 +77,6 @@ namespace BigCookieKit.Reflect
             return result;
         }
 
-
-
         public CanCompute<Int32> FindIndex(LocalBuilder value)
         {
             var result = this.NewInt32(-1);
@@ -109,8 +97,6 @@ namespace BigCookieKit.Reflect
             return result;
         }
 
-
-
         public void Copy(FieldArray<T> target, CanCompute<Int32> length)
         {
             this.For(0, length, (int1, tab) =>
@@ -121,8 +107,6 @@ namespace BigCookieKit.Reflect
                 target.SetValue(int1, local);
             });
         }
-
-
 
         public CanCompute<Int32> GetLength()
         {

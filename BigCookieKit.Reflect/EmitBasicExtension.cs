@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace BigCookieKit.Reflect
 {
@@ -25,7 +24,6 @@ namespace BigCookieKit.Reflect
             }
         }
 
-
         public static LocalBuilder ArgumentRef<T>(this EmitBasic basic, Int32 index) where T : class
         {
             LocalBuilder param = basic.DeclareLocal(typeof(T));
@@ -34,7 +32,6 @@ namespace BigCookieKit.Reflect
             return param;
         }
 
-
         public static LocalBuilder ArgumentRef(this EmitBasic basic, Int32 index, Type type)
         {
             LocalBuilder param = basic.DeclareLocal(type);
@@ -42,7 +39,6 @@ namespace BigCookieKit.Reflect
             basic.Emit(OpCodes.Stloc_S, param);
             return param;
         }
-
 
         public static void Throw(this EmitBasic basic, LocalBuilder ex)
         {
@@ -74,7 +70,6 @@ namespace BigCookieKit.Reflect
             return new MethodManager(basic, method.ReturnType);
         }
 
-
         internal static MethodManager ReflectMethod<T>(this VariableManager basic, String MethodName, params LocalBuilder[] parameters)
         {
             Type type = typeof(T);
@@ -86,7 +81,6 @@ namespace BigCookieKit.Reflect
             return new MethodManager(basic, method.ReturnType);
         }
 
-
         internal static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type)
         {
             MethodInfo method = type.GetMethod(MethodName, Type.EmptyTypes);
@@ -95,7 +89,6 @@ namespace BigCookieKit.Reflect
             if (method.ReturnType != null && method.ReturnType != typeof(void)) CacheManager.retValue = true;
             return new MethodManager(basic, method.ReturnType);
         }
-
 
         internal static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type, params LocalBuilder[] parameters)
         {
@@ -108,7 +101,6 @@ namespace BigCookieKit.Reflect
             return new MethodManager(basic, method.ReturnType);
         }
 
-
         public static MethodManager ReflectStaticMethod(this EmitBasic basic, String MethodName, Type type)
         {
             MethodInfo method = type.GetMethod(MethodName, Type.EmptyTypes);
@@ -116,7 +108,6 @@ namespace BigCookieKit.Reflect
             if (method.ReturnType != null && method.ReturnType != typeof(void)) CacheManager.retValue = true;
             return new MethodManager(basic, method.ReturnType);
         }
-
 
         public static MethodManager ReflectStaticMethod(this EmitBasic basic, String MethodName, Type type, params LocalBuilder[] parameters)
         {
