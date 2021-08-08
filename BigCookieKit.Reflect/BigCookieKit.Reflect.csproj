@@ -38,14 +38,5 @@
     <DefineConstants>NETCORE5</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="FieldByte.cs" />
-    <Compile Remove="FieldDecimal.cs" />
-    <Compile Remove="FieldDouble.cs" />
-    <Compile Remove="FieldFloat.cs" />
-    <Compile Remove="FieldInt16.cs" />
-    <Compile Remove="FieldInt32.cs" />
-    <Compile Remove="FieldInt64.cs" />
-  </ItemGroup>
 
 </Project>
