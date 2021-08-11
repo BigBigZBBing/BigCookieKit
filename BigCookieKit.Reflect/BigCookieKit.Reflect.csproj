@@ -1,7 +1,31 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  
   <PropertyGroup>
-    <TargetFrameworks>net452;netcoreapp3.1;net5</TargetFrameworks>
+    <Deterministic>False</Deterministic>
+    <TargetFrameworks>
+      net452;netcoreapp3.1;net5
+    </TargetFrameworks>
+    <AssemblyName>BigCookieKit.Reflect</AssemblyName>
+    <PackageId>BigCookieKit.Reflect</PackageId>
+    <Authors>BigCookieKit.Reflect</Authors>
+    <Product>BigCookieKit.Reflect</Product>
+    <RootNamespace>BigCookieKit.Reflect</RootNamespace>
+    <Description>
+      高性能反射
+      技术讨论群 QQ群:1600800
+    </Description>
+    <Copyright>©2021-2021 BigCookieKit.Reflect</Copyright>
+    <PackageLicenseFile></PackageLicenseFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <AssemblyVersion>1.0.2021.0812</AssemblyVersion>
+    <FileVersion>1.0.2021.0812</FileVersion>
+    <Version>1.0.2021.0812</Version>
+    <PackageReleaseNotes>
+      替代表达式树的最佳方案
+    </PackageReleaseNotes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|net452'">

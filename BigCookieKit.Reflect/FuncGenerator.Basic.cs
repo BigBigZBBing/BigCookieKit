@@ -138,7 +138,7 @@ namespace BigCookieKit.Reflect
 
         public FieldArray<T> NewArray<T>(LocalBuilder value)
         {
-            if (value.LocalType != typeof(T)) ManagerGX.ShowEx($"Type not is [{typeof(T)?.BaseType?.Name}]");
+            if (value.LocalType != typeof(Int32)) ManagerGX.ShowEx($"Type not is [Int32]");
             return new FieldArray<T>(value, this, -1);
         }
 
