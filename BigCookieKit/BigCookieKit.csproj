@@ -2,29 +2,27 @@
 
   <PropertyGroup>
     <Deterministic>False</Deterministic>
-    <TargetFrameworks>
-      netcoreapp3.1;net5
-    </TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5</TargetFrameworks>
     <AssemblyName>BigCookieKit</AssemblyName>
     <PackageId>BigCookieKit</PackageId>
     <Authors>BigCookieKit</Authors>
     <Product>BigCookieKit</Product>
     <RootNamespace>BigCookieKit</RootNamespace>
-    <Description>工具箱,高性能通信,高性能反射 超级工具库
+    <Description>工具箱,高性能通信,高性能反射,超级工具库
 特点:高性能,使用方便
 使用详解关注CSDN Big.Cookie博客
 技术讨论群 QQ群:1600800</Description>
     <Copyright>©2021-2021 Big.Cookie</Copyright>
-    <PackageLicenseFile></PackageLicenseFile>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>1.0.*</AssemblyVersion>
-    <FileVersion>1.0.2021.0613</FileVersion>
-    <Version>1.0.2021.0613</Version>
-    <PackageReleaseNotes>完成根据DataSet生成Excel
-优化语法逻辑</PackageReleaseNotes>
+    <AssemblyVersion>1.2021.8.12</AssemblyVersion>
+    <FileVersion>1.2021.8.12</FileVersion>
+    <Version>1.2021.8.12</Version>
+    <OutputPath>../Nuget</OutputPath>
+    <OutputType>Library</OutputType>
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netcoreapp3.1'">
