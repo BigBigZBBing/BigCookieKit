@@ -23,12 +23,16 @@
 开发中的常用套件 工具件
 
 
+
+
 ## 反射库使用手册
 
 ##### 开始使用 创建一个动态函数以委托为入口
 ```csharp
 var action = SmartBuilder.DynamicMethod<Action>(string.Empty, emit =>
 {
+    var lb = emit.ArgumentRef(index,typeof(string)); //获取传入的参数 index是传入参数的索引
+    emit.Argument(index); //直接抛出传入的参数 index是索引
     emit.Return(); //不能漏
 });
 action.Invoke();
@@ -50,8 +54,6 @@ var to_float = emit.NewFloat(float.MaxValue);
 var to_double = emit.NewDouble(double.MaxValue);
 //初始化decimal
 var to_decimal = emit.NewDecimal(decimal.MaxValue);
-//初始化object
-var to_object = emit.NewObject(decimal.MaxValue);
 //初始化bool
 var to_bool = emit.NewBoolean(true);
 //初始化array
@@ -62,10 +64,30 @@ var to_model = emit.NewEntity<TestModel>();
 var to_list = emit.NewList<TestModel>();
 //初始化可空类型
 var to_nullable_int = emit.NewInt32(int.MaxValue).AsNullable();
+//初始化object
+var to_object = emit.NewObject(decimal.MaxValue);
+```
+
+##### 万能基类
+```csharp
+//初始化object
+var to_object = emit.NewObject(new Object());
+//强制转换
+var to_object = to_object.AS(typeof(string));
+//获取字段的值
+var lb = to_object.GetField("fieldName");
+//获取属性的值
+var lb = to_object.GetPropterty("propName");
+//给字段赋值
+to_object.SetField("fieldName",value);
+//给属性赋值
+to_object.SetPropterty("propName",value);
+//调用函数
+to_object.Call("methodName",new object[]{ value });
 ```
 
 ##### 可计算类型
-支持int long string decimal 
+支持 Int16 Int32 Single Double Decimal String
 ```csharp
 var to_int = emit.NewInt32(100);
 var to_int1 = emit.NewInt32(200);
