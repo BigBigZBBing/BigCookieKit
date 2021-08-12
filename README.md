@@ -86,6 +86,16 @@ to_object.SetPropterty("propName",value);
 to_object.Call("methodName",new object[]{ value });
 ```
 
+##### 函数使用方法
+```csharp
+//调用静态函数
+var method = il.ReflectStaticMethod("methodName",returnType,new object[]{ value });
+//调用非静态函数
+to_object.ReflectMethod("methodName",returnType,new object[]{ value });
+//返回函数结果 如果不返回则被推出计算堆
+var lb = method.ReturnRef();
+```
+
 ##### 可计算类型
 支持 Int16 Int32 Single Double Decimal String
 ```csharp
