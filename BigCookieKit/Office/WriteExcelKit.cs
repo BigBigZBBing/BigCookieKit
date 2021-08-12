@@ -31,16 +31,17 @@ namespace BigCookieKit.Office
 
         public void Save(DataSet ds)
         {
-            if (ds.IsNull()) throw new ArgumentNullException();
+            if (ds.NotExist()) throw new ArgumentNullException();
 
             var template = new Dictionary<string, string>(fixedTemplate);
 
             Dictionary<string, string> sheets = new Dictionary<string, string>();
             int index = 1;
+            StringBuilder builder = new StringBuilder();
 
             foreach (DataTable dt in ds.Tables)
             {
-                StringBuilder builder = new StringBuilder();
+                builder.Clear();
                 builder.Append($@"<?xml version=""1.0"" encoding=""utf-8""?>");
                 builder.Append($@"<x:worksheet xmlns:x=""http://schemas.openxmlformats.org/spreadsheetml/2006/main"">");
                 builder.Append($@"<x:dimension ref=""A1:{ExcelHelper.IndexToColumn(dt.Columns.Count - 1)}{dt.Rows.Count}""/><x:sheetData>");

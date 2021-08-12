@@ -52,10 +52,11 @@ namespace BigCookieKit.Reflect
 
         public AssertManager IF(LocalBuilder assert, Action builder)
         {
+            if (assert.LocalType != typeof(Boolean)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Boolean]");
             return new AssertManager(generator, new Tuple<LocalBuilder, Action>(assert, builder));
         }
 
-        public AssertManager IF<T>(FieldManager<T> assert, Action builder)
+        public AssertManager IF(FieldManager<Boolean> assert, Action builder)
         {
             return new AssertManager(generator, new Tuple<LocalBuilder, Action>(assert, builder));
         }
