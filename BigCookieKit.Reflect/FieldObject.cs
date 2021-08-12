@@ -44,6 +44,8 @@ namespace BigCookieKit.Reflect
         public void SetField(string fieldName, LocalBuilder value)
         {
             FieldInfo field = asidentity.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (field == null) ManagerGX.ShowEx<ArgumentNullException>("Field not is exists");
+            if (field.FieldType != value.LocalType) ManagerGX.ShowEx<TypeAccessException>("Field type and target type different");
             Output();
             Emit(OpCodes.Ldloc_S, value);
             Emit(OpCodes.Stfld, field);
@@ -52,6 +54,8 @@ namespace BigCookieKit.Reflect
         public void SetField(string fieldName, object value)
         {
             FieldInfo field = asidentity.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (field == null) ManagerGX.ShowEx<ArgumentNullException>("Field not is exists");
+            if (field.FieldType != value.GetType()) ManagerGX.ShowEx<TypeAccessException>("Field type and target type different");
             Output();
             this.EmitValue(value, field.FieldType);
             Emit(OpCodes.Stfld, field);
@@ -60,6 +64,7 @@ namespace BigCookieKit.Reflect
         public LocalBuilder GetField(string fieldName)
         {
             FieldInfo field = asidentity.GetField(fieldName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (field == null) ManagerGX.ShowEx<ArgumentNullException>("Field not is exists");
             LocalBuilder local = DeclareLocal(field.FieldType);
             Output();
             Emit(OpCodes.Ldfld, field);
@@ -70,6 +75,8 @@ namespace BigCookieKit.Reflect
         public void SetPropterty(string propName, LocalBuilder value)
         {
             PropertyInfo prop = asidentity.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (prop == null) ManagerGX.ShowEx<ArgumentNullException>("Propterty not is exists");
+            if (prop.PropertyType != value.LocalType) ManagerGX.ShowEx<TypeAccessException>("Propterty type and target type different");
             Output();
             Emit(OpCodes.Ldloc_S, value);
             Emit(OpCodes.Callvirt, prop.GetSetMethod());
@@ -78,6 +85,8 @@ namespace BigCookieKit.Reflect
         public void SetPropterty(string propName, object value)
         {
             PropertyInfo prop = asidentity.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (prop == null) ManagerGX.ShowEx<ArgumentNullException>("Propterty not is exists");
+            if (prop.PropertyType != value.GetType()) ManagerGX.ShowEx<TypeAccessException>("Propterty type and target type different");
             Output();
             this.EmitValue(value, prop.PropertyType);
             Emit(OpCodes.Callvirt, prop.GetSetMethod());
@@ -86,6 +95,7 @@ namespace BigCookieKit.Reflect
         public LocalBuilder GetPropterty(string propName)
         {
             PropertyInfo prop = asidentity.GetProperty(propName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+            if (prop == null) ManagerGX.ShowEx<ArgumentNullException>("Propterty not is exists");
             LocalBuilder local = DeclareLocal(prop.PropertyType);
             Output();
             Emit(OpCodes.Callvirt, prop.GetGetMethod());

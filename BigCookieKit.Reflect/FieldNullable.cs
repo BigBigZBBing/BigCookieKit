@@ -37,22 +37,22 @@ namespace BigCookieKit.Reflect
             return new FieldBoolean(Has, generator);
         }
 
-        public CanCompute<T> Value()
+        public LocalBuilder Value()
         {
             LocalBuilder Original = generator.DeclareLocal(typeof(T));
             generator.Emit(OpCodes.Ldloca_S, instance);
             Emit(OpCodes.Call, ValueInfo);
             generator.Emit(OpCodes.Stloc_S, Original);
-            return new CanCompute<T>(Original, generator);
+            return Original;
         }
 
-        public CanCompute<T> GetValueOrDefault()
+        public LocalBuilder GetValueOrDefault()
         {
             LocalBuilder Default = generator.DeclareLocal(typeof(T));
             generator.Emit(OpCodes.Ldloca_S, instance);
             Emit(OpCodes.Call, GetValueOrDefaultInfo);
             generator.Emit(OpCodes.Stloc_S, Default);
-            return new CanCompute<T>(Default, generator);
+            return Default;
         }
     }
 }

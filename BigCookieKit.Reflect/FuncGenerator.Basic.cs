@@ -23,7 +23,7 @@ namespace BigCookieKit.Reflect
 
         public FieldString NewString(LocalBuilder value)
         {
-            if (value.LocalType != typeof(String)) ManagerGX.ShowEx("Type not is [String]");
+            if (value.LocalType != typeof(String)) ManagerGX.ShowEx<TypeAccessException>("Type not is [String]");
             return new FieldString(value, this);
         }
 
@@ -34,7 +34,7 @@ namespace BigCookieKit.Reflect
 
         public FieldBoolean NewBoolean(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Boolean)) ManagerGX.ShowEx("Type not is [Boolean]");
+            if (value.LocalType != typeof(Boolean)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Boolean]");
             return new FieldBoolean(value, this);
         }
 
@@ -45,7 +45,7 @@ namespace BigCookieKit.Reflect
 
         public CanCompute<Byte> NewByte(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Byte)) ManagerGX.ShowEx("Type not is [Byte]");
+            if (value.LocalType != typeof(Byte)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Byte]");
             return new CanCompute<Byte>(value, this);
         }
 
@@ -56,7 +56,7 @@ namespace BigCookieKit.Reflect
 
         public CanCompute<Int16> NewInt16(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int16)) ManagerGX.ShowEx("Type not is [Int16]");
+            if (value.LocalType != typeof(Int16)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int16]");
             return new CanCompute<Int16>(value, this);
         }
 
@@ -67,7 +67,7 @@ namespace BigCookieKit.Reflect
 
         public CanCompute<Int32> NewInt32(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int32)) ManagerGX.ShowEx("Type not is [Int32]");
+            if (value.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int32]");
             return new CanCompute<Int32>(value, this);
         }
 
@@ -78,7 +78,7 @@ namespace BigCookieKit.Reflect
 
         public CanCompute<Int64> NewInt64(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int64)) ManagerGX.ShowEx("Type not is [Int64]");
+            if (value.LocalType != typeof(Int64)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int64]");
             return new CanCompute<Int64>(value, this);
         }
 
@@ -89,7 +89,7 @@ namespace BigCookieKit.Reflect
 
         public CanCompute<Single> NewFloat(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Single)) ManagerGX.ShowEx("Type not is [Single]");
+            if (value.LocalType != typeof(Single)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Single]");
             return new CanCompute<Single>(value, this);
         }
 
@@ -100,7 +100,7 @@ namespace BigCookieKit.Reflect
 
         public CanCompute<Double> NewDouble(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Double)) ManagerGX.ShowEx("Type not is [Double]");
+            if (value.LocalType != typeof(Double)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Double]");
             return new CanCompute<Double>(value, this);
         }
 
@@ -111,7 +111,7 @@ namespace BigCookieKit.Reflect
 
         public CanCompute<Decimal> NewDecimal(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Decimal)) ManagerGX.ShowEx("Type not is [Decimal]");
+            if (value.LocalType != typeof(Decimal)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Decimal]");
             return new CanCompute<Decimal>(value, this);
         }
 
@@ -122,7 +122,7 @@ namespace BigCookieKit.Reflect
 
         public FieldDateTime NewDateTime(LocalBuilder value)
         {
-            if (value.LocalType != typeof(DateTime)) ManagerGX.ShowEx("Type not is [DateTime]");
+            if (value.LocalType != typeof(DateTime)) ManagerGX.ShowEx<TypeAccessException>("Type not is [DateTime]");
             return new FieldDateTime(value, this);
         }
 
@@ -138,7 +138,7 @@ namespace BigCookieKit.Reflect
 
         public FieldArray<T> NewArray<T>(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int32)) ManagerGX.ShowEx($"Type not is [Int32]");
+            if (value.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>($"Type not is [Int32]");
             return new FieldArray<T>(value, this, -1);
         }
 
@@ -149,7 +149,7 @@ namespace BigCookieKit.Reflect
 
         public FieldEntity<T> NewEntity<T>(LocalBuilder value)
         {
-            if (value.LocalType != typeof(T)) ManagerGX.ShowEx($"Type not is [{typeof(T)?.Name}]");
+            if (value.LocalType != typeof(T)) ManagerGX.ShowEx<TypeAccessException>($"Type not is [{typeof(T)?.Name}]");
             return new FieldEntity<T>(value, this);
         }
 
@@ -165,7 +165,7 @@ namespace BigCookieKit.Reflect
 
         public FieldList<T> NewList<T>(LocalBuilder value)
         {
-            if (value.LocalType != typeof(List<T>)) ManagerGX.ShowEx($"Type not is [{typeof(List<T>)?.Name}]");
+            if (value.LocalType != typeof(List<T>)) ManagerGX.ShowEx<TypeAccessException>($"Type not is [{typeof(List<T>)?.Name}]");
             return new FieldList<T>(value, this);
         }
     }

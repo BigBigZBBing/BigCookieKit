@@ -259,6 +259,11 @@ namespace BigCookieKit.Reflect
             throw new Exception(Message);
         }
 
+        internal static void ShowEx<T>(String Message) where T : Exception
+        {
+            throw (T)Activator.CreateInstance(typeof(T), Message);
+        }
+
         private static LocalBuilder NewField<T>(EmitBasic basic, T value)
         {
             LocalBuilder item = basic.DeclareLocal(value.GetType());

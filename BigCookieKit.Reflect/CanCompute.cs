@@ -9,6 +9,10 @@ namespace BigCookieKit.Reflect
         {
         }
 
+        public static implicit operator FieldByte(CanCompute<T> field) => new FieldByte(field.instance, field.generator);
+
+        public static implicit operator FieldInt16(CanCompute<T> field) => new FieldInt16(field.instance, field.generator);
+
         public static implicit operator FieldInt32(CanCompute<T> field) => new FieldInt32(field.instance, field.generator);
 
         public static implicit operator FieldInt64(CanCompute<T> field) => new FieldInt64(field.instance, field.generator);
@@ -44,6 +48,11 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Comparer(field, value, OpCodes.Cgt);
         }
 
+        public static FieldBoolean operator >(CanCompute<T> field, Int16 value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Cgt);
+        }
+
         public static FieldBoolean operator >(CanCompute<T> field, LocalBuilder value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Cgt);
@@ -74,6 +83,11 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Comparer(field, value, OpCodes.Cgt);
         }
 
+        public static FieldBoolean operator >(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Cgt);
+        }
+
         public static FieldBoolean operator <(CanCompute<T> field, Decimal value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Clt);
@@ -95,6 +109,11 @@ namespace BigCookieKit.Reflect
         }
 
         public static FieldBoolean operator <(CanCompute<T> field, Int32 value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Clt);
+        }
+
+        public static FieldBoolean operator <(CanCompute<T> field, Int16 value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Clt);
         }
@@ -129,6 +148,11 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Comparer(field, value, OpCodes.Clt);
         }
 
+        public static FieldBoolean operator <(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Clt);
+        }
+
         public static FieldBoolean operator >=(CanCompute<T> field, Decimal value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Cgt, OpCodes.Ceq);
@@ -150,6 +174,11 @@ namespace BigCookieKit.Reflect
         }
 
         public static FieldBoolean operator >=(CanCompute<T> field, Int32 value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Cgt, OpCodes.Ceq);
+        }
+
+        public static FieldBoolean operator >=(CanCompute<T> field, Int16 value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Cgt, OpCodes.Ceq);
         }
@@ -184,6 +213,11 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Comparer(field, value, OpCodes.Cgt, OpCodes.Ceq);
         }
 
+        public static FieldBoolean operator >=(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Cgt, OpCodes.Ceq);
+        }
+
         public static FieldBoolean operator <=(CanCompute<T> field, Decimal value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Clt, OpCodes.Ceq);
@@ -205,6 +239,11 @@ namespace BigCookieKit.Reflect
         }
 
         public static FieldBoolean operator <=(CanCompute<T> field, Int32 value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Clt, OpCodes.Ceq);
+        }
+
+        public static FieldBoolean operator <=(CanCompute<T> field, Int16 value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Clt, OpCodes.Ceq);
         }
@@ -239,6 +278,11 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Comparer(field, value, OpCodes.Clt, OpCodes.Ceq);
         }
 
+        public static FieldBoolean operator <=(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Clt, OpCodes.Ceq);
+        }
+
         public static FieldBoolean operator ==(CanCompute<T> field, Decimal value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
@@ -260,6 +304,11 @@ namespace BigCookieKit.Reflect
         }
 
         public static FieldBoolean operator ==(CanCompute<T> field, Int32 value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Ceq);
+        }
+
+        public static FieldBoolean operator ==(CanCompute<T> field, Int16 value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
@@ -294,6 +343,11 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
 
+        public static FieldBoolean operator ==(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Comparer(field, value, OpCodes.Ceq);
+        }
+
         public static FieldBoolean operator !=(CanCompute<T> field, Decimal value)
         {
             return ManagerGX.Comparer(
@@ -323,6 +377,13 @@ namespace BigCookieKit.Reflect
         }
 
         public static FieldBoolean operator !=(CanCompute<T> field, Int32 value)
+        {
+            return ManagerGX.Comparer(
+                ManagerGX.Comparer(field, value, OpCodes.Ceq),
+                field.NewInt32(), OpCodes.Ceq);
+        }
+
+        public static FieldBoolean operator !=(CanCompute<T> field, Int16 value)
         {
             return ManagerGX.Comparer(
                 ManagerGX.Comparer(field, value, OpCodes.Ceq),
@@ -371,6 +432,13 @@ namespace BigCookieKit.Reflect
                 field.NewInt32(), OpCodes.Ceq);
         }
 
+        public static FieldBoolean operator !=(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Comparer(
+                ManagerGX.Comparer(field, value, OpCodes.Ceq),
+                field.NewInt32(), OpCodes.Ceq);
+        }
+
         public static CanCompute<Decimal> operator +(CanCompute<T> field, Decimal value)
         {
             return ManagerGX.Compute<T, Decimal>(field, value, OpCodes.Add);
@@ -394,6 +462,16 @@ namespace BigCookieKit.Reflect
         public static CanCompute<Int32> operator +(CanCompute<T> field, Int32 value)
         {
             return ManagerGX.Compute<T, Int32>(field, value, OpCodes.Add);
+        }
+
+        public static CanCompute<Int16> operator +(CanCompute<T> field, Int16 value)
+        {
+            return ManagerGX.Compute<T, Int16>(field, value, OpCodes.Add);
+        }
+
+        public static CanCompute<Byte> operator +(CanCompute<T> field, Byte value)
+        {
+            return ManagerGX.Compute<T, Byte>(field, value, OpCodes.Add);
         }
 
         public static VariableManager operator +(CanCompute<T> field, LocalBuilder value)
@@ -426,6 +504,16 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Compute<T, Int32>(field, value, OpCodes.Add);
         }
 
+        public static CanCompute<Int16> operator +(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Compute<T, Int16>(field, value, OpCodes.Add);
+        }
+
+        public static CanCompute<Byte> operator +(CanCompute<T> field, CanCompute<Byte> value)
+        {
+            return ManagerGX.Compute<T, Byte>(field, value, OpCodes.Add);
+        }
+
         public static CanCompute<Decimal> operator -(CanCompute<T> field, Decimal value)
         {
             return ManagerGX.Compute<T, Decimal>(field, value, OpCodes.Sub);
@@ -449,6 +537,16 @@ namespace BigCookieKit.Reflect
         public static CanCompute<Int32> operator -(CanCompute<T> field, Int32 value)
         {
             return ManagerGX.Compute<T, Int32>(field, value, OpCodes.Sub);
+        }
+
+        public static CanCompute<Int16> operator -(CanCompute<T> field, Int16 value)
+        {
+            return ManagerGX.Compute<T, Int16>(field, value, OpCodes.Sub);
+        }
+
+        public static CanCompute<Byte> operator -(CanCompute<T> field, Byte value)
+        {
+            return ManagerGX.Compute<T, Byte>(field, value, OpCodes.Sub);
         }
 
         public static VariableManager operator -(CanCompute<T> field, LocalBuilder value)
@@ -481,6 +579,16 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Compute<T, Int32>(field, value, OpCodes.Sub);
         }
 
+        public static CanCompute<Int16> operator -(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Compute<T, Int16>(field, value, OpCodes.Sub);
+        }
+
+        public static CanCompute<Byte> operator -(CanCompute<T> field, CanCompute<Byte> value)
+        {
+            return ManagerGX.Compute<T, Byte>(field, value, OpCodes.Sub);
+        }
+
         public static CanCompute<Decimal> operator *(CanCompute<T> field, Decimal value)
         {
             return ManagerGX.Compute<T, Decimal>(field, value, OpCodes.Mul);
@@ -504,6 +612,16 @@ namespace BigCookieKit.Reflect
         public static CanCompute<Int32> operator *(CanCompute<T> field, Int32 value)
         {
             return ManagerGX.Compute<T, Int32>(field, value, OpCodes.Mul);
+        }
+
+        public static CanCompute<Int16> operator *(CanCompute<T> field, Int16 value)
+        {
+            return ManagerGX.Compute<T, Int16>(field, value, OpCodes.Mul);
+        }
+
+        public static CanCompute<Byte> operator *(CanCompute<T> field, Byte value)
+        {
+            return ManagerGX.Compute<T, Byte>(field, value, OpCodes.Mul);
         }
 
         public static VariableManager operator *(CanCompute<T> field, LocalBuilder value)
@@ -536,6 +654,16 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Compute<T, Int32>(field, value, OpCodes.Mul);
         }
 
+        public static CanCompute<Int16> operator *(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Compute<T, Int16>(field, value, OpCodes.Mul);
+        }
+
+        public static CanCompute<Byte> operator *(CanCompute<T> field, CanCompute<Byte> value)
+        {
+            return ManagerGX.Compute<T, Byte>(field, value, OpCodes.Mul);
+        }
+
         public static CanCompute<Decimal> operator /(CanCompute<T> field, Decimal value)
         {
             return ManagerGX.Compute<T, Decimal>(field, value, OpCodes.Rem);
@@ -559,6 +687,16 @@ namespace BigCookieKit.Reflect
         public static CanCompute<Int32> operator /(CanCompute<T> field, Int32 value)
         {
             return ManagerGX.Compute<T, Int32>(field, value, OpCodes.Rem);
+        }
+
+        public static CanCompute<Int16> operator /(CanCompute<T> field, Int16 value)
+        {
+            return ManagerGX.Compute<T, Int16>(field, value, OpCodes.Rem);
+        }
+
+        public static CanCompute<Byte> operator /(CanCompute<T> field, Byte value)
+        {
+            return ManagerGX.Compute<T, Byte>(field, value, OpCodes.Rem);
         }
 
         public static VariableManager operator /(CanCompute<T> field, LocalBuilder value)
@@ -589,6 +727,16 @@ namespace BigCookieKit.Reflect
         public static CanCompute<Int32> operator /(CanCompute<T> field, CanCompute<Int32> value)
         {
             return ManagerGX.Compute<T, Int32>(field, value, OpCodes.Rem);
+        }
+
+        public static CanCompute<Int16> operator /(CanCompute<T> field, CanCompute<Int16> value)
+        {
+            return ManagerGX.Compute<T, Int16>(field, value, OpCodes.Rem);
+        }
+
+        public static CanCompute<Byte> operator /(CanCompute<T> field, CanCompute<Byte> value)
+        {
+            return ManagerGX.Compute<T, Byte>(field, value, OpCodes.Rem);
         }
     }
 }
