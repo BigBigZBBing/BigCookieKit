@@ -21,7 +21,7 @@ namespace BigCookieKit.Reflect
             return this;
         }
 
-        public AssertManager ElseIF<T>(FieldManager<T> assert, Action builder)
+        public AssertManager ElseIF(FieldManager<Boolean> assert, Action builder)
         {
             context.Add(new Tuple<LocalBuilder, Action>(assert, builder));
             return this;

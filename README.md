@@ -115,3 +115,46 @@ var to_string1 = emit.NewString("s1231");
 to_string = to_string + to_string1;
 to_string = to_string + "s1231";
 ```
+
+##### IF判断
+```csharp
+emit.IF(emit.NewBoolean(true),()=>{
+	//TODO
+}).ElseIF(emit.NewBoolean(true),()=>{
+	//TODO
+}).Else(()=>{
+	//TODO
+}).IFEnd();
+```
+
+##### For 正循环 逆循环
+```csharp
+emit.For(emit.NewInt32(),emit.NewInt32(100),(index,tab)=>{
+	//index 循环的索引
+	tab.Break();//跳出循环使用
+});
+
+emit.Forr(emit.NewInt32(100),emit.NewInt32(),(index,tab)=>{
+	//index 循环的索引
+	tab.Break();//跳出循环使用
+});
+```
+
+##### While 循环
+```csharp
+emit.While(emit.NewBoolean(true),(tab)=>{
+	tab.Break();//跳出循环使用
+});
+```
+
+##### Try 异常捕获
+```csharp
+emit.Try(()=>{
+	//TODO
+}).Catch((ex)=>{
+	//TODO
+	emit.Throw(ex);
+}).Finally(()=>{
+	//TODO
+}).TryEnd();
+```
