@@ -58,7 +58,7 @@ namespace BigCookieKit.Communication
                 RecHandle = Handle?.New().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter) ?? Protocol switch
                 {
                     NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
-                    NetworkProtocol.Udp => throw new NotImplementedException(),
+                    NetworkProtocol.Udp => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     NetworkProtocol.Http1 => throw new NotImplementedException(),
                     NetworkProtocol.Http2 => throw new NotImplementedException(),
                     NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
@@ -67,7 +67,7 @@ namespace BigCookieKit.Communication
                 SendHandle = Handle?.New().Define(((ICilent)this).DispatchCenter) ?? Protocol switch
                 {
                     NetworkProtocol.Tcp => new TcpHandle().Define(((ICilent)this).DispatchCenter),
-                    NetworkProtocol.Udp => throw new NotImplementedException(),
+                    NetworkProtocol.Udp => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     NetworkProtocol.Http1 => throw new NotImplementedException(),
                     NetworkProtocol.Http2 => throw new NotImplementedException(),
                     NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
