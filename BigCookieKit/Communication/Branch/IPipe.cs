@@ -8,6 +8,6 @@ namespace BigCookieKit.Communication
 {
     public interface IPipe
     {
-        Task InvokeAsync(Action context);
+        Task InvokeAsync(Session session,Action context);
     }
 }

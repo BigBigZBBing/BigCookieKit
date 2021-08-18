@@ -42,7 +42,7 @@ namespace TcpServerExmaple
 
     class TestPipe : IPipe
     {
-        public async Task InvokeAsync(Action context)
+        public async Task InvokeAsync(Session session, Action context)
         {
             Console.WriteLine("接收前1");
             context?.Invoke();

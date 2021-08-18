@@ -31,9 +31,9 @@ namespace BigCookieKit.Communication
             return handle;
         }
 
-        public void PipeStart(Action callback)
+        public void PipeStart(Session session, Action callback)
         {
-            pipeline.Start(callback);
+            pipeline.Start(session, callback);
         }
 
         public abstract void Encode(byte[] bytes);

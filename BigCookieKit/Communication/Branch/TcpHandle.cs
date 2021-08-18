@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BigCookieKit.Communication
 {
-    public class TcpHandle : Handle
+    public sealed class TcpHandle : Handle
     {
         public override void Encode(byte[] bytes)
         {
@@ -98,7 +98,7 @@ namespace BigCookieKit.Communication
             session.ReceiveOffset = 0;
         }
 
-        
+
         private bool EnsureOffSet(int bits)
         {
             Session session = (Session)UserToken;

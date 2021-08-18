@@ -119,7 +119,7 @@ namespace BigCookieKit.Communication
                 session.RecHandle
                     .Decode(packet =>
                     {
-                        session.RecHandle.PipeStart(delegate
+                        session.RecHandle.PipeStart(session, delegate
                         {
                             OnReceive?.Invoke(session, packet);
                         });

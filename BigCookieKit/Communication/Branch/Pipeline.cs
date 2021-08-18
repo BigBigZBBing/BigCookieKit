@@ -17,19 +17,19 @@ namespace BigCookieKit.Communication
             pipes.Add(pipe);
         }
 
-        internal void Start(Action callback)
+        internal void Start(Session session, Action callback)
         {
             _poistion = 0;
             if (pipes.Count == 0)
                 callback?.Invoke();
-            else Spin(callback);
+            else Spin(session, callback);
         }
 
-        internal void Spin(Action callback)
+        internal void Spin(Session session, Action callback)
         {
-            pipes[_poistion++].InvokeAsync(
+            pipes[_poistion++].InvokeAsync(session,
                 pipes.Count > _poistion
-            ? delegate { Spin(callback); }
+            ? delegate { Spin(session, callback); }
             : callback);
         }
     }
