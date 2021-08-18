@@ -27,6 +27,7 @@ namespace NUnitBigCookieKit
         [SetUp]
         public void Setup()
         {
+
         }
 
         /// <summary>

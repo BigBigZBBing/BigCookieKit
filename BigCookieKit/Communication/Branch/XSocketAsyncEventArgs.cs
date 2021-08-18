@@ -22,6 +22,17 @@ namespace BigCookieKit.Communication
                 ApplyMode.Server => AcceptSocket,
                 _ => null
             };
+            internal set
+            {
+                switch (Mode)
+                {
+                    case ApplyMode.Client:
+                        break;
+                    case ApplyMode.Server:
+                        AcceptSocket = value;
+                        break;
+                }
+            }
         }
     }
 }

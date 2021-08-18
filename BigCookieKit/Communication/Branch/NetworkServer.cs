@@ -29,7 +29,6 @@ namespace BigCookieKit.Communication
 
         public Action<Session> OnExit { get; set; }
 
-
         internal ConcurrentQueue<Session> Pool = new ConcurrentQueue<Session>();
 
         public void Start()
@@ -55,8 +54,8 @@ namespace BigCookieKit.Communication
 
         void IServer.Open()
         {
-            Session session = Pool.TryDequeue(out Session oldSession)
-                ? oldSession
+            bool isOld = Pool.TryDequeue(out Session oldSession);
+            Session session = isOld ? oldSession
                 : new Session(((IServer)this).DispatchCenter)
                 {
                     Server = CurrSocket,
@@ -133,6 +132,7 @@ namespace BigCookieKit.Communication
             else
             {
                 OnExit?.Invoke(session);
+                session.Disconnect();
                 Pool.Enqueue(session);
             }
         }

@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TcpServerExmaple
@@ -11,7 +12,8 @@ namespace TcpServerExmaple
         static void Main(string[] args)
         {
             NetworkServer tcpServer = new NetworkServer(7447);
-            tcpServer.BufferSize = 8192;
+            tcpServer.Protocol = NetworkProtocol.Http1;
+            tcpServer.BufferSize = 4096;
             tcpServer.OnConnect = user =>
             {
                 Console.WriteLine($"{user.UserHost}:{user.UserPort}接入~");
@@ -34,7 +36,7 @@ namespace TcpServerExmaple
 
             tcpServer.Start();
 
-            Console.ReadLine();
+            Thread.Sleep(-1);
         }
     }
 

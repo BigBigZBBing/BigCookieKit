@@ -86,7 +86,12 @@ namespace BigCookieKit.Communication
             try
             {
                 if (Client.Connected)
+                {
                     Client.Shutdown(SocketShutdown.Both);
+                    Client?.Close();
+                    Client?.Dispose();
+                    Client = null;
+                }
             }
             catch
             {
