@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Deterministic>False</Deterministic>
+    <TargetFrameworks>netcoreapp3.1;net5</TargetFrameworks>
+    <AssemblyName>BigCookieKit.Office</AssemblyName>
+    <PackageId>BigCookieKit.Office</PackageId>
+    <Authors>BigCookieKit.Office</Authors>
+    <Product>BigCookieKit.Office</Product>
+    <RootNamespace>BigCookieKit.Office</RootNamespace>
+    <Description>高性能Office操作库
+特点:超高性能,使用方便
+使用详解关注CSDN Big.Cookie博客
+技术讨论群 QQ群:1600800</Description>
+    <Copyright>©2021-2021 BigCookieKit.Office</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <AssemblyVersion>1.0.2021.0812</AssemblyVersion>
+    <FileVersion>1.0.2021.0812</FileVersion>
+    <Version>1.2021.8.12</Version>
+    <OutputPath>../Nuget</OutputPath>
+    <OutputType>Library</OutputType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
+  </ItemGroup>
+
+</Project>

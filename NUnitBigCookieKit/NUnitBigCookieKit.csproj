@@ -18,7 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
+    <ProjectReference Include="..\BigCookieKit.Office\BigCookieKit.Office.csproj" />
+    <ProjectReference Include="..\BigCookieKit.Reflect\BigCookieKit.Reflect.csproj" />
     <ProjectReference Include="..\BigCookieSequelize\BigCookieSequelize.csproj" />
   </ItemGroup>
 

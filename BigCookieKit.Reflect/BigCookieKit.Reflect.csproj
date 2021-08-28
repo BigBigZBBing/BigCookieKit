@@ -8,7 +8,10 @@
     <Authors>BigCookieKit.Reflect</Authors>
     <Product>BigCookieKit.Reflect</Product>
     <RootNamespace>BigCookieKit.Reflect</RootNamespace>
-    <Description>Emit封装库 超越表达式树的性能优势</Description>
+    <Description>高性能Emit反射库
+特点:优于表达式树的性能,比普通反射使用更简单
+使用详解关注CSDN Big.Cookie博客
+技术讨论群 QQ群:1600800</Description>
     <Copyright>©2021-2021 BigCookieKit.Reflect</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageIcon>logo.png</PackageIcon>
@@ -20,7 +23,6 @@
     <OutputPath>../Nuget</OutputPath>
     <OutputType>Library</OutputType>
     <Optimize>true</Optimize>
-    <PackageIconUrl />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|net452'">

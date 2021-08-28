@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Deterministic>False</Deterministic>
+    <TargetFrameworks>netcoreapp3.1;net5</TargetFrameworks>
+    <AssemblyName>BigCookieKit.Network</AssemblyName>
+    <PackageId>BigCookieKit.Network</PackageId>
+    <Authors>BigCookieKit.Network</Authors>
+    <Product>BigCookieKit.Network</Product>
+    <RootNamespace>BigCookieKit.Network</RootNamespace>
+    <Description>高性能网络通信库
+特点:高性能,包含(TCP,UDP,HTTP,HTTPS,HTTP,MQTT)
+使用详解关注CSDN Big.Cookie博客
+技术讨论群 QQ群:1600800</Description>
+    <Copyright>©2021-2021 BigCookieKit.Network</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>logo.png</PackageIcon>
+    <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <AssemblyVersion>1.0.2021.0812</AssemblyVersion>
+    <FileVersion>1.0.2021.0812</FileVersion>
+    <Version>1.2021.8.12</Version>
+    <OutputPath>../Nuget</OutputPath>
+    <OutputType>Library</OutputType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\logo.png" Link="logo.png">
+      <PackagePath></PackagePath>
+      <Pack>True</Pack>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
+  </ItemGroup>
+
+</Project>

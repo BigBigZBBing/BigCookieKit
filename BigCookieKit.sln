@@ -21,6 +21,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieSequelize", "BigCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Reflect", "BigCookieKit.Reflect\BigCookieKit.Reflect.csproj", "{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Network", "BigCookieKit.Network\BigCookieKit.Network.csproj", "{D8DC2B8F-5545-4EE5-BF7C-CE67E34A0E72}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCookieKit.Office", "BigCookieKit.Office\BigCookieKit.Office.csproj", "{1CD5EE79-C5FE-45C3-81D0-8D9FC4CC6D2F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +67,14 @@ Global
 		{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8DC2B8F-5545-4EE5-BF7C-CE67E34A0E72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8DC2B8F-5545-4EE5-BF7C-CE67E34A0E72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8DC2B8F-5545-4EE5-BF7C-CE67E34A0E72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8DC2B8F-5545-4EE5-BF7C-CE67E34A0E72}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CD5EE79-C5FE-45C3-81D0-8D9FC4CC6D2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CD5EE79-C5FE-45C3-81D0-8D9FC4CC6D2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CD5EE79-C5FE-45C3-81D0-8D9FC4CC6D2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CD5EE79-C5FE-45C3-81D0-8D9FC4CC6D2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

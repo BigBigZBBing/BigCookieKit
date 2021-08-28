@@ -1,4 +1,5 @@
 ﻿using BigCookieKit.Office;
+using BigCookieKit.Office.Xlsx;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;

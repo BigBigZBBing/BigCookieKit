@@ -1,6 +1,7 @@
 using BigCookieKit;
 using BigCookieKit.File;
 using BigCookieKit.Office;
+using BigCookieKit.Office.Xlsx;
 using BigCookieKit.Resources;
 using BigCookieKit.XML;
 using BigCookieSequelize;

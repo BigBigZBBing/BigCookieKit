@@ -15,9 +15,9 @@ namespace BigCookieKit.Reflect
             Call("Add", value);
         }
 
-        public void Contains(LocalBuilder value)
+        public FieldBoolean Contains(LocalBuilder value)
         {
-            Call("Contains", value);
+            return new FieldBoolean(Call("Contains", value).ReturnRef(), generator);
         }
 
         public void RemoveAt(LocalBuilder value)

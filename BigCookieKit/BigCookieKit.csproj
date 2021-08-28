@@ -8,8 +8,8 @@
     <Authors>BigCookieKit</Authors>
     <Product>BigCookieKit</Product>
     <RootNamespace>BigCookieKit</RootNamespace>
-    <Description>工具箱,高性能通信,高性能反射,高性能Excel读写,超级工具库
-特点:高性能,使用方便
+    <Description>便携工具箱
+特点:高性能,使用方便,针对性强
 使用详解关注CSDN Big.Cookie博客
 技术讨论群 QQ群:1600800</Description>
     <Copyright>©2021-2021 Big.Cookie</Copyright>
@@ -22,7 +22,7 @@
     <Version>1.2021.8.12</Version>
     <OutputPath>../Nuget</OutputPath>
     <OutputType>Library</OutputType>
-    <!--<Optimize>true</Optimize>-->
+    <Optimize>true</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Debug|AnyCPU|netcoreapp3.1'">
@@ -60,10 +60,6 @@
     <EmbeddedResource Remove="ORM\**" />
     <None Remove="Contract\**" />
     <None Remove="ORM\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Office\NpoiKit.cs" />
   </ItemGroup>
 
   <ItemGroup>
