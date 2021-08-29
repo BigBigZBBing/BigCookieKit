@@ -7,6 +7,7 @@ using BigCookieKit.XML;
 using BigCookieSequelize;
 using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
+using NPOI.Util;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
+using BigCookieKit.Algorithm;
 
 namespace NUnitBigCookieKit
 {
@@ -502,6 +504,20 @@ namespace NUnitBigCookieKit
             var dt = test1.ToDataTable();
 
             var list = dt.ToEnumerable<ListModel>();
+        }
+
+        [Test]
+        public void Crc32Unit()
+        {
+            string data = @"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>
+<Relationships xmlns=""http://schemas.openxmlformats.org/package/2006/relationships""><Relationship Id=""rId2"" Type=""http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties"" Target=""docProps/core.xml""/><Relationship Id=""rId3"" Type=""http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties"" Target=""docProps/app.xml""/><Relationship Id=""rId1"" Type=""http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"" Target=""xl/workbook.xml""/></Relationships>";
+            CRC32 cRC32 = new CRC32();
+            var ret = cRC32.StringCRC(data);
+
+            var test = Crc32.crc32_buf(data.ToCharArray(), 0);
+
+            byte[] bytes = Encoding.Default.GetBytes(data);
+            var test1 = Crc32.crc32_byte(ref bytes);
         }
 
         #region 性能比较单元测试

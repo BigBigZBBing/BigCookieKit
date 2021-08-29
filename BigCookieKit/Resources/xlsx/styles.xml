@@ -1,19 +1,41 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<x:styleSheet xmlns:x="http://schemas.openxmlformats.org/spreadsheetml/2006/main" >
-    <x:fonts>
-      <x:font />
-    </x:fonts>
-    <x:fills>
-      <x:fill />
-    </x:fills>
-    <x:borders>
-      <x:border />
-    </x:borders>
-    <x:cellStyleXfs>
-      <x:xf />
-    </x:cellStyleXfs>
-    <x:cellXfs>
-      <x:xf />
-      <x:xf numFmtId="14" applyNumberFormat="1" />
-    </x:cellXfs>
-</x:styleSheet>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" 
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" 
+            xmlns:x16r2="http://schemas.microsoft.com/office/spreadsheetml/2015/02/main" 
+            xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision" 
+            mc:Ignorable="x14ac x16r2 xr">
+  <fonts count="1" x14ac:knownFonts="1">
+    <font>
+      <sz val="11"/>
+      <color theme="1"/>
+      <name val="等线"/>
+      <family val="2"/>
+      <scheme val="minor"/>
+    </font>
+  </fonts>
+  <fills count="1">
+    <fill>
+      <patternFill patternType="none"/>
+    </fill>
+  </fills>
+  <borders count="1">
+    <border>
+      <left/>
+      <right/>
+      <top/>
+      <bottom/>
+      <diagonal/>
+    </border>
+  </borders>
+  <cellStyleXfs count="1">
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0">
+      <alignment vertical="center"/>
+    </xf>
+  </cellStyleXfs>
+  <cellXfs>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0">
+      <alignment vertical="center"/>
+    </xf>
+  </cellXfs>
+</styleSheet>

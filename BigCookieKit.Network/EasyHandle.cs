@@ -15,7 +15,7 @@ namespace BigCookieKit.Network
             byte[] stream = new byte[bytes.Length + 2];
             Kit.GetBytes((short)bytes.Length).CopyTo(stream, 0);
             bytes.CopyTo(stream, 2);
-            Buffer.SetBuffer(this, stream);
+            BigCookieKit.Network.Buffer.SetBuffer(this, stream);
         }
 
         public override void Decode(Action<byte[]> packet)

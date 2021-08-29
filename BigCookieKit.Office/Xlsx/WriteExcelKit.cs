@@ -43,25 +43,25 @@ namespace BigCookieKit.Office.Xlsx
             {
                 builder.Clear();
                 builder.Append($@"<?xml version=""1.0"" encoding=""utf-8""?>");
-                builder.Append($@"<x:worksheet xmlns:x=""http://schemas.openxmlformats.org/spreadsheetml/2006/main"">");
-                builder.Append($@"<x:dimension ref=""A1:{ExcelHelper.IndexToColumn(dt.Columns.Count - 1)}{dt.Rows.Count}""/><x:sheetData>");
+                builder.Append($@"<worksheet xmlns=""http://schemas.openxmlformats.org/spreadsheetml/2006/main"" xmlns:r=""http://schemas.openxmlformats.org/officeDocument/2006/relationships"" xmlns:mc=""http://schemas.openxmlformats.org/markup-compatibility/2006"" xmlns:x14ac=""http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac"" mc:Ignorable=""x14ac"">");
+                builder.Append($@"<dimension ref=""A1:{ExcelHelper.IndexToColumn(dt.Columns.Count - 1)}{dt.Rows.Count}""/><sheetData>");
                 sheets.Add("sheet" + index, dt.TableName);
 
                 for (int rowIndex = 0; rowIndex < dt.Rows.Count; rowIndex++)
                 {
                     DataRow dr = dt.Rows[rowIndex];
-                    builder.Append($"<x:row r=\"{(rowIndex + 1)}\">");
+                    builder.Append($"<row r=\"{(rowIndex + 1)}\">");
                     for (int colIndex = 0; colIndex < dt.Columns.Count; colIndex++)
                     {
                         DataColumn dc = dt.Columns[colIndex];
-                        builder.Append($"<x:c r=\"{ExcelHelper.IndexToColumn(colIndex)}{(rowIndex + 1)}\" t=\"str\">");
-                        builder.Append($"<x:v>{dr[dc.ColumnName]?.ToString()}");
-                        builder.Append($"</x:v>");
-                        builder.Append($"</x:c>");
+                        builder.Append($"<c r=\"{ExcelHelper.IndexToColumn(colIndex)}{(rowIndex + 1)}\" t=\"str\">");
+                        builder.Append($"<v>{dr[dc.ColumnName]?.ToString()}");
+                        builder.Append($"</v>");
+                        builder.Append($"</c>");
                     }
-                    builder.Append($"</x:row>");
+                    builder.Append($"</row>");
                 }
-                builder.Append("</x:sheetData></x:worksheet>");
+                builder.Append("</sheetData></worksheet>");
                 template.Add($"xl/worksheets/sheet{index}.xml", builder.ToString());
                 index++;
             }
@@ -82,7 +82,7 @@ namespace BigCookieKit.Office.Xlsx
             string dynamicTemplate3 = "";
             foreach (var item in sheets)
             {
-                string workbook = $"<x:sheet xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" name=\"{item.Value}\" sheetId=\"{rId}\" r:id=\"rId{rId}\"/>";
+                string workbook = $"<sheet name=\"{item.Value}\" sheetId=\"{rId}\" r:id=\"rId{rId}\"/>";
                 string workbookrels = $"<Relationship Type=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet\" Target=\"/xl/worksheets/{item.Key}.xml\" Id=\"rId{rId}\" />";
                 dynamicTemplate2 += workbookrels;
                 dynamicTemplate3 += workbook;
@@ -94,7 +94,7 @@ namespace BigCookieKit.Office.Xlsx
 
             foreach (var item in template)
             {
-                var entry = zipArchive.CreateEntry(item.Key);
+                var entry = zipArchive.CreateEntry(item.Key, CompressionLevel.NoCompression);
                 using var stream = entry.Open();
                 using StreamWriter writer = new StreamWriter(stream, _utf8WithBom);
                 writer.Write(item.Value);
