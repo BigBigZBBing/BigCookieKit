@@ -266,7 +266,7 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadSetUnit()
         {
-            string path = Path.Combine(resource, "test.xlsx");
+            string path = Path.Combine(resource, "testEmpty.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
@@ -290,8 +290,8 @@ namespace NUnitBigCookieKit
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                config.ColumnNameRow = 1;
-                config.StartRow = 2;
+                //config.ColumnNameRow = 1;
+                config.StartRow = 1;
                 //config.EndRow = 100;
                 //config.StartColumn = "B";
                 //config.EndColumn = "B";
@@ -305,21 +305,21 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadDataTableUnit()
         {
-            string path = Path.Combine(resource, "test.xlsx");
+            string path = Path.Combine(resource, "testEmpty.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                //config.ColumnNameRow = 1;
+                config.ColumnNameRow = 1;
                 config.StartRow = 2;
-                //config.EndRow = 100;
-                config.ColumnSetting = new[] {
-                    new ColumnConfig(){ ColumnName="Id", ColumnType=typeof(int), NormalType= ColumnNormal.Increment },
-                    new ColumnConfig(){ ColumnName="UniqueNo", ColumnType=typeof(Guid), NormalType= ColumnNormal.Guid },
-                    new ColumnConfig(){ ColumnName="CreateTime", ColumnType=typeof(DateTime), NormalType= ColumnNormal.NowDate },
-                    new ColumnConfig(){ ColumnName="≤‚ ‘1", ColumnType=typeof(string), Column="A" },
-                    new ColumnConfig(){ ColumnName="≤‚ ‘2", ColumnType=typeof(string), Column="B" },
-                };
+                config.EndRow = 6;
+                //config.ColumnSetting = new[] {
+                //    new ColumnConfig(){ ColumnName="Id", ColumnType=typeof(int), NormalType= ColumnNormal.Increment },
+                //    new ColumnConfig(){ ColumnName="UniqueNo", ColumnType=typeof(Guid), NormalType= ColumnNormal.Guid },
+                //    new ColumnConfig(){ ColumnName="CreateTime", ColumnType=typeof(DateTime), NormalType= ColumnNormal.NowDate },
+                //    new ColumnConfig(){ ColumnName="≤‚ ‘1", ColumnType=typeof(string), Column="A" },
+                //    new ColumnConfig(){ ColumnName="≤‚ ‘2", ColumnType=typeof(string), Column="B" },
+                //};
             });
             DataTable dt = excelKit.XmlReadDataTable();
         }
@@ -511,13 +511,12 @@ namespace NUnitBigCookieKit
         {
             string data = @"<?xml version=""1.0"" encoding=""UTF-8"" standalone=""yes""?>
 <Relationships xmlns=""http://schemas.openxmlformats.org/package/2006/relationships""><Relationship Id=""rId2"" Type=""http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties"" Target=""docProps/core.xml""/><Relationship Id=""rId3"" Type=""http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties"" Target=""docProps/app.xml""/><Relationship Id=""rId1"" Type=""http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument"" Target=""xl/workbook.xml""/></Relationships>";
-            CRC32 cRC32 = new CRC32();
-            var ret = cRC32.StringCRC(data);
-
-            var test = Crc32.crc32_buf(data.ToCharArray(), 0);
-
             byte[] bytes = Encoding.Default.GetBytes(data);
-            var test1 = Crc32.crc32_byte(ref bytes);
+            CRC32 cRC32 = new CRC32();
+
+            var crc32_npoi = cRC32.StringCRC(data);
+            var crc32_xlsx = Crc32.crc32_buf(data.ToCharArray(), 0);
+            var crc32_standard = Crc32.crc32_byte(bytes);
         }
 
         #region –‘ƒ‹±»Ωœµ•‘™≤‚ ‘

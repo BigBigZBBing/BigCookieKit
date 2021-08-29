@@ -143,7 +143,11 @@ namespace BigCookieKit.XML
                         }
                         break;
                     case XmlNodeType.EndElement:
-                        if (_read.Name == Node) return;
+                        if (_read.Name == Node)
+                        {
+                            callback("end", null, null);
+                            return;
+                        }
                         break;
                 }
             }

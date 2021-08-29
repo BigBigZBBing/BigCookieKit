@@ -20,7 +20,7 @@
     <AssemblyVersion>1.2021.8.12</AssemblyVersion>
     <FileVersion>1.2021.8.12</FileVersion>
     <Version>1.2021.8.12</Version>
-    <OutputPath>../Nuget</OutputPath>
+    <PackageOutputPath>../Nuget</PackageOutputPath>
     <OutputType>Library</OutputType>
   </PropertyGroup>
 

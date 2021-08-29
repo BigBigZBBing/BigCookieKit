@@ -63,8 +63,20 @@ namespace BigCookieKit.Office.Xlsx
         /// <summary>
         /// 构造函数
         /// </summary>
-        private ReadExcelKit()
+        private ReadExcelKit() : base()
         {
+        }
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="filePath">Excel地址</param>
+        public ReadExcelKit(string filePath) : this()
+        {
+            if (string.IsNullOrEmpty(filePath)) throw new FileNotFoundException(nameof(filePath));
+
+            zip = ZipFile.OpenRead(filePath);
+
             LoadShareString();
 
             LoadWorkBook();
@@ -77,22 +89,19 @@ namespace BigCookieKit.Office.Xlsx
         /// <summary>
         /// 构造函数
         /// </summary>
-        /// <param name="filePath">Excel地址</param>
-        public ReadExcelKit(string filePath) : base()
-        {
-            if (string.IsNullOrEmpty(filePath)) throw new FileNotFoundException(nameof(filePath));
-
-            zip = ZipFile.OpenRead(filePath);
-        }
-
-        /// <summary>
-        /// 构造函数
-        /// </summary>
         /// <param name="stream">Excel文件流</param>
-        public ReadExcelKit(Stream stream) : base()
+        public ReadExcelKit(Stream stream) : this()
         {
             stream.Seek(0, SeekOrigin.Begin);
             zip = new ZipArchive(stream);
+
+            LoadShareString();
+
+            LoadWorkBook();
+
+            LoadNumberFormat();
+
+            LoadCellStyle();
         }
 
         /// <summary>

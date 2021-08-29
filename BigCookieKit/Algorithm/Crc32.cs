@@ -34,7 +34,7 @@ namespace BigCookieKit.Algorithm
             return table;
         }
 
-        public static ulong crc32_byte(ref byte[] buf)
+        public static ulong crc32_byte(byte[] buf)
         {
             ulong[] T = crc_table;
             ulong C = 0xFFFFFFFF;
