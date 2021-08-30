@@ -72,7 +72,14 @@ namespace BigCookieKit.XML
                         {
                             packet = new XmlPacket();
                             _curr = packet;
+                            packet.Parent = _curr;
+                            bool isEmpty = _read.IsEmptyElement;
                             ReadContentFrom();
+                            if (isEmpty)
+                            {
+                                _curr.State = PacketState.End;
+                                return _curr;
+                            }
                         }
                         #endregion
 
@@ -82,8 +89,8 @@ namespace BigCookieKit.XML
                             if (_curr.State == PacketState.Start)
                             {
                                 packet = new XmlPacket();
-                                packet.Parent = _curr;
                                 _curr = packet;
+                                packet.Parent = _curr;
                                 bool isEmpty = _read.IsEmptyElement;
                                 ReadContentFrom();
                                 if (isEmpty) EndReadFrom();
@@ -183,7 +190,6 @@ namespace BigCookieKit.XML
 
         private void EndReadFrom()
         {
-
             if (_curr.Parent.Node == null)
                 _curr.Parent.Node = new List<XmlPacket>();
             _curr.Parent.Node.Add(_curr);
