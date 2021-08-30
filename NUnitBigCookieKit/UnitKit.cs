@@ -266,7 +266,7 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadSetUnit()
         {
-            string path = Path.Combine(resource, "testEmpty.xlsx");
+            string path = Path.Combine(resource, "test.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
@@ -285,7 +285,7 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadDictionaryUnit()
         {
-            string path = Path.Combine(resource, "testEmpty.xlsx");
+            string path = Path.Combine(resource, "test.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
@@ -305,7 +305,7 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadDataTableUnit()
         {
-            string path = Path.Combine(resource, "testEmpty.xlsx");
+            string path = Path.Combine(resource, "test.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
