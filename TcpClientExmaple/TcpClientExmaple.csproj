@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
+    <ProjectReference Include="..\BigCookieKit.Network\BigCookieKit.Network.csproj" />
   </ItemGroup>
 
 </Project>

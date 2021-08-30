@@ -105,20 +105,6 @@ namespace BigCookieKit.Office.Xlsx
         }
 
         /// <summary>
-        /// 创建Excel配置(DataTable用)
-        /// </summary>
-        /// <param name="callback"></param>
-        [Obsolete("Please invoke AddConfig")]
-        public void CreateConfig(Action<ExcelConfig> callback)
-        {
-            var config = new ExcelConfig();
-            config.StartColumnIndex = 0;
-            config.StartRow = 0;
-            callback.Invoke(config);
-            configs.Add(config);
-        }
-
-        /// <summary>
         /// 增加配置
         /// </summary>
         /// <param name="callback"></param>
@@ -398,10 +384,12 @@ namespace BigCookieKit.Office.Xlsx
                                 if (readData)
                                 {
                                     if (Columns.ContainsKey(colIndex))
+                                    {
                                         if (dataType == "s")
                                             ndr[Columns[colIndex]] = sharedStrings[int.Parse(content)];
                                         else
                                             ndr[Columns[colIndex]] = content;
+                                    }
                                 }
                                 isValue = false;
                             }
@@ -434,6 +422,11 @@ namespace BigCookieKit.Office.Xlsx
             List<object> temp = null;
 
             XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
+            var dimension = xmlReadKit.XmlRead("dimension");
+            var dimensionAttr = dimension.GetAttr("ref");
+            string maxColEn = new string(CellPosition(dimensionAttr.Text.Split(':')[1]).ToArray());
+            int maxColIndex = ExcelHelper.ColumnToIndex(maxColEn).Value;
+
             bool readData = false;
             bool isValue = false;
 
@@ -446,7 +439,12 @@ namespace BigCookieKit.Office.Xlsx
                 switch (node)
                 {
                     case "end":
-                        if (temp != null) list.Add(temp.ToArray());
+                        if (temp != null)
+                        {
+                            for (int i = temp.Count; i <= maxColIndex; i = temp.Count)
+                                temp.Add(null);
+                            list.Add(temp.ToArray());
+                        }
                         break;
                     case "row":
                         rowIndex = int.Parse(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
@@ -455,7 +453,12 @@ namespace BigCookieKit.Office.Xlsx
                         if (rowIndex >= current.StartRow)
                         {
                             readData = true;
-                            if (temp != null) list.Add(temp.ToArray());
+                            if (temp != null)
+                            {
+                                for (int i = temp.Count; i <= maxColIndex; i = temp.Count)
+                                    temp.Add(null);
+                                list.Add(temp.ToArray());
+                            }
                             temp = new List<object>();
                         }
                         break;
@@ -480,6 +483,8 @@ namespace BigCookieKit.Office.Xlsx
                         {
                             if (readData)
                             {
+                                for (int i = temp.Count; i < colIndex; i = temp.Count)
+                                    temp.Add(null);
                                 if (dataType == "s")
                                     temp.Add(sharedStrings[int.Parse(content)]);
                                 else
@@ -515,6 +520,11 @@ namespace BigCookieKit.Office.Xlsx
             IDictionary<string, object> temp = null;
 
             XmlReadKit xmlReadKit = new XmlReadKit(entry.Open());
+            var dimension = xmlReadKit.XmlRead("dimension");
+            var dimensionAttr = dimension.GetAttr("ref");
+            string maxColEn = new string(CellPosition(dimensionAttr.Text.Split(':')[1]).ToArray());
+            int maxColIndex = ExcelHelper.ColumnToIndex(maxColEn).Value;
+
             bool readColumns = false;
             bool readData = false;
             bool isValue = false;
@@ -528,7 +538,12 @@ namespace BigCookieKit.Office.Xlsx
                 switch (node)
                 {
                     case "end":
-                        if (temp != null) dicList.Add(temp);
+                        if (temp != null)
+                        {
+                            for (int i = temp.Count; i < colIndex; i = temp.Count)
+                                temp.Add(Columns[i], null);
+                            dicList.Add(temp);
+                        }
                         break;
                     case "row":
                         rowIndex = int.Parse(attrs.SingleOrDefault(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
@@ -541,7 +556,12 @@ namespace BigCookieKit.Office.Xlsx
                         {
                             readColumns = false;
                             readData = true;
-                            if (temp != null) dicList.Add(temp);
+                            if (temp != null)
+                            {
+                                for (int i = temp.Count; i < colIndex; i = temp.Count)
+                                    temp.Add(Columns[i], null);
+                                dicList.Add(temp);
+                            }
                             temp = new Dictionary<string, object>();
                         }
                         break;
@@ -577,6 +597,8 @@ namespace BigCookieKit.Office.Xlsx
                             }
                             if (readData)
                             {
+                                for (int i = temp.Count; i < colIndex; i = temp.Count)
+                                    temp.Add(Columns[i], null);
                                 if (dataType == "s")
                                 {
                                     temp.Add(Columns[colIndex], sharedStrings[int.Parse(content)]);

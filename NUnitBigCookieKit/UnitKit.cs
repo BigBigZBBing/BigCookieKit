@@ -285,13 +285,13 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadDictionaryUnit()
         {
-            string path = Path.Combine(resource, "test.xlsx");
+            string path = Path.Combine(resource, "testEmpty.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                //config.ColumnNameRow = 1;
-                config.StartRow = 1;
+                config.ColumnNameRow = 1;
+                config.StartRow = 2;
                 //config.EndRow = 100;
                 //config.StartColumn = "B";
                 //config.EndColumn = "B";
@@ -312,7 +312,7 @@ namespace NUnitBigCookieKit
                 config.SheetIndex = 1;
                 config.ColumnNameRow = 1;
                 config.StartRow = 2;
-                config.EndRow = 6;
+                //config.EndRow = 6;
                 //config.ColumnSetting = new[] {
                 //    new ColumnConfig(){ ColumnName="Id", ColumnType=typeof(int), NormalType= ColumnNormal.Increment },
                 //    new ColumnConfig(){ ColumnName="UniqueNo", ColumnType=typeof(Guid), NormalType= ColumnNormal.Guid },

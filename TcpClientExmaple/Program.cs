@@ -1,4 +1,4 @@
-﻿using BigCookieKit.Communication;
+﻿using BigCookieKit.Network;
 using System;
 using System.Net;
 using System.Text;
