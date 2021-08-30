@@ -266,14 +266,14 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadSetUnit()
         {
-            string path = Path.Combine(resource, "test.xlsx");
+            string path = Path.Combine(resource, "test2.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                config.StartRow = 1;
+                config.StartRow = 3;
                 //config.EndRow = 100;
-                //config.StartColumn = "B";
+                config.StartColumn = "C";
                 //config.EndColumn = "B";
             });
             var rows = excelKit.XmlReaderSet();
@@ -285,15 +285,15 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadDictionaryUnit()
         {
-            string path = Path.Combine(resource, "test.xlsx");
+            string path = Path.Combine(resource, "test2.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                config.ColumnNameRow = 1;
-                config.StartRow = 2;
+                config.ColumnNameRow = 3;
+                config.StartRow = 4;
                 //config.EndRow = 100;
-                //config.StartColumn = "B";
+                config.StartColumn = "C";
                 //config.EndColumn = "B";
             });
             var dics = excelKit.XmlReaderDictionary();
@@ -305,13 +305,13 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadDataTableUnit()
         {
-            string path = Path.Combine(resource, "test.xlsx");
+            string path = Path.Combine(resource, "test2.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                config.ColumnNameRow = 1;
-                config.StartRow = 2;
+                config.ColumnNameRow = 3;
+                config.StartRow = 4;
                 //config.EndRow = 6;
                 //config.ColumnSetting = new[] {
                 //    new ColumnConfig(){ ColumnName="Id", ColumnType=typeof(int), NormalType= ColumnNormal.Increment },
