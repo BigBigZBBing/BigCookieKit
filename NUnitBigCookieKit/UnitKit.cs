@@ -272,9 +272,9 @@ namespace NUnitBigCookieKit
             {
                 config.SheetIndex = 1;
                 config.StartRow = 3;
-                //config.EndRow = 100;
+                config.EndRow = 4;
                 config.StartColumn = "C";
-                //config.EndColumn = "B";
+                config.EndColumn = "D";
             });
             var rows = excelKit.XmlReaderSet();
         }
@@ -293,8 +293,8 @@ namespace NUnitBigCookieKit
                 config.ColumnNameRow = 3;
                 config.StartRow = 4;
                 //config.EndRow = 100;
-                config.StartColumn = "C";
-                //config.EndColumn = "B";
+                //config.StartColumn = "C";
+                //config.EndColumn = "D";
             });
             var dics = excelKit.XmlReaderDictionary();
         }
@@ -312,6 +312,8 @@ namespace NUnitBigCookieKit
                 config.SheetIndex = 1;
                 config.ColumnNameRow = 3;
                 config.StartRow = 4;
+                config.StartColumn = "C";
+                config.EndColumn = "D";
                 //config.EndRow = 6;
                 //config.ColumnSetting = new[] {
                 //    new ColumnConfig(){ ColumnName="Id", ColumnType=typeof(int), NormalType= ColumnNormal.Increment },

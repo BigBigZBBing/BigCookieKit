@@ -444,7 +444,9 @@ namespace BigCookieKit.Office.Xlsx
                         if (temp != null)
                         {
                             for (int i = temp.Count; i <= maxColIndex - current.StartColumnIndex; i = temp.Count)
-                                temp.Add(null);
+                                if (current.EndColumnIndex == 0 || (current.EndColumnIndex - current.StartColumnIndex + 1) > i)
+                                    temp.Add(null);
+                                else break;
                             list.Add(temp.ToArray());
                         }
                         break;
@@ -458,7 +460,9 @@ namespace BigCookieKit.Office.Xlsx
                             if (temp != null)
                             {
                                 for (int i = temp.Count; i <= maxColIndex - current.StartColumnIndex; i = temp.Count)
-                                    temp.Add(null);
+                                    if (current.EndColumnIndex == 0 || (current.EndColumnIndex - current.StartColumnIndex + 1) > i)
+                                        temp.Add(null);
+                                    else break;
                                 list.Add(temp.ToArray());
                             }
                             temp = new List<object>();
@@ -543,8 +547,10 @@ namespace BigCookieKit.Office.Xlsx
                     case "end":
                         if (temp != null)
                         {
-                            for (int i = temp.Count; i <= maxColIndex - current.StartColumnIndex; i = temp.Count)
-                                temp.Add(Columns[i + current.StartColumnIndex.Value], null);
+                            for (int i = temp.Count; i <= maxColIndex - current.StartColumnIndex - -(current.EndColumnIndex - 1); i = temp.Count)
+                                if (current.EndColumnIndex == 0 || (current.EndColumnIndex - current.StartColumnIndex + 1) > i)
+                                    temp.Add(Columns[i + current.StartColumnIndex.Value], null);
+                                else break;
                             dicList.Add(temp);
                         }
                         break;
@@ -561,8 +567,10 @@ namespace BigCookieKit.Office.Xlsx
                             readData = true;
                             if (temp != null)
                             {
-                                for (int i = temp.Count; i <= maxColIndex - current.StartColumnIndex; i = temp.Count)
-                                    temp.Add(Columns[i + current.StartColumnIndex.Value], null);
+                                for (int i = temp.Count; i <= maxColIndex - current.StartColumnIndex - -(current.EndColumnIndex - 1); i = temp.Count)
+                                    if (current.EndColumnIndex == 0 || (current.EndColumnIndex - current.StartColumnIndex + 1) > i)
+                                        temp.Add(Columns[i + current.StartColumnIndex.Value], null);
+                                    else break;
                                 dicList.Add(temp);
                             }
                             temp = new Dictionary<string, object>();
