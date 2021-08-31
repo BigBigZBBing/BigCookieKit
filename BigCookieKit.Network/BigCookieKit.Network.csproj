@@ -9,7 +9,7 @@
     <Product>BigCookieKit.Network</Product>
     <RootNamespace>BigCookieKit.Network</RootNamespace>
     <Description>高性能网络通信库
-特点:高性能,包含(TCP,UDP,HTTP,HTTPS,HTTP,MQTT)
+特点:高性能,包含(*TCP,*UDP,HTTP,HTTPS,HTTP,MQTT)
 使用详解关注CSDN Big.Cookie博客
 技术讨论群 QQ群:1600800</Description>
     <Copyright>©2021-2021 BigCookieKit.Network</Copyright>
@@ -17,9 +17,9 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>1.0.2021.0812</AssemblyVersion>
-    <FileVersion>1.0.2021.0812</FileVersion>
-    <Version>1.2021.8.12</Version>
+    <AssemblyVersion>1.2021.8.31</AssemblyVersion>
+    <FileVersion>1.2021.8.31</FileVersion>
+    <Version>1.2021.8.31</Version>
     <PackageOutputPath>../Nuget</PackageOutputPath>
     <OutputType>Library</OutputType>
     <Optimize>true</Optimize>

@@ -17,9 +17,9 @@
     <PackageIcon>logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/BigBigZBBing/BigCookieKit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>1.0.2021.0812</AssemblyVersion>
-    <FileVersion>1.0.2021.0812</FileVersion>
-    <Version>1.2021.8.12</Version>
+    <AssemblyVersion>1.2021.8.31</AssemblyVersion>
+    <FileVersion>1.2021.8.31</FileVersion>
+    <Version>1.2021.8.31</Version>
     <PackageOutputPath>../Nuget</PackageOutputPath>
     <OutputType>Library</OutputType>
   </PropertyGroup>

@@ -272,7 +272,7 @@ namespace NUnitBigCookieKit
             {
                 config.SheetIndex = 1;
                 config.StartRow = 3;
-                config.EndRow = 4;
+                //config.EndRow = 4;
                 config.StartColumn = "C";
                 config.EndColumn = "D";
             });
