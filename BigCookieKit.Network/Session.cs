@@ -43,7 +43,7 @@ namespace BigCookieKit.Network
         internal static Func<SocketAsyncEventArgs, bool> EnsureFree =
             SmartBuilder.DynamicMethod<Func<SocketAsyncEventArgs, bool>>("EnsureFree", il =>
             {
-                var saea = il.NewObject(il.ArgumentRef<SocketAsyncEventArgs>(0));
+                var saea = il.Object(il.ArgumentRef<SocketAsyncEventArgs>(0));
                 var isFree = il.NewInt32(saea.GetField(
 #if NET452
             "m_Operating"

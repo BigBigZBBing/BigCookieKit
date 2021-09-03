@@ -69,7 +69,7 @@ namespace UnitConsole
             emit = SmartBuilder.DynamicMethod<Func<Model>>(string.Empty, il =>
             {
                 var model = il.NewEntity<Model>();
-                model["field1"] = il.NewString("测试数据");
+                model["field1"] = il.String("测试数据");
                 model["field2"] = il.NewInt32(1000).AsNullable();
                 model["field3"] = il.NewDecimal(13165M).AsNullable();
                 model["field4"] = il.NewDateTime().AsNullable();
