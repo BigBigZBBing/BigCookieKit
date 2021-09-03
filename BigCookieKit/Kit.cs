@@ -318,14 +318,14 @@ namespace BigCookieKit
                 bads[i] = length;
             }
 
-            for (var i = last; i > 0; i--)
+            for (var i = last; i >= 0; i--)
             {
                 var pet = pattern[i];
-                for (int t = 0; t < length - i; t++)
+                for (int t = 0; t < i; t++)
                 {
                     if (pet == pattern[t])
                     {
-                        bads[pet] = last - t;
+                        bads[pet] = length - t;
                         break;
                     }
                 }
@@ -369,14 +369,14 @@ namespace BigCookieKit
                 bads[i] = length;
             }
 
-            for (var i = last; i > 0; i--)
+            for (var i = last; i >= 0; i--)
             {
                 var pet = pattern[i];
-                for (int t = 0; t < length - i; t++)
+                for (int t = 0; t < i; t++)
                 {
                     if (pet == pattern[t])
                     {
-                        bads[pet] = last - t;
+                        bads[pet] = length - t;
                         break;
                     }
                 }
@@ -421,14 +421,14 @@ namespace BigCookieKit
                 bads[i] = length;
             }
 
-            for (var i = last; i > 0; i--)
+            for (var i = last; i >= 0; i--)
             {
                 var pet = pattern[i];
-                for (int t = 0; t < length - i; t++)
+                for (int t = 0; t < i; t++)
                 {
                     if (pet == pattern[t])
                     {
-                        bads[pet] = last - t;
+                        bads[pet] = length - t;
                         break;
                     }
                 }
@@ -477,14 +477,14 @@ namespace BigCookieKit
                 bads[i] = length;
             }
 
-            for (var i = last; i > 0; i--)
+            for (var i = last; i >= 0; i--)
             {
                 var pet = pattern[i];
-                for (int t = 0; t < length - i; t++)
+                for (int t = 0; t < i; t++)
                 {
                     if (pet == pattern[t])
                     {
-                        bads[pet] = last - t;
+                        bads[pet] = length - t;
                         break;
                     }
                 }

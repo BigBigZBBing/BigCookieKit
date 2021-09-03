@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Resources\BoyerMooreUnit.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\test.xlsx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

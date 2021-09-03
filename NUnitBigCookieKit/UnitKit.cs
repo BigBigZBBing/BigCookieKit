@@ -376,12 +376,13 @@ namespace NUnitBigCookieKit
         /// 在一堆集合中找出一组连续性集合的位置单元测试
         /// </summary>
         [Test]
-        public void FastIndexOfUnit()
+        public void BoyerMooreOfUnit()
         {
-            int[] t1 = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33 };
-            int[] t2 = new int[] { 8, 9, 10, 11 };
+            string content = File.ReadAllText(Path.Combine(resource, "BoyerMooreUnit.txt"));
+            //content = content.Replace("\r", "").Replace("\n", "");
+            string pattern = "kernel";
 
-            var index = Kit.FastIndexOf(t1, t2);
+            var index = Kit.BoyerMooreFirstMatch(Encoding.UTF8.GetBytes(content), Encoding.UTF8.GetBytes(pattern));
         }
 
         /// <summary>
