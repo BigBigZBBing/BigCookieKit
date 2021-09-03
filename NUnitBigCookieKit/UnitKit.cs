@@ -379,10 +379,9 @@ namespace NUnitBigCookieKit
         public void BoyerMooreOfUnit()
         {
             string content = File.ReadAllText(Path.Combine(resource, "BoyerMooreUnit.txt"));
-            //content = content.Replace("\r", "").Replace("\n", "");
             string pattern = "kernel";
 
-            var index = Kit.BoyerMooreFirstMatch(Encoding.UTF8.GetBytes(content), Encoding.UTF8.GetBytes(pattern));
+            var index = Kit.BoyerMooreFirstMatch(content.ToCharArray(), pattern.ToCharArray());
         }
 
         /// <summary>
