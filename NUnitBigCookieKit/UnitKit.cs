@@ -206,6 +206,7 @@ namespace NUnitBigCookieKit
             bool test2 = classObj.IsValue();
             bool test3 = classObj.IsStruct();
             bool test4 = classObj.IsEnum();
+            bool test5 = classObj.IsCustomerClass();
 
             int valueObj = 0;
             test1 = valueObj.IsClass();

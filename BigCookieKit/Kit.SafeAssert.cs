@@ -193,6 +193,22 @@ namespace BigCookieKit
         }
 
         /// <summary>
+        /// 判断是否为自定义引用类型
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static Boolean IsCustomerClass(this Object obj)
+        {
+            Type type = obj.GetType();
+            // 不是原始类型 && 并且是引用类型 && 并且不是数组 && 并且不是通用类型 && 不是字符串
+            if (!type.IsPrimitive && type.IsClass && !type.IsArray && !type.IsGenericType && type != typeof(String))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 判断是否为值类型
         /// </summary>
         /// <param name="obj">对象</param>

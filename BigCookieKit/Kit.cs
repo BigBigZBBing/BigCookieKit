@@ -219,9 +219,11 @@ namespace BigCookieKit
         /// 深拷贝
         /// </summary>
         /// <typeparam name="TSource">源类型</typeparam>
+        /// <typeparam name="TTarget">目标类型</typeparam>
         /// <param name="source">The source.</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="ArgumentException">参数不可为空</exception>
+        /// <exception cref="TypeAccessException">无效类型</exception>
         public static TTarget MapTo<TSource, TTarget>(this TSource source)
             where TSource : class
             where TTarget : class
@@ -234,7 +236,7 @@ namespace BigCookieKit
             }
             deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, IL =>
             {
-                if (typeof(TSource).IsClass && !typeof(TSource).IsPrimitive)
+                if (source.IsCustomerClass())
                 {
                     var _source = IL.Object(IL.ArgumentRef<TSource>(0));
                     var _target = IL.Object(Activator.CreateInstance(typeof(TTarget)));
@@ -265,6 +267,25 @@ namespace BigCookieKit
             return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
 
 
+        }
+
+        /// <summary>
+        /// 深拷贝链表
+        /// </summary>
+        /// <typeparam name="TSource"></typeparam>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <param name="source"></param>
+        /// <returns></returns>
+        public static List<TTarget> MapToList<TSource, TTarget>(this List<TSource> source)
+            where TSource : class
+            where TTarget : class
+        {
+            List<TTarget> _list = new List<TTarget>();
+            foreach (var item in source)
+            {
+                _list.Add(item.MapTo<TSource, TTarget>());
+            }
+            return _list;
         }
 
         /// <summary>
