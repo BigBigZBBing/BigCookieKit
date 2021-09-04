@@ -236,7 +236,7 @@ namespace BigCookieKit
             }
             deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, IL =>
             {
-                if (source.IsCustomerClass())
+                if (source.IsCustomClass())
                 {
                     var _source = IL.Object(IL.ArgumentRef<TSource>(0));
                     var _target = IL.Object(Activator.CreateInstance(typeof(TTarget)));

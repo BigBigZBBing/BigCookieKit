@@ -197,7 +197,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static Boolean IsCustomerClass(this Object obj)
+        public static Boolean IsCustomClass(this Object obj)
         {
             Type type = obj.GetType();
             // 不是原始类型 && 并且是引用类型 && 并且不是数组 && 并且不是通用类型 && 不是字符串
