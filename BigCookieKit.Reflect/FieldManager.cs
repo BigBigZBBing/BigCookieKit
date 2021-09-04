@@ -3,34 +3,10 @@ using System.Reflection.Emit;
 
 namespace BigCookieKit.Reflect
 {
-    public partial class FieldManager<T> : VariableManager
+    public class FieldManager<T> : FieldManager
     {
-        internal Type identity;
-
         internal FieldManager(LocalBuilder stack, ILGenerator generator) : base(stack, generator)
         {
-            identity = typeof(T);
-        }
-
-        public FieldObject AsObject()
-        {
-            var temp = this.NewObject();
-            Output();
-            if (identity.IsValueType)
-            {
-                Emit(OpCodes.Box, typeof(Object));
-            }
-            else
-            {
-                Emit(OpCodes.Castclass, typeof(Object));
-            }
-            temp.Input();
-            return temp;
-        }
-
-        public virtual MethodManager Call(String methodName, params LocalBuilder[] parameters)
-        {
-            return this.ReflectMethod(methodName, identity, parameters);
         }
 
         public static implicit operator LocalBuilder(FieldManager<T> field) => field.instance;
@@ -68,5 +44,38 @@ namespace BigCookieKit.Reflect
         public static implicit operator CanCompute<Double>(FieldManager<T> field) => new CanCompute<Double>(field.instance, field.generator);
 
         public static implicit operator CanCompute<Decimal>(FieldManager<T> field) => new CanCompute<Decimal>(field.instance, field.generator);
+    }
+
+    public class FieldManager : VariableManager
+    {
+        internal Type identity;
+
+        internal FieldManager(LocalBuilder stack, ILGenerator generator) : base(stack, generator)
+        {
+            identity = stack.LocalType;
+        }
+
+        public FieldObject AsObject()
+        {
+            var temp = this.NewObject();
+            Output();
+            if (identity.IsValueType)
+            {
+                Emit(OpCodes.Box, typeof(Object));
+            }
+            else
+            {
+                Emit(OpCodes.Castclass, typeof(Object));
+            }
+            temp.Input();
+            return temp;
+        }
+
+        public virtual MethodManager Call(String methodName, params LocalBuilder[] parameters)
+        {
+            return this.ReflectMethod(methodName, identity, parameters);
+        }
+
+        public static implicit operator LocalBuilder(FieldManager field) => field.instance;
     }
 }

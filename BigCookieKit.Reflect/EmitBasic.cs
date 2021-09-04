@@ -11,7 +11,7 @@ namespace BigCookieKit.Reflect
 
         private Dictionary<Type, Delegate> emitMethod => new Dictionary<Type, Delegate>();
 
-        private Type generatorType => typeof(ILGenerator);
+        internal Type generatorType => typeof(ILGenerator);
 
         internal EmitBasic(ILGenerator generator)
         {

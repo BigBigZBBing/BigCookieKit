@@ -41,38 +41,48 @@ action.Invoke();
 ##### 基础类型
 ```csharp
 //初始化string
-var to_string = emit.NewString("字符串");
+var to_string = emit.String("字符串");
 //初始化int
-var to_int = emit.NewInt32(int.MaxValue);
+var to_int = emit.Int32(int.MaxValue);
 //初始化long
-var to_long = emit.NewInt64(long.MaxValue);
+var to_long = emit.Int64(long.MaxValue);
 //初始化datetime
-var to_datetime = emit.NewDateTime(DateTime.Now);
+var to_datetime = emit.DateTime(DateTime.Now);
 //初始化float
-var to_float = emit.NewFloat(float.MaxValue);
+var to_float = emit.Float(float.MaxValue);
 //初始化double
-var to_double = emit.NewDouble(double.MaxValue);
+var to_double = emit.Double(double.MaxValue);
 //初始化decimal
-var to_decimal = emit.NewDecimal(decimal.MaxValue);
+var to_decimal = emit.Decimal(decimal.MaxValue);
 //初始化bool
-var to_bool = emit.NewBoolean(true);
+var to_bool = emit.Boolean(true);
 //初始化array
-var to_array = emit.NewArray<string>(10);
+var to_array = emit.Array<string>(10);
 //初始化model
-var to_model = emit.NewEntity<TestModel>();
+var to_model = emit.Entity<TestModel>();
 //初始化list
-var to_list = emit.NewList<TestModel>();
+var to_list = emit.List<TestModel>();
 //初始化可空类型
-var to_nullable_int = emit.NewInt32(int.MaxValue).AsNullable();
+var to_nullable_int = emit.Int32(int.MaxValue).AsNullable();
 //初始化object
-var to_object = emit.NewObject(decimal.MaxValue);
+var to_object = emit.Object(to_model);
+```
+
+##### 特殊初始化
+```csharp
+//初始化特殊构造的
+var to_init = emit.Initialize(typeof(List<string>),emit.Int32(50));
+//再丢给Object来驱动
+var to_init_use = emit.Object(to_init);
 ```
 
 ##### 万能基类
 ```csharp
+//随便初始化一个
+var to_string = emit.String("字符串");
 //初始化object
-var to_object = emit.NewObject(new Object());
-//强制转换
+var to_object = emit.Object(to_string);
+//强制转换 非as type
 var to_object = to_object.AS(typeof(string));
 //获取字段的值
 var lb = to_object.GetField("fieldName");
@@ -97,30 +107,30 @@ var lb = method.ReturnRef();
 ```
 
 ##### 可计算类型
-支持 Int16 Int32 Single Double Decimal String
+支持 Byte Int16 Int32 Single Double Decimal String
 ```csharp
-var to_int = emit.NewInt32(100);
-var to_int1 = emit.NewInt32(200);
+var to_int = emit.Int32(100);
+var to_int1 = emit.Int32(200);
 var to_int2 = to_int + to_int1;
 to_int2 = to_int + 200;
 
-var to_long = emit.NewInt64(64234);
+var to_long = emit.Int64(64234);
 var to_int3 = to_int2 / to_long;
 
-var to_float = emit.NewFloat(5.3f);
+var to_float = emit.Float(5.3f);
 var to_float1 = to_int3 * to_float;
 
-var to_string = emit.NewString("测试数据");
-var to_string1 = emit.NewString("s1231");
+var to_string = emit.String("测试数据");
+var to_string1 = emit.String("s1231");
 to_string = to_string + to_string1;
 to_string = to_string + "s1231";
 ```
 
 ##### IF判断
 ```csharp
-emit.IF(emit.NewBoolean(true),()=>{
+emit.IF(emit.Boolean(true),()=>{
 	//TODO
-}).ElseIF(emit.NewBoolean(true),()=>{
+}).ElseIF(emit.Boolean(true),()=>{
 	//TODO
 }).Else(()=>{
 	//TODO
@@ -129,12 +139,12 @@ emit.IF(emit.NewBoolean(true),()=>{
 
 ##### For 正循环 逆循环
 ```csharp
-emit.For(emit.NewInt32(),emit.NewInt32(100),(index,tab)=>{
+emit.For(emit.Int32(),emit.Int32(100),(index,tab)=>{
 	//index 循环的索引
 	tab.Break();//跳出循环使用
 });
 
-emit.Forr(emit.NewInt32(100),emit.NewInt32(),(index,tab)=>{
+emit.Forr(emit.Int32(100),emit.Int32(),(index,tab)=>{
 	//index 循环的索引
 	tab.Break();//跳出循环使用
 });
@@ -142,7 +152,7 @@ emit.Forr(emit.NewInt32(100),emit.NewInt32(),(index,tab)=>{
 
 ##### While 循环
 ```csharp
-emit.While(emit.NewBoolean(true),(tab)=>{
+emit.While(emit.Boolean(true),(tab)=>{
 	tab.Break();//跳出循环使用
 });
 ```

@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 
 namespace BigCookieKit.Reflect
 {
     public partial class FuncGenerator
     {
-        [Obsolete("Change is wipe new")]
-        public FieldObject NewObject(Object value = default(Object))
+        public LocalBuilder Initialize(Type type, params LocalBuilder[] parameters)
         {
-            return ManagerGX.NewObject(this, value);
+            var item = this.DeclareLocal(type);
+            this.Emit(OpCodes.Newobj, type.GetConstructor(parameters.Select(x => x.LocalType).ToArray()));
+            this.Emit(OpCodes.Stloc_S, item);
+            return item;
         }
 
         [Obsolete("Change is wipe new")]
         public FieldObject NewObject(LocalBuilder value)
         {
             return new FieldObject(value, this);
-        }
-
-        public FieldObject Object(Object value = default(Object))
-        {
-            return ManagerGX.NewObject(this, value);
         }
 
         public FieldObject Object(LocalBuilder value)
@@ -278,6 +276,16 @@ namespace BigCookieKit.Reflect
             return ManagerGX.NewArray<T>(this, length);
         }
 
+        public FieldArray NewArray(Type type, Int32 length)
+        {
+            return ManagerGX.NewArray(this, type, length);
+        }
+
+        public FieldArray NewArray(Type type, CanCompute<Int32> length)
+        {
+            return ManagerGX.NewArray(this, type, length);
+        }
+
         public FieldArray<T> NewArray<T>(LocalBuilder value)
         {
             if (value.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>($"Type not is [Int32]");
@@ -287,6 +295,11 @@ namespace BigCookieKit.Reflect
         public FieldEntity<T> NewEntity<T>()
         {
             return ManagerGX.NewEntity<T>(this);
+        }
+
+        public FieldEntity NewEntity(Type type)
+        {
+            return ManagerGX.NewEntity(this, type);
         }
 
         public FieldEntity<T> NewEntity<T>(LocalBuilder value)
@@ -303,6 +316,11 @@ namespace BigCookieKit.Reflect
         public FieldList<T> NewList<T>()
         {
             return ManagerGX.NewList<T>(this);
+        }
+
+        public FieldList NewList(Type type)
+        {
+            return ManagerGX.NewList(this, type);
         }
 
         public FieldList<T> NewList<T>(LocalBuilder value)

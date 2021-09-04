@@ -70,6 +70,14 @@ namespace BigCookieKit.Reflect
             return new FieldEntity<T>(item, basic);
         }
 
+        internal static FieldEntity NewEntity(this EmitBasic basic, Type type)
+        {
+            LocalBuilder item = basic.DeclareLocal(type);
+            basic.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
+            basic.Emit(OpCodes.Stloc_S, item);
+            return new FieldEntity(item, basic);
+        }
+
         internal static FieldEntity<T> NewEntity<T>(this EmitBasic basic, T value)
         {
             return new FieldEntity<T>(basic.MapToEntity(value), basic);
@@ -93,12 +101,38 @@ namespace BigCookieKit.Reflect
             return new FieldArray<T>(item, basic, -1);
         }
 
+        internal static FieldArray NewArray(this EmitBasic basic, Type type, Int32 length = default(Int32))
+        {
+            LocalBuilder item = basic.DeclareLocal(type);
+            basic.IntegerMap(length);
+            basic.Emit(OpCodes.Newarr, Type.GetType(type.FullName.Replace("[]", "")));
+            basic.Emit(OpCodes.Stloc_S, item);
+            return new FieldArray(item, basic, length);
+        }
+
+        internal static FieldArray NewArray(this EmitBasic basic, Type type, LocalBuilder length)
+        {
+            LocalBuilder item = basic.DeclareLocal(type);
+            basic.Emit(OpCodes.Ldloc_S, length);
+            basic.Emit(OpCodes.Newarr, Type.GetType(type.FullName.Replace("[]", "")));
+            basic.Emit(OpCodes.Stloc_S, item);
+            return new FieldArray(item, basic, -1);
+        }
+
         internal static FieldList<T> NewList<T>(this EmitBasic basic)
         {
             LocalBuilder item = basic.DeclareLocal(typeof(List<T>));
             basic.Emit(OpCodes.Newobj, typeof(List<T>).GetConstructor(Type.EmptyTypes));
             basic.Emit(OpCodes.Stloc_S, item);
             return new FieldList<T>(item, basic);
+        }
+
+        internal static FieldList NewList(this EmitBasic basic, Type type)
+        {
+            LocalBuilder item = basic.DeclareLocal(type);
+            basic.Emit(OpCodes.Newobj, type.GetConstructor(Type.EmptyTypes));
+            basic.Emit(OpCodes.Stloc_S, item);
+            return new FieldList(item, basic);
         }
 
         internal static void For(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
