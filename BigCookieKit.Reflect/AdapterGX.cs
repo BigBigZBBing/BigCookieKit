@@ -85,9 +85,9 @@ namespace BigCookieKit.Reflect
             {
                 basic.IntegerMap(Convert.ToInt32(value));
             }
-            else if (value.GetType() == typeof(MemoryStream))
+            else if (value.GetType().IsClass)
             {
-                basic.Emit(OpCodes.Newobj, typeof(MemoryStream).GetConstructor(Type.EmptyTypes));
+                basic.Emit(OpCodes.Newobj, value.GetType().GetConstructor(Type.EmptyTypes));
             }
             else
             {

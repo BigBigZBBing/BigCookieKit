@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
 using BigCookieKit.Algorithm;
+using AutoMapper;
 
 namespace NUnitBigCookieKit
 {
@@ -390,6 +391,8 @@ namespace NUnitBigCookieKit
         [Test]
         public void DeepCopyUnit()
         {
+            var tt = typeof(List<DeepCopyModel>);
+
             //模型Copy
             DeepCopyModel model = new DeepCopyModel();
             model.Field1 = "klsdjflsdlflsdf";
@@ -411,17 +414,18 @@ namespace NUnitBigCookieKit
             model.Field17 = TestEnum.False;
             model.Field18 = 'A';
             model.Field19 = 'B';
+            model.model = new DeepCopyModel();
             model.Field20 = new byte[] { 0, 1, 2, 3, 4 };
+            model.model.Field1 = "3333333333";
+            model.model.Field2 = 9999;
 
-            var newmodel = model.MapTo<DeepCopyModel>();
-            newmodel.Field2 = 5464646;
+            //var config = new MapperConfiguration(cfg => cfg.CreateMap<DeepCopyModel, DeepCopyModel>());
+            //var mapper = config.CreateMapper();
+            //var newmodel = mapper.Map<DeepCopyModel>(model);
 
-            //流Copy
-            var stream = new MemoryStream();
-            byte[] bytes = Encoding.UTF8.GetBytes("测试环境");
-            stream.Write(bytes, 0, bytes.Length);
-            var tstram = stream.MapTo<Stream>();
+            var newmodel = model.MapTo<DeepCopyModel, DeepCopyModel>();
 
+            model.model.Field1 = "4444";
         }
 
         /// <summary>
@@ -654,6 +658,7 @@ namespace NUnitBigCookieKit
             public char Field18 { get; set; }
             public char? Field19 { get; set; }
             public byte[] Field20 { get; set; }
+            public DeepCopyModel model { get; set; }
         }
     }
 }

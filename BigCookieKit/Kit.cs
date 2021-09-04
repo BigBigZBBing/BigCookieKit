@@ -222,48 +222,35 @@ namespace BigCookieKit
         /// <param name="source">The source.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public static TSource MapTo<TSource>(this TSource source)
+        public static TTarget MapTo<TSource, TTarget>(this TSource source)
             where TSource : class
+            where TTarget : class
         {
-            if (Cache.MapToCache.TryGetValue($"{typeof(TSource).FullName}+{typeof(TSource).FullName}", out Delegate deleg))
+            if (source == null) throw new ArgumentNullException();
+
+            if (Cache.MapToCache.TryGetValue($"{typeof(TSource).FullName}+{typeof(TTarget).FullName}", out Delegate deleg))
             {
-                return ((Func<TSource, TSource>)deleg)?.Invoke(source);
+                return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
             }
-            deleg = SmartBuilder.DynamicMethod<Func<TSource, TSource>>(string.Empty, IL =>
+            deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, IL =>
             {
-                if (source is Stream)
+                if (typeof(TSource).IsClass && !typeof(TSource).IsPrimitive)
                 {
                     var _source = IL.Object(IL.ArgumentRef<TSource>(0));
-                    var _target = IL.Object(new MemoryStream());
-                    var begin = IL.Object(SeekOrigin.Begin);
-                    _source.Call("Seek", IL.Int64(), begin);
-                    _source.Call("CopyTo", _target);
+                    var _target = IL.Object(Activator.CreateInstance(typeof(TTarget)));
+                    AutoGenerate(_source, _target);
                     _target.Output();
-                }
-                else if (source is IDictionary)
-                {
-                    var _source = IL.Object(IL.ArgumentRef<TSource>(0));
-                    var _target = IL.Object(Activator.CreateInstance(typeof(TSource)));
 
-                    var keys = IL.Object(_source.GetPropterty("Keys"));
-                    IL.For(0, keys.GetPropterty("Count"), (index, tab) =>
+                    void AutoGenerate(FieldObject source, FieldObject target)
                     {
-                        index.Output();
-
-                    });
-                }
-                else if (typeof(TSource).IsClass && typeof(TSource).IsPrimitive)
-                {
-                    var _source = IL.NewEntity<TSource>(IL.ArgumentRef<TSource>(0));
-                    var _target = IL.NewEntity<TSource>();
-                    foreach (var sourceItem in typeof(TSource).GetProperties())
-                    {
-                        var targetItem = typeof(TSource).GetProperty(sourceItem.Name, BindingFlags.Public | BindingFlags.Instance);
-                        if (targetItem == null || sourceItem.PropertyType != targetItem.PropertyType)
-                            continue;
-                        _target.SetValue(sourceItem.Name, _source.GetValue(sourceItem.Name));
+                        foreach (var sourceItem in source.Type.GetProperties())
+                        {
+                            var targetItem = target.Type.GetProperty(sourceItem.Name);
+                            if (targetItem == null || sourceItem.PropertyType != targetItem.PropertyType)
+                                continue;
+                            target.SetPropterty(targetItem.Name, source.GetPropterty(targetItem.Name));
+                        }
                     }
-                    _target.Output();
                 }
                 else throw new TypeAccessException();
 
@@ -275,7 +262,9 @@ namespace BigCookieKit
                 throw new ArgumentException();
             }
 
-            return ((Func<TSource, TSource>)deleg)?.Invoke(source);
+            return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
+
+
         }
 
         /// <summary>

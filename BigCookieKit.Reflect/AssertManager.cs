@@ -6,10 +6,10 @@ namespace BigCookieKit.Reflect
 {
     public class AssertManager
     {
-        private ILGenerator generator;
+        private FuncGenerator generator;
         private List<Tuple<LocalBuilder, Action>> context = new List<Tuple<LocalBuilder, Action>>();
 
-        internal AssertManager(ILGenerator generator, Tuple<LocalBuilder, Action> context)
+        internal AssertManager(FuncGenerator generator, Tuple<LocalBuilder, Action> context)
         {
             this.generator = generator;
             this.context.Add(context);

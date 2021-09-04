@@ -8,6 +8,8 @@ namespace BigCookieKit.Reflect
     {
         internal Type asidentity { get; set; }
 
+        public Type Type => asidentity;
+
         internal FieldObject(LocalBuilder stack, ILGenerator generator) : base(stack, generator)
         {
             asidentity = stack.LocalType;

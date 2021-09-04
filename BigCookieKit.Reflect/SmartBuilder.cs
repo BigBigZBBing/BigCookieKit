@@ -202,17 +202,13 @@ namespace BigCookieKit.Reflect
                 types.RemoveAt(types.Count - 1);
             }
 
-            Monitor.Enter(_lock);
-
-            DynamicMethod dynamicBuilder = new DynamicMethod(MethodName, retType, types.ToArray());
-
-            builder?.Invoke(new FuncGenerator(dynamicBuilder.GetILGenerator()));
-
-            T deleg = dynamicBuilder.CreateDelegate(typeof(T)) as T;
-
-            Monitor.Exit(_lock);
-
-            return deleg;
+            lock (_lock)
+            {
+                DynamicMethod dynamicBuilder = new DynamicMethod(MethodName, retType, types.ToArray());
+                builder?.Invoke(new FuncGenerator(dynamicBuilder.GetILGenerator()));
+                T deleg = dynamicBuilder.CreateDelegate(typeof(T)) as T;
+                return deleg;
+            }
         }
     }
 }
