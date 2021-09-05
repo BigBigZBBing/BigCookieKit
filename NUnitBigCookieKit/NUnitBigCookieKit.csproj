@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="Crc32.NET" Version="1.2.0" />
+    <PackageReference Include="MiniExcel" Version="0.17.5" />
     <PackageReference Include="NPOI" Version="2.5.2" />
     <PackageReference Include="nunit" Version="3.13.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.17.0" />

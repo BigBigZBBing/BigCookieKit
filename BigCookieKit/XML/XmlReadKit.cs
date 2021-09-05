@@ -143,7 +143,7 @@ namespace BigCookieKit.XML
                     case XmlNodeType.Text:
                         if (start && _read.HasValue)
                         {
-                            if (!callback("text", XmlReadAttr(), _read.Value))
+                            if (!callback("text", null, _read.Value))
                             {
                                 return;
                             }

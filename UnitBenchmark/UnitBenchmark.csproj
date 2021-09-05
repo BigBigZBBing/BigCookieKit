@@ -8,10 +8,27 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.1.1" />
     <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
+    <PackageReference Include="MiniExcel" Version="0.17.5" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\BigCookieKit.Office\BigCookieKit.Office.csproj" />
     <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\BoyerMooreUnit.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\test.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\test2.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\testEmpty.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

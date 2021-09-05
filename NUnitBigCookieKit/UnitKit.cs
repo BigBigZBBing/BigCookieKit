@@ -287,13 +287,13 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadDictionaryUnit()
         {
-            string path = Path.Combine(resource, "test2.xlsx");
+            string path = Path.Combine(resource, "test.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                config.ColumnNameRow = 3;
-                config.StartRow = 4;
+                config.ColumnNameRow = 1;
+                config.StartRow = 2;
                 //config.EndRow = 100;
                 //config.StartColumn = "C";
                 //config.EndColumn = "D";
@@ -307,15 +307,15 @@ namespace NUnitBigCookieKit
         [Test]
         public void XmlReadDataTableUnit()
         {
-            string path = Path.Combine(resource, "test2.xlsx");
+            string path = Path.Combine(resource, "test.xlsx");
             ReadExcelKit excelKit = new ReadExcelKit(path);
             excelKit.AddConfig(config =>
             {
                 config.SheetIndex = 1;
-                config.ColumnNameRow = 3;
-                config.StartRow = 4;
-                config.StartColumn = "C";
-                config.EndColumn = "D";
+                config.ColumnNameRow = 1;
+                config.StartRow = 2;
+                //config.StartColumn = "C";
+                //config.EndColumn = "D";
                 //config.EndRow = 6;
                 //config.ColumnSetting = new[] {
                 //    new ColumnConfig(){ ColumnName="Id", ColumnType=typeof(int), NormalType= ColumnNormal.Increment },
@@ -459,6 +459,9 @@ namespace NUnitBigCookieKit
             var info = Common.GetXlsxResource("[Content_Types].xml");
         }
 
+        /// <summary>
+        /// 生成Excel
+        /// </summary>
         [Test]
         public void WriteExcelUnit()
         {
@@ -528,34 +531,34 @@ namespace NUnitBigCookieKit
 
         #region 性能比较单元测试
 
-        //[Test]
-        //public void MiniExcelUnit()
-        //{
-        //    string path = Path.Combine(resource, "test.xlsx");
-        //    var rows = MiniExcel.Query(path);
+        [Test]
+        public void MiniExcelUnit()
+        {
+            string path = Path.Combine(resource, "test.xlsx");
+            var rows = MiniExcelLibs.MiniExcel.Query(path);
 
-        //    //自行转换成DataTable
-        //    DataTable dt = new DataTable();
-        //    foreach (var item in rows)
-        //    {
-        //        if (dt.Columns.Count == 0)
-        //        {
-        //            foreach (var item1 in (IDictionary<string, object>)item)
-        //                dt.Columns.Add(item1.Key);
-        //        }
-        //        else
-        //        {
-        //            DataRow ndr = dt.NewRow();
-        //            foreach (var item1 in (IDictionary<string, object>)item)
-        //            {
-        //                if (dt.Columns[item1.Key].DataType != item1.Value.GetType())
-        //                    dt.Columns[item1.Key].DataType = item1.Value.GetType();
-        //                ndr[item1.Key] = item1.Value;
-        //            }
-        //            dt.Rows.Add(ndr);
-        //        }
-        //    }
-        //}
+            //自行转换成DataTable
+            DataTable dt = new DataTable();
+            foreach (var item in rows)
+            {
+                if (dt.Columns.Count == 0)
+                {
+                    foreach (var item1 in (IDictionary<string, object>)item)
+                        dt.Columns.Add(item1.Key);
+                }
+                else
+                {
+                    DataRow ndr = dt.NewRow();
+                    foreach (var item1 in (IDictionary<string, object>)item)
+                    {
+                        if (dt.Columns[item1.Key].DataType != item1.Value.GetType())
+                            dt.Columns[item1.Key].DataType = item1.Value.GetType();
+                        ndr[item1.Key] = item1.Value;
+                    }
+                    dt.Rows.Add(ndr);
+                }
+            }
+        }
 
         #endregion
 

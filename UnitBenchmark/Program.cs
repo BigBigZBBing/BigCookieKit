@@ -8,7 +8,8 @@ namespace UnitBenchmark
         static void Main(string[] args)
         {
             //BenchmarkRunner.Run(typeof(BoyerMooreBenchmark));
-            BenchmarkRunner.Run(typeof(MapToBenchmark));
+            //BenchmarkRunner.Run(typeof(MapToBenchmark));
+            BenchmarkRunner.Run(typeof(ExcelReadBenchmark));
         }
     }
 }

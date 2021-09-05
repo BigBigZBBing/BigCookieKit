@@ -336,7 +336,7 @@ namespace BigCookieKit.Office.Xlsx
                             if (ndr != null) dt.Rows.Add(ndr);
                             break;
                         case "row":
-                            rowIndex = int.Parse(attrs.First(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
+                            rowIndex = int.Parse(attrs.First(x => x.Name[0] == 'r').Text);
                             if (current.StartRow <= current.ColumnNameRow) throw new XlsxRowConfigException();
                             if (current.ColumnSetting == null
                             && rowIndex == current.ColumnNameRow)
@@ -354,10 +354,10 @@ namespace BigCookieKit.Office.Xlsx
                         case "c":
                             if (readColumns || readData)
                             {
-                                string colEn = new string(CellPosition(attrs.First(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text).ToArray());
+                                string colEn = new string(CellPosition(attrs.First(x => x.Name[0] == 'r').Text).ToArray());
                                 colIndex = ExcelHelper.ColumnToIndex(colEn).Value;
-                                dataType = attrs.FirstOrDefault(x => x.Name.Equals("t", StringComparison.OrdinalIgnoreCase)).Text;
-                                xfs = attrs.FirstOrDefault(x => x.Name.Equals("s", StringComparison.OrdinalIgnoreCase)).Text;
+                                dataType = attrs.FirstOrDefault(x => x.Name[0] == 't').Text;
+                                xfs = attrs.FirstOrDefault(x => x.Name[0] == 's').Text;
                             }
                             break;
                         case "v":
@@ -451,7 +451,7 @@ namespace BigCookieKit.Office.Xlsx
                         }
                         break;
                     case "row":
-                        rowIndex = int.Parse(attrs.First(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
+                        rowIndex = int.Parse(attrs.First(x => x.Name[0] == 'r').Text);
                         if (rowIndex > current.EndRow)
                             return false;
                         if (rowIndex >= current.StartRow)
@@ -471,10 +471,10 @@ namespace BigCookieKit.Office.Xlsx
                     case "c":
                         if (readData)
                         {
-                            string colEn = new string(CellPosition(attrs.First(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text).ToArray());
+                            string colEn = new string(CellPosition(attrs.First(x => x.Name[0] == 'r').Text).ToArray());
                             colIndex = ExcelHelper.ColumnToIndex(colEn).Value;
-                            dataType = attrs.FirstOrDefault(x => x.Name.Equals("t", StringComparison.OrdinalIgnoreCase)).Text;
-                            xfs = attrs.FirstOrDefault(x => x.Name.Equals("s", StringComparison.OrdinalIgnoreCase)).Text;
+                            dataType = attrs.FirstOrDefault(x => x.Name[0] == 't').Text;
+                            xfs = attrs.FirstOrDefault(x => x.Name[0] == 's').Text;
                         }
                         break;
                     case "v":
@@ -555,7 +555,7 @@ namespace BigCookieKit.Office.Xlsx
                         }
                         break;
                     case "row":
-                        rowIndex = int.Parse(attrs.First(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text);
+                        rowIndex = int.Parse(attrs.First(x => x.Name[0] == 'r').Text);
                         if (current.StartRow <= current.ColumnNameRow) throw new XlsxRowConfigException();
                         if (rowIndex == current.ColumnNameRow)
                             readColumns = true;
@@ -579,10 +579,10 @@ namespace BigCookieKit.Office.Xlsx
                     case "c":
                         if (readColumns || readData)
                         {
-                            string colEn = new string(CellPosition(attrs.First(x => x.Name.Equals("r", StringComparison.OrdinalIgnoreCase)).Text).ToArray());
+                            string colEn = new string(CellPosition(attrs.First(x => x.Name[0] == 'r').Text).ToArray());
                             colIndex = ExcelHelper.ColumnToIndex(colEn).Value;
-                            dataType = attrs.FirstOrDefault(x => x.Name.Equals("t", StringComparison.OrdinalIgnoreCase)).Text;
-                            xfs = attrs.FirstOrDefault(x => x.Name.Equals("s", StringComparison.OrdinalIgnoreCase)).Text;
+                            dataType = attrs.FirstOrDefault(x => x.Name[0] == 't').Text;
+                            xfs = attrs.FirstOrDefault(x => x.Name[0] == 's').Text;
                         }
                         break;
                     case "v":
