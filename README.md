@@ -168,3 +168,169 @@ emit.Try(()=>{
 	//TODO
 }).TryEnd();
 ```
+
+## BigCookieKit.Office(xlsx)使用手册
+##### 读取Excel导出DataTable
+```csharp
+string path = Path.Combine(resource, "test.xlsx");
+ReadExcelKit excelKit = new ReadExcelKit(path);
+excelKit.AddConfig(config =>
+{
+    config.SheetIndex = 1; // 工作簿位置 由1开始
+    config.ColumnNameRow = 1; // 列头行 必须有
+    config.StartRow = 2; // 开始行 对应Excel
+    //config.StartColumn = "C"; //开始列 对应Excel
+    //config.EndColumn = "D"; //结束列 对应Excel
+    //config.EndRow = 6; // 结束行 对应Excel
+    //config.ColumnSetting = new[] { //自定义列配置 可以自由的选择读某些列
+    //    new ColumnConfig(){ ColumnName="Id", ColumnType=typeof(int), NormalType= ColumnNormal.Increment },
+    //    new ColumnConfig(){ ColumnName="UniqueNo", ColumnType=typeof(Guid), NormalType= ColumnNormal.Guid },
+    //    new ColumnConfig(){ ColumnName="CreateTime", ColumnType=typeof(DateTime), NormalType= ColumnNormal.NowDate },
+    //    new ColumnConfig(){ ColumnName="测试1", ColumnType=typeof(string), Column="A" },
+    //    new ColumnConfig(){ ColumnName="测试2", ColumnType=typeof(string), Column="B" },
+    //};
+});
+DataTable dt = excelKit.XmlReadDataTable();
+```
+
+##### 读取Excel导出Dictionary
+```csharp
+string path = Path.Combine(resource, "test.xlsx");
+ReadExcelKit excelKit = new ReadExcelKit(path);
+excelKit.AddConfig(config =>
+{
+    config.SheetIndex = 1;
+    config.ColumnNameRow = 1;
+    config.StartRow = 2;
+    //config.EndRow = 100;
+    //config.StartColumn = "C";
+    //config.EndColumn = "D";
+});
+var dics = excelKit.XmlReaderDictionary();
+```
+
+##### 读取Excel导出IEnumerable<object[]>
+```csharp
+string path = Path.Combine(resource, "test.xlsx");
+ReadExcelKit excelKit = new ReadExcelKit(path);
+excelKit.AddConfig(config =>
+{
+    config.SheetIndex = 1;
+    config.StartRow = 1;
+    //config.EndRow = 4;
+    //config.StartColumn = "C";
+    //config.EndColumn = "D";
+});
+var rows = excelKit.XmlReaderSet();
+```
+
+## BigCookieKit.Network网络库使用手册
+##### 客户端
+```csharp
+class Program
+{
+    static void Main(string[] args)
+    {
+        NetworkClient client = new NetworkClient("127.0.0.1", 7447);
+        client.Mode = ApplyMode.Client;
+        client.OnConnect = user =>
+        {
+            Random random = new Random();
+            while (true)
+            {
+                //完全可以接收无间隔发送
+                //user.SendMessage(RamdomString());
+                string str = Console.ReadLine();
+                switch (str)
+                {
+                    case "close":
+                        user.Disconnect();
+                        break;
+                    default:
+                        user.SendMessage(str);
+                        break;
+                }
+            }
+        };
+
+        client.OnCallBack = (user, packet) =>
+        {
+            Console.WriteLine(Encoding.UTF8.GetString(packet));
+        };
+        //不用处理器
+        client.Handle = new NoneHandle();
+        //简单粘包处理器
+        client.Handle = new EasyHandle();
+        //正规的TCP粘包处理器(默认)
+        client.Handle = new TcpHandle();
+
+        client.Start();
+
+        Thread.Sleep(-1);
+    }
+
+    public static byte[] RamdomString(int length = 1024)
+    {
+        var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        var stringChars = new char[length];
+        var random = new Random();
+        for (int i = 0; i < length; i++)
+        {
+            stringChars[i] = chars[random.Next(chars.Length - 1)];
+        }
+        return System.Text.Encoding.UTF8.GetBytes(stringChars);
+    }
+}
+```
+
+##### 服务端
+```csharp
+class Program
+{
+    static void Main(string[] args)
+    {
+        NetworkServer tcpServer = new NetworkServer(7447);
+        tcpServer.Protocol = NetworkProtocol.Http1;
+        tcpServer.BufferSize = 4096;
+        tcpServer.OnConnect = user =>
+        {
+            Console.WriteLine($"{user.UserHost}:{user.UserPort}接入~");
+        };
+
+        tcpServer.OnReceive = (user, packet) =>
+        {
+            string res = Encoding.UTF8.GetString(packet);
+            Console.WriteLine($"[{user.UserHost}:{user.UserPort}]:{res}");
+        };
+
+        tcpServer.OnExit = user =>
+        {
+            Console.WriteLine($"{user.UserHost}:{user.UserPort}离开~");
+        };
+
+        //不用处理器
+        client.Handle = new NoneHandle();
+        //简单粘包处理器
+        client.Handle = new EasyHandle();
+        //正规的TCP粘包处理器(默认)
+        client.Handle = new TcpHandle();
+        //添加管道
+        tcpServer.Handle.AddPipe<TestPipe>();
+
+        tcpServer.Start();
+
+        Thread.Sleep(-1);
+    }
+}
+
+//IPipe是管道模型
+class TestPipe : IPipe
+{
+    public async Task InvokeAsync(Session session, Action context)
+    {
+        Console.WriteLine("接收前1");
+        context?.Invoke();
+        Console.WriteLine("接收后1");
+    }
+}
+```
