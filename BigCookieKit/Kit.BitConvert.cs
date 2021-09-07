@@ -9,7 +9,6 @@ namespace BigCookieKit
 {
     public static partial class Kit
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Byte[] GetBytes(Char[] value)
         {
             Int32 i;
@@ -102,13 +101,11 @@ namespace BigCookieKit
             return bytes.ToArray();
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static String BitToString(Byte[] data, Encoding encoding = default)
         {
             return (encoding ?? Encoding.UTF8).GetString(data);
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Char[] BitToCharArray(Byte[] data)
         {
             return Encoding.UTF8.GetChars(data);
@@ -168,7 +165,6 @@ namespace BigCookieKit
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Decimal BitToDecimal(Byte[] data)
         {
             return new Decimal(new Int32[] {
