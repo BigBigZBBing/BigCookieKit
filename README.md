@@ -1,3 +1,5 @@
+[![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=BigBigZBBing)](https://github.com/anuraghazra/github-readme-stats)
+
 # BigCookieKit
 超级工具箱
 所有的经验积累库 包含的强大功能
