@@ -9,6 +9,8 @@ namespace BigCookieKit.Reflect
     {
         internal ILGenerator generator;
 
+        internal Boolean tiggerPop;
+
         private Dictionary<Type, Delegate> emitMethod => new Dictionary<Type, Delegate>();
 
         internal Type generatorType => typeof(ILGenerator);
@@ -97,20 +99,20 @@ namespace BigCookieKit.Reflect
         private void DispatchEmit<T>(OpCode opcode, T value)
         {
             CheckOverLength(ref opcode);
-            if (CacheManager.retValue)
+            if (tiggerPop)
             {
                 generator.Emit(OpCodes.Pop);
-                CacheManager.retValue = false;
+                tiggerPop = false;
             }
             ((Action<OpCode, T>)CacheMethod<T>()).Invoke(opcode, value);
         }
 
         private void DispatchEmit(OpCode opcode)
         {
-            if (CacheManager.retValue)
+            if (tiggerPop)
             {
                 generator.Emit(OpCodes.Pop);
-                CacheManager.retValue = false;
+                tiggerPop = false;
             }
             generator.Emit(opcode);
         }

@@ -14,7 +14,7 @@ namespace BigCookieKit.Reflect
 
         public LocalBuilder ReturnRef()
         {
-            CacheManager.retValue = false;
+            tiggerPop = false;
             LocalBuilder ret = DeclareLocal(ReturnType);
             Emit(OpCodes.Stloc_S, ret);
             return ret;

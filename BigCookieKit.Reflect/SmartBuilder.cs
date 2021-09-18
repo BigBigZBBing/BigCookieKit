@@ -32,7 +32,7 @@ namespace BigCookieKit.Reflect
         {
             this.dllName = dllName;
 
-            assmblyName = new AssemblyName(dllName);
+            assmblyName = new AssemblyName(this.dllName);
 
 #if NET452
             assemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(assmblyName, AssemblyBuilderAccess.RunAndSave);
@@ -167,7 +167,6 @@ namespace BigCookieKit.Reflect
 
 #if NET452
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Save()
         {
             SaveType();
@@ -202,13 +201,10 @@ namespace BigCookieKit.Reflect
                 types.RemoveAt(types.Count - 1);
             }
 
-            lock (_lock)
-            {
-                DynamicMethod dynamicBuilder = new DynamicMethod(MethodName, retType, types.ToArray());
-                builder?.Invoke(new FuncGenerator(dynamicBuilder.GetILGenerator()));
-                T deleg = dynamicBuilder.CreateDelegate(typeof(T)) as T;
-                return deleg;
-            }
+            DynamicMethod dynamicBuilder = new DynamicMethod(MethodName, retType, types.ToArray());
+            builder?.Invoke(new FuncGenerator(dynamicBuilder.GetILGenerator()));
+            T deleg = dynamicBuilder.CreateDelegate(typeof(T)) as T;
+            return deleg;
         }
     }
 }

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BigCookieKit.Network
 {
@@ -57,6 +52,7 @@ namespace BigCookieKit.Network
                         session.ReceiveOffset += pos;
                         session.ReceiveCapacity = Kit.BitToInt16(eof.ToArray());
                         break;
+
                     case (int)MessageMode.MessageInt:
                         if (!EnsureOffSet(4)) return;
                         pos = 4 - eof.Count;
@@ -64,6 +60,7 @@ namespace BigCookieKit.Network
                         session.ReceiveOffset += pos;
                         session.ReceiveCapacity = Kit.BitToInt32(eof.ToArray());
                         break;
+
                     case 255: session.Client?.Shutdown(SocketShutdown.Both); session.ReceiveType = 0; return;
                 }
                 int remaining = BytesTransferred - session.ReceiveOffset;
@@ -97,7 +94,6 @@ namespace BigCookieKit.Network
             if (session.ReceiveOffset < BytesTransferred) goto loop;
             session.ReceiveOffset = 0;
         }
-
 
         private bool EnsureOffSet(int bits)
         {

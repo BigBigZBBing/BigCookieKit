@@ -8,8 +8,6 @@ namespace BigCookieKit.Reflect
     {
         internal static Dictionary<String, FastProperty[]> EntityCache => new Dictionary<String, FastProperty[]>();
 
-        internal static Boolean retValue { get; set; }
-
         internal static FastProperty[] CachePropsManager(this Type type)
         {
             if (!EntityCache.ContainsKey(type.FullName))
