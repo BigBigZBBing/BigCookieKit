@@ -74,16 +74,8 @@ namespace BigCookieKit.Office.Xlsx
         public ReadExcelKit(string filePath) : this()
         {
             if (string.IsNullOrEmpty(filePath)) throw new FileNotFoundException(nameof(filePath));
-
             zip = ZipFile.OpenRead(filePath);
-
-            LoadShareString();
-
-            LoadWorkBook();
-
-            LoadNumberFormat();
-
-            LoadCellStyle();
+            LoadBaseSetting();
         }
 
         /// <summary>
@@ -94,14 +86,7 @@ namespace BigCookieKit.Office.Xlsx
         {
             stream.Seek(0, SeekOrigin.Begin);
             zip = new ZipArchive(stream);
-
-            LoadShareString();
-
-            LoadWorkBook();
-
-            LoadNumberFormat();
-
-            LoadCellStyle();
+            LoadBaseSetting();
         }
 
         /// <summary>
@@ -115,6 +100,20 @@ namespace BigCookieKit.Office.Xlsx
             config.StartRow = 0;
             callback.Invoke(config);
             configs.Add(config);
+        }
+
+        /// <summary>
+        /// 加载基础配置
+        /// </summary>
+        private void LoadBaseSetting()
+        {
+            LoadShareString();
+
+            LoadWorkBook();
+
+            LoadNumberFormat();
+
+            LoadCellStyle();
         }
 
         /// <summary>

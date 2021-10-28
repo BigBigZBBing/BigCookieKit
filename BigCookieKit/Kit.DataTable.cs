@@ -50,8 +50,10 @@ namespace BigCookieKit
         /// <summary>
         /// 获取单元格值
         /// </summary>
+        /// <typeparam name="T"></typeparam>
         /// <param name="dr"></param>
         /// <param name="field"></param>
+        /// <param name="format"></param>
         /// <returns></returns>
         public static T CellGetValue<T>(this DataRow dr, string field, DbValueFormat format = DbValueFormat.None)
         {
@@ -139,6 +141,33 @@ namespace BigCookieKit
                     }
                 }
                 yield return (T)instance;
+            }
+        }
+
+        /// <summary>
+        /// DataTable转集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dt"></param>
+        /// <returns></returns>
+        public static IEnumerable<T> ToModel<T>(DataTable dt) where T : class
+        {
+            Type type = typeof(T);
+            var props = type.GetProperties();
+            foreach (DataRow dr in dt.Rows)
+            {
+                T model = Activator.CreateInstance(type) as T;
+                foreach (var prop in props)
+                {
+                    Type changeType = prop.PropertyType;
+                    if (changeType.IsNullable())
+                    {
+                        changeType = Nullable.GetUnderlyingType(changeType);
+                    }
+                    if (dr[prop.Name].TryParse(changeType, out var value))
+                        prop.SetValue(model, value);
+                }
+                yield return model;
             }
         }
     }

@@ -209,6 +209,21 @@ namespace BigCookieKit
         }
 
         /// <summary>
+        /// 判断是否为自定义引用类型
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        public static Boolean IsCustomClass(this Type type)
+        {
+            // 不是原始类型 && 并且是引用类型 && 并且不是数组 && 并且不是通用类型 && 不是字符串
+            if (!type.IsPrimitive && type.IsClass && !type.IsArray && !type.IsGenericType && type != typeof(String))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 判断是否为值类型
         /// </summary>
         /// <param name="obj">对象</param>
@@ -239,6 +254,20 @@ namespace BigCookieKit
         }
 
         /// <summary>
+        /// 判断是否为结构体
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        public static Boolean IsStruct(this Type type)
+        {
+            if (!type.IsEnum && type.IsValueType)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 是否为枚举
         /// </summary>
         /// <param name="obj">对象</param>
@@ -255,7 +284,7 @@ namespace BigCookieKit
         /// <summary>
         /// 是否为数组
         /// </summary>
-        /// <param name="obj"></param>
+        /// <param name="obj">对象</param>
         /// <returns></returns>
         public static Boolean IsArray(this Object obj)
         {
@@ -264,6 +293,27 @@ namespace BigCookieKit
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 是否为可空类型
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static Boolean IsNullable(this Object obj)
+        {
+            Type type = obj.GetType();
+            return (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)));
+        }
+
+        /// <summary>
+        /// 是否为可空类型
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        public static Boolean IsNullable(this Type type)
+        {
+            return (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)));
         }
 
         /// <summary>
