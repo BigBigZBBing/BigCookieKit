@@ -333,22 +333,25 @@ namespace NUnitBigCookieKit
         /// Actor模型（并集线程）单元测试
         /// </summary>
         [Test]
-        public void ActorModelUnit()
+        public async Task ActorModelUnit()
         {
-            var batch = new ActorModel<int>(100, index =>
+            var batch = new ActorModel<string>(1, async strs =>
             {
-                foreach (var item in index)
+                foreach (var item in strs)
                 {
-                    Console.WriteLine(item);
+                    Console.WriteLine("生成Excel数据：{0}", item);
+                    await Task.Delay(500);
                 }
-                Thread.Sleep(500);
+                await Task.CompletedTask;
             });
-            for (int i = 0; i < 400; i++)
+            for (int i = 0; i < 6; i++)
             {
-                batch.Post(i);
+                Console.WriteLine("读取数据……");
+                await Task.Delay(500);
+                batch.Post($"数据行_{i + 1}");
             }
             batch.Complete(true);
-            Console.WriteLine("完成");
+            Console.WriteLine("结束");
         }
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace BigCookieKit
         /// <param name="boundedCapacity">最大处理的数据量 默认 int.MaxValue 2147483647</param>
         /// <param name="maxDegreeOfParallelism">最大并行量 默认1</param>
         /// <param name="timeTrigger">定时触发批处理 默认不处理， 设置大于0则处理，秒级别</param>
-        public ActorModel(int batchSize, Action<T[]> action, int boundedCapacity = int.MaxValue, int maxDegreeOfParallelism = 1)
+        public ActorModel(int batchSize, Func<T[], Task> action, int boundedCapacity = int.MaxValue, int maxDegreeOfParallelism = 1)
         {
             _batchBlock = new BatchBlock<T>(batchSize, new GroupingDataflowBlockOptions() { BoundedCapacity = boundedCapacity });
             _actionBlock = new ActionBlock<T[]>(data => action(data), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism });
