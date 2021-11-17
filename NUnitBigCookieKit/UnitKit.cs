@@ -21,6 +21,7 @@ using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
 using BigCookieKit.Algorithm;
 using AutoMapper;
+using System.Security.Cryptography;
 
 namespace NUnitBigCookieKit
 {
@@ -525,8 +526,21 @@ namespace NUnitBigCookieKit
             CRC32 cRC32 = new CRC32();
 
             var crc32_npoi = cRC32.StringCRC(data);
-            var crc32_xlsx = Crc32.crc32_buf(data.ToCharArray(), 0);
-            var crc32_standard = Crc32.crc32_byte(bytes);
+            var crc32_xlsx = CRCProvider.crc32_buf(data.ToCharArray(), 0);
+            var crc32_standard = CRCProvider.Crc32Vertify(bytes);
+        }
+
+        [Test]
+        public void RSAProvider()
+        {
+            var provider = new RSAProvider<SHA256>();
+
+            var t0 = provider.GetXmlSecret();
+            var t1 = provider.GetBase64Secret();
+            var t2 = provider.ExportPublicKey();
+            var t3 = provider.ExportPrivateKey();
+
+
         }
 
         #region 性能比较单元测试
