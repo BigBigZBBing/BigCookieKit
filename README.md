@@ -332,3 +332,18 @@ class TestPipe : IPipe
     }
 }
 ```
+
+## BigCookieKit.Reflect高性能动态扩展模型
+```csharp
+//初始化这个对象就可以开始了
+FastExtend canExtend = new FastExtend();
+canExtend.AddMember("Name1", typeof(string));
+canExtend.AddMember("Name2", typeof(string));
+canExtend.AddMember("Name3", typeof(string));
+canExtend["Name1"] = "123";
+// 动态新增 如果不存在该字段 不会新增
+canExtend.AddMember("Name4", typeof(string));
+canExtend["Name4"] = "123";
+canExtend.RemoveMember("Name4");
+canExtend["Name4"] = "123"; // error 这里会抛出异常
+```
