@@ -24,14 +24,22 @@ namespace BigCookieKit.Reflect
         private Type _dymaticType;
         private Object _instance;
 
-        private static readonly Object _lock = new Object();
-
         public object Instance { get => _instance; set => _instance = value; }
 
         public SmartBuilder(String dllName)
         {
             this.dllName = dllName;
+            ModuleProcess();
+        }
 
+        public SmartBuilder()
+        {
+            this.dllName = "BigCookie_" + DateTime.Now.ToString("yyyyMMddHHmmssffff");
+            ModuleProcess();
+        }
+
+        public void ModuleProcess()
+        {
             assmblyName = new AssemblyName(this.dllName);
 
 #if NET452
@@ -155,14 +163,14 @@ namespace BigCookieKit.Reflect
             propertyBuilder.SetSetMethod(methodBuilder);
         }
 
-        public Type SaveType()
+        private void SaveType()
         {
             publicBuilder.GetILGenerator().Emit(OpCodes.Ldarg_0);
             publicBuilder.GetILGenerator().Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
             publicBuilder.GetILGenerator().Emit(OpCodes.Ret);
             staticBuilder.GetILGenerator().Emit(OpCodes.Ret);
 
-            return _dymaticType = typeBuilder.CreateTypeInfo();
+            _dymaticType = typeBuilder.CreateTypeInfo();
         }
 
 #if NET452
@@ -175,14 +183,15 @@ namespace BigCookieKit.Reflect
 
 #endif
 
-        public object Build()
+        public object Generation()
         {
+            SaveType();
             return _instance = Activator.CreateInstance(_dymaticType);
         }
 
         public FastDynamic InitEntity()
         {
-            return FastDynamic.GetFastDynamic(Build());
+            return FastDynamic.GetFastDynamic(Generation());
         }
 
         public static T DynamicMethod<T>(String MethodName, Action<FuncGenerator> builder) where T : class

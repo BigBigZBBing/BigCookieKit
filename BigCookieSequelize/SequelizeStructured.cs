@@ -442,8 +442,7 @@ namespace BigCookieSequelize
             {
                 CreateModel(Erji.Where(x => x.Table == item), builder);
             }
-            builder.SaveType();
-            builder.Build();
+            builder.Generation();
             var instance = Activator.CreateInstance(typeof(List<>)
                 .MakeGenericType(builder.Instance.GetType()));
             LoadDataSource(instance);
@@ -473,8 +472,7 @@ namespace BigCookieSequelize
             foreach (var item in next.Select(x => x.Table).Distinct())
                 CreateModel(next.Where(x => x.Table == item), m_builder);
 
-            m_builder.SaveType();
-            m_builder.Build();
+            m_builder.Generation();
             var momeryType = m_builder.Instance.GetType();
             var ListType = typeof(List<>).MakeGenericType(momeryType);
             build.Property(TableName, ListType);
