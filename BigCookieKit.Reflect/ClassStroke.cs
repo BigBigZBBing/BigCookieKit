@@ -1,4 +1,6 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
 
 namespace BigCookieKit.Reflect
@@ -18,14 +20,24 @@ namespace BigCookieKit.Reflect
             this.staticBuilder = staticBuilder;
         }
 
-        public void CustomAttr(ConstructorInfo ctor, params object[] args)
+        public void CustomAttribute(Type type, params object[] args)
         {
-            typeBuilder.SetCustomAttribute(new CustomAttributeBuilder(ctor, args));
+            typeBuilder.SetCustomAttribute(new CustomAttributeBuilder(type.GetConstructor(args.Select(x => x.GetType()).ToArray()), args));
         }
 
-        public void CustomAttr(ConstructorInfo ctor, params byte[] binary)
+        public void CustomGeneric(params string[] typeNames)
         {
-            typeBuilder.SetCustomAttribute(ctor, binary);
+            typeBuilder.DefineGenericParameters(typeNames);
+        }
+
+        public void InheritClass(Type type)
+        {
+            typeBuilder.SetParent(type);
+        }
+
+        public void InheritInterface(Type type)
+        {
+            typeBuilder.AddInterfaceImplementation(type);
         }
     }
 }

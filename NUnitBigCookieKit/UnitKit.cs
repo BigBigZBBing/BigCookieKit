@@ -530,7 +530,7 @@ namespace NUnitBigCookieKit
 
             var crc32_npoi = cRC32.StringCRC(data);
             var crc32_xlsx = CRCProvider.crc32_buf(data.ToCharArray(), 0);
-            var crc32_standard = CRCProvider.Crc32Vertify(bytes);
+            var crc32_standard = CRCProvider.Crc32Verify(bytes);
         }
 
         [Test]

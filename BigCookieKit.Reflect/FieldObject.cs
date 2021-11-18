@@ -105,6 +105,13 @@ namespace BigCookieKit.Reflect
             return local;
         }
 
+        public LocalBuilder GetDynamicPropterty(string propName)
+        {
+            var type = new FieldObject(Call("GetType").ReturnRef(), generator);
+            var prop = new FieldObject(type.Call("GetProperty", ManagerGX.NewString(this, propName)).ReturnRef(), generator);
+            return prop.Call("GetValue", this).ReturnRef();
+        }
+
         public override MethodManager Call(String methodName, params LocalBuilder[] parameters)
         {
             return this.ReflectMethod(methodName, asidentity, parameters);
