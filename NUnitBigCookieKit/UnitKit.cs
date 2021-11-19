@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
 using BigCookieKit.Algorithm;
-using AutoMapper;
 using System.Security.Cryptography;
 
 namespace NUnitBigCookieKit

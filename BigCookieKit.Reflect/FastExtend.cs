@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace BigCookieKit.Reflect
 {
     public class FastExtend
     {
-        public Dictionary<string, Type> allMember;
+        public ConcurrentDictionary<string, Type> allMember;
 
         bool isGenerate = false;
 
@@ -22,7 +23,7 @@ namespace BigCookieKit.Reflect
 
         public FastExtend()
         {
-            allMember = new Dictionary<string, Type>();
+            allMember = new ConcurrentDictionary<string, Type>();
         }
 
         public object this[string name]
@@ -66,8 +67,10 @@ namespace BigCookieKit.Reflect
         {
             if (!allMember.ContainsKey(name))
             {
-                allMember.Add(name, type);
-                isGenerate = true;
+                if (allMember.TryAdd(name, type))
+                {
+                    isGenerate = true;
+                }
             }
         }
 
@@ -75,8 +78,10 @@ namespace BigCookieKit.Reflect
         {
             if (allMember.ContainsKey(name))
             {
-                allMember.Remove(name);
-                isGenerate = true;
+                if (allMember.TryRemove(name, out _))
+                {
+                    isGenerate = true;
+                }
             }
         }
     }
