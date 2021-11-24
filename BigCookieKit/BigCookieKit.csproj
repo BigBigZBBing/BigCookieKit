@@ -90,4 +90,8 @@
     <ProjectReference Include="..\BigCookieKit.Reflect\BigCookieKit.Reflect.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="FTP\" />
+  </ItemGroup>
+
 </Project>

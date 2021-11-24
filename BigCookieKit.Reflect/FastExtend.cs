@@ -9,7 +9,7 @@ namespace BigCookieKit.Reflect
 {
     public class FastExtend
     {
-        public ConcurrentDictionary<string, Type> allMember;
+        ConcurrentDictionary<string, Type> allMember;
 
         bool isGenerate = false;
 
