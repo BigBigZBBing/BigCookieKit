@@ -75,34 +75,7 @@ namespace BigCookieKit.Algorithm
         /// <param name="xml"></param>
         public void ImportXml(string xml)
         {
-            var xmlRead = new XmlReadKit(xml.ToStream());
-            var packet = xmlRead.XmlRead("RSAKeyValue");
-            RSAParameters paramter = default;
-            paramter.D = GetNodeByte(packet, "D");
-            paramter.DP = GetNodeByte(packet, "DP");
-            paramter.DQ = GetNodeByte(packet, "DQ");
-            paramter.Exponent = GetNodeByte(packet, "Exponent");
-            paramter.InverseQ = GetNodeByte(packet, "InverseQ");
-            paramter.Modulus = GetNodeByte(packet, "Modulus");
-            paramter.P = GetNodeByte(packet, "P");
-            paramter.Q = GetNodeByte(packet, "Q");
-            provider.ImportParameters(paramter);
-        }
-
-        /// <summary>
-        /// 根据Xml包获取子节点的字节流
-        /// </summary>
-        /// <param name="packet"></param>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        private byte[] GetNodeByte(XmlPacket packet, string node)
-        {
-            var _node = packet.Node.FirstOrDefault(x => x.Info.Name == node);
-            if (_node != null && !string.IsNullOrEmpty(_node.Info.Text))
-            {
-                return Encoding.UTF8.GetBytes(_node.Info.Text);
-            }
-            return null;
+            provider.FromXmlString(xml);
         }
 
         /// <summary>
