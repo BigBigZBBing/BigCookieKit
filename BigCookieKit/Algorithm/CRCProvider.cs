@@ -6,19 +6,22 @@ namespace BigCookieKit.Algorithm
 {
     public static class CRCProvider
     {
-        private static ulong[] crc_table => InitCrc32Table();
+        private static ulong[] crc32_table => InitCrc32Table();
 
         private static ulong[] InitCrc32Table()
         {
             ulong[] table = new ulong[256];
-            for (int i = 0; i < 256; i++)//用++i以提高效率
+            //for (int i = 0; i < 256; i++) // 用++i以提高效率
+            for (ulong i = 0; i < 256; i++) // 用++i以提高效率
             {
-                ulong c = (ulong)i;
+                //ulong c = (ulong)i;
+                ulong c = i;
                 for (int j = 8; j > 0; j--)
                 {
-                    if (((uint)c & 1) == 1)// LSM为1
-                        c = (c >> 1) ^ 0xEDB88320;//采取反向校验
-                    else //0xEDB88320就是CRC-32多项表达式的reversed值
+                    //if (((uint)c & 1) == 1) // 奇数
+                    if ((c & 1) == 1) // 奇数
+                        c = (c >> 1) ^ 0xEDB88320; // 采取反向校验 0xEDB88320就是CRC-32多项表达式的reversed值
+                    else // 偶数
                         c >>= 1;
                 }
                 table[i] = c;
@@ -26,16 +29,62 @@ namespace BigCookieKit.Algorithm
             return table;
         }
 
+        public static byte Crc8Verify(byte[] buffer)
+        {
+            byte c = 0;
+            for (int j = 0; j < buffer.Length; j++)
+            {
+                c ^= buffer[j];
+                for (int i = 0; i < 8; i++)
+                {
+                    if ((c & 1) == 1)
+                    {
+                        c >>= 1;
+                        c ^= 140;
+                    }
+                    else c >>= 1;
+                }
+            }
+            return c;
+        }
+
+
+        public static byte[] Crc16Verify(byte[] data, bool Reverse = false)
+        {
+            int len = data.Length;
+            if (len > 0)
+            {
+                ushort crc = 0xFFFF;
+
+                for (int i = 0; i < len; i++)
+                {
+                    crc = (ushort)(crc ^ (data[i]));
+                    for (int j = 0; j < 8; j++)
+                    {
+                        crc = (crc & 1) != 0 ? (ushort)((crc >> 1) ^ 0xA001) : (ushort)(crc >> 1);
+                    }
+                }
+                byte hi = (byte)((crc & 0xFF00) >> 8);  //高位置
+                byte lo = (byte)(crc & 0x00FF);         //低位置
+
+                if (Reverse)
+                    return new byte[] { lo, hi };
+                else
+                    return new byte[] { hi, lo };
+            }
+            return new byte[] { 0, 0 };
+        }
+
         public static ulong Crc32Verify(byte[] bytes)
         {
-            ulong[] T = crc_table;
-            ulong C = 0xFFFFFFFF;
+            ulong[] T = crc32_table;
+            ulong C = 4294967295;
             int L = bytes.Length;
             for (int i = 0; i < L; i++)
             {
-                C = (C >> 8) ^ T[(C & 0xFF) ^ bytes[i]];
+                C = (C >> 8) ^ T[(C & 255) ^ bytes[i]];
             }
-            return C ^ 0xFFFFFFFF;
+            return C ^ 4294967295;
         }
 
         private static int[] signed_crc_table()

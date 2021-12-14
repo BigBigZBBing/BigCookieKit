@@ -89,8 +89,8 @@ namespace BigCookieKit.XML
                             if (_curr.State == PacketState.Start)
                             {
                                 packet = new XmlPacket();
-                                _curr = packet;
                                 packet.Parent = _curr;
+                                _curr = packet;
                                 bool isEmpty = _read.IsEmptyElement;
                                 ReadContentFrom();
                                 if (isEmpty) EndReadFrom();
