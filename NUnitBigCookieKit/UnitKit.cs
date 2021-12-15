@@ -20,7 +20,6 @@ using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
 using BigCookieKit.Algorithm;
-using AutoMapper;
 using System.Security.Cryptography;
 
 namespace NUnitBigCookieKit
@@ -387,7 +386,7 @@ namespace NUnitBigCookieKit
             string content = File.ReadAllText(Path.Combine(resource, "BoyerMooreUnit.txt"));
             string pattern = "kernel";
 
-            var index = Kit.BoyerMooreFirstMatch(content.ToCharArray(), pattern.ToCharArray());
+            var index = BoyerMoore.BoyerMooreFirstMatch(content.ToCharArray(), pattern.ToCharArray());
         }
 
         /// <summary>
