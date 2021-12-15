@@ -18,6 +18,9 @@ namespace NUnitBigCookieKit
 
         }
 
+        /// <summary>
+        /// 高性能动态扩展对象
+        /// </summary>
         [Test]
         public void ExtendObject()
         {

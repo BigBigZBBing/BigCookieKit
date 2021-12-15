@@ -8,16 +8,18 @@ namespace BigCookieKit.Resources
 {
     public static class Common
     {
+        private const string ResourcePath = "BigCookieKit.Resources.";
+
         public static Stream GetXlsxResource(string fileName)
         {
             Assembly Asmb = Assembly.GetExecutingAssembly();
-            return Asmb.GetManifestResourceStream("BigCookieKit.Resources.xlsx." + fileName);
+            return Asmb.GetManifestResourceStream(ResourcePath + "xlsx." + fileName);
         }
 
         public static Stream GetXlsxResourceString(string fileName)
         {
             Assembly Asmb = Assembly.GetExecutingAssembly();
-            return Asmb.GetManifestResourceStream("BigCookieKit.Resources.xlsx." + fileName);
+            return Asmb.GetManifestResourceStream(ResourcePath + "xlsx." + fileName);
         }
     }
 }

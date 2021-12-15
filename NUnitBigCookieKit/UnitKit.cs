@@ -538,6 +538,8 @@ namespace NUnitBigCookieKit
             var provider = new RSAProvider<SHA256>();
 
             var t0 = provider.GetXmlSecret();
+            provider.ImportXml(t0.Item1);
+            provider.ImportXml(t0.Item2);
             var t1 = provider.GetBase64Secret();
             var t2 = provider.ExportPublicKey();
             var t3 = provider.ExportPrivateKey();
