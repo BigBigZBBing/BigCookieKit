@@ -1,4 +1,5 @@
 ﻿using BigCookieKit.Network;
+
 using System;
 using System.Net;
 using System.Text;
@@ -17,8 +18,9 @@ namespace TcpClientExmaple
                 Random random = new Random();
                 while (true)
                 {
-                    Console.ReadLine();
-                    user.SendMessage(RamdomString());
+                    var message = Console.ReadLine();
+                    user.SendMessage(message);
+                    //user.SendMessage(RamdomString());
                     //string str = Console.ReadLine();
                     //switch (str)
                     //{

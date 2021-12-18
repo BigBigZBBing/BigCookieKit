@@ -12,7 +12,6 @@ namespace TcpServerExmaple
         static void Main(string[] args)
         {
             NetworkServer tcpServer = new NetworkServer(7447);
-            tcpServer.Protocol = NetworkProtocol.Http1;
             tcpServer.BufferSize = 4096;
             tcpServer.OnConnect = user =>
             {
