@@ -9,17 +9,26 @@ namespace BigCookieKit.Reflect
 {
     public class FastExtend
     {
-        ConcurrentDictionary<string, Type> allMember;
+        private ConcurrentDictionary<string, Type> allMember;
 
-        bool isGenerate = false;
+        private bool isGenerate = false;
 
-        SmartBuilder globalBuilder;
+        private SmartBuilder globalBuilder;
 
-        int version = 1;
+        private int version = 1;
 
-        object instance;
+        private object instance;
 
-        FastDynamic _dynamic;
+        private FastDynamic _dynamic;
+
+        public object Instance
+        {
+            get
+            {
+                CheckGenerate();
+                return instance;
+            }
+        }
 
         public FastExtend()
         {
@@ -84,5 +93,6 @@ namespace BigCookieKit.Reflect
                 }
             }
         }
+
     }
 }
