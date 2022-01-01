@@ -1,6 +1,8 @@
 ﻿using BigCookieKit;
 using BigCookieKit.Reflect;
+
 using NUnit.Framework;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +31,13 @@ namespace NUnitBigCookieKit
             canExtend.AddMember("Name2", typeof(string));
             canExtend.AddMember("Name3", typeof(string));
             canExtend["Name1"] = "123";
-            canExtend.AddMember("Name4", typeof(string));
-            canExtend["Name4"] = "123";
+            for (int i = 4; i < 20; i++)
+            {
+                var name = $"Name" + i;
+                canExtend.AddMember(name, typeof(string));
+                canExtend[name] = "123";
+            }
+            canExtend.RemoveMember("Name2");
         }
     }
 }
