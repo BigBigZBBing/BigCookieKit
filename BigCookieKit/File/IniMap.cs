@@ -31,7 +31,7 @@ namespace BigCookieKit.File
                         Section nRoot = new Section();
                         nRoot.Name = section.Value;
                         Sections.Add(nRoot);
-                        break;
+                        continue;
                     }
 
                     if (line.IndexOf("=") > -1)
@@ -39,7 +39,7 @@ namespace BigCookieKit.File
                         var kv = line.Split("=");
                         var last = Sections.Last();
                         last.Parameters.Add(new Parameter(kv[0], kv[1]));
-                        break;
+                        continue;
                     }
                 }
             }
@@ -54,7 +54,11 @@ namespace BigCookieKit.File
                 {
                     Section nRoot = new Section();
                     nRoot.Name = section;
-                    nRoot.ToMap = e => Sections.Add(e);
+                    nRoot.ToMap = e =>
+                    {
+                        if (!Sections.Contains(e))
+                            Sections.Add(e);
+                    };
                     return nRoot;
                 }
                 return res;
