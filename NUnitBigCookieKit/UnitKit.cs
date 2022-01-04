@@ -42,7 +42,7 @@ namespace NUnitBigCookieKit
         {
             VerifyModel model = new VerifyModel();
             //model.StrField = "jskdlfjlsdjlflsdlfjlsdlkf";
-            //model.IntField = 10;
+            model.IntField = 10;
             //model.DecimalField = 10.5264m;
 
             Assert.IsTrue(model.ModelValidation());
@@ -541,10 +541,7 @@ namespace NUnitBigCookieKit
             provider.ImportXml(t0.Item1);
             provider.ImportXml(t0.Item2);
             var t1 = provider.GetBase64Secret();
-            var t2 = provider.ExportPublicKey();
-            var t3 = provider.ExportPrivateKey();
-
-
+            var t2 = provider.GetPemSecret();
         }
 
         #region 性能比较单元测试
@@ -619,7 +616,7 @@ namespace NUnitBigCookieKit
             [StringRule("StrFieldName", MaxLength = 10, Message = "{1}的{3}", Required = true)]
             public string StrField { get; set; }
 
-            [NumericRule("IntFieldName", Equal = 10, Message = "{1}的{3}错误")]
+            [NumericRule("IntFieldName", Equal = 10, Message = "{1}的{3}")]
             public int? IntField { get; set; }
 
             [DecimalRule("DecimalFieldName", Equal = 10.526, Precision = 3, Message = "{1}的{3}错误")]

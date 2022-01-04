@@ -169,14 +169,14 @@ namespace BigCookieKit
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能小于{attr.Less}"));
                 return false;
             }
-            if (attr.Equal.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.Equal))
+            if (attr.Equal.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.Equal))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能等于{attr.Equal}"));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"必须等于{attr.Equal}"));
                 return false;
             }
-            if (attr.NoEqual.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.NoEqual))
+            if (attr.NoEqual.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.NoEqual))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"必须等于{attr.NoEqual}"));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能等于{attr.NoEqual}"));
                 return false;
             }
             return true;
