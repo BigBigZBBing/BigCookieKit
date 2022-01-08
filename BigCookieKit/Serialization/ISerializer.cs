@@ -11,7 +11,7 @@ namespace BigCookieKit.Serialization
     {
         public Stream stream { get; set; }
 
-        public void WriteLength(Int32 length)
+        public void WriteLength(int length)
         {
 
         }

@@ -91,6 +91,7 @@
 
   <ItemGroup>
     <Folder Include="FTP\" />
+    <Folder Include="RPA\" />
   </ItemGroup>
 
 </Project>

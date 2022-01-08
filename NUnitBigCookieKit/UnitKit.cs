@@ -540,8 +540,12 @@ namespace NUnitBigCookieKit
             var t0 = provider.GetXmlSecret();
             provider.ImportXml(t0.Item1);
             provider.ImportXml(t0.Item2);
+
             var t1 = provider.GetBase64Secret();
+            provider.ImportBase64(t1.Item1, t1.Item2);
+
             var t2 = provider.GetPemSecret();
+            provider.ImportPem(t2.Item1, t2.Item2);
         }
 
         #region 性能比较单元测试

@@ -1,5 +1,6 @@
 ﻿using BigCookieKit.IO;
 using BigCookieKit.XML;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -101,18 +102,46 @@ namespace BigCookieKit.Algorithm
         /// 导入RSA的base64密钥
         /// </summary>
         /// <param name="secret"></param>
-        public void ImportBase64(string secret, string password = null)
+        public void ImportBase64(string publicSecret, string privateSecret, bool isPKCS8 = false, string password = null)
         {
-
+            var pub = Convert.FromBase64String(publicSecret);
+            var prv = Convert.FromBase64String(privateSecret);
+            provider.ImportRSAPublicKey(pub, out var _read);
+            if (isPKCS8)
+            {
+                if (string.IsNullOrEmpty(password))
+                {
+                    provider.ImportPkcs8PrivateKey(prv, out _read);
+                }
+                else
+                {
+                    provider.ImportEncryptedPkcs8PrivateKey(Convert.FromBase64String(password), prv, out _read);
+                }
+            }
+            else
+            {
+                provider.ImportRSAPrivateKey(prv, out _read);
+            }
         }
 
         /// <summary>
         /// 导入RSA的pem密钥
         /// </summary>
         /// <param name="pem"></param>
-        public void ImportPem(string pem)
+        public void ImportPem(string publicPem, string privatePem, bool isPKCS8 = false, string password = null)
         {
+            publicPem = publicPem.Replace("\n", "");
+            publicPem = publicPem.Replace("\r", "");
+            publicPem = publicPem.Replace("-----BEGIN PUBLIC KEY-----", "");
+            publicPem = publicPem.Replace("-----END PUBLIC KEY-----", "");
+            privatePem = privatePem.Replace("\n", "");
+            privatePem = privatePem.Replace("\r", "");
+            privatePem = privatePem.Replace("-----BEGIN RSA PRIVATE KEY-----", "");
+            privatePem = privatePem.Replace("-----END RSA PRIVATE KEY-----", "");
+            string publicSecret = publicPem;
+            string privateSecret = privatePem;
 
+            ImportBase64(publicSecret, privateSecret, isPKCS8, password);
         }
 
         /// <summary>
@@ -128,304 +157,26 @@ namespace BigCookieKit.Algorithm
         }
 
         /// <summary>
-        /// 获取PKCS#1公钥PKCS#8密钥
+        /// 获取Base64公钥密钥
         /// </summary>
         /// <returns>
         /// <para>Item1:PublicKey</para>
         /// <para>Item2:PrivateKey</para>
         /// </returns>
-        public Tuple<string, string> GetBase64Secret(string password = null)
+        public Tuple<string, string> GetBase64Secret(bool isPKCS8 = false, string password = null)
         {
             return Tuple.Create(
-                Convert.ToBase64String(provider.ExportRSAPublicKey()),
-                string.IsNullOrEmpty(password) ?
-                    Convert.ToBase64String(provider.ExportPkcs8PrivateKey()) :
-                    Convert.ToBase64String(provider.ExportEncryptedPkcs8PrivateKey(password.AsSpan(), new PbeParameters(PbeEncryptionAlgorithm.Aes256Cbc, new HashAlgorithmName(HashName), 0)))
-                );
+                Convert.ToBase64String(ExportPublicKey()),
+                Convert.ToBase64String(ExportPrivateKey()));
         }
 
+        /// <summary>
+        /// 获取Pem公钥密钥
+        /// </summary>
+        /// <returns></returns>
         public Tuple<string, string> GetPemSecret()
         {
             return Tuple.Create(ExportPublicPem(), ExportPrivatePem());
-        }
-
-        public byte[] ExportPublicKey()
-        {
-            List<byte> bytes = new List<byte>();
-            WriteTag(bytes, 16); //Sequence
-            WriteLength(bytes, -1);
-            WriteTagAndIntegerUnsigned(bytes, publickKey.Modulus);
-            WriteTagAndIntegerUnsigned(bytes, publickKey.Exponent);
-            PopSequence(bytes);
-            return bytes.ToArray();
-        }
-
-        public byte[] ExportPrivateKey()
-        {
-            List<byte> bytes = new List<byte>();
-            WriteTag(bytes, 16); //Sequence
-            WriteLength(bytes, -1);
-            WriteTagAndIntegerUnsigned(bytes, 0);
-            WriteTagAndIntegerUnsigned(bytes, privateKey.Modulus);
-            WriteTagAndIntegerUnsigned(bytes, privateKey.Exponent);
-            WriteTagAndIntegerUnsigned(bytes, privateKey.D);
-            WriteTagAndIntegerUnsigned(bytes, privateKey.P);
-            WriteTagAndIntegerUnsigned(bytes, privateKey.Q);
-            WriteTagAndIntegerUnsigned(bytes, privateKey.DP);
-            WriteTagAndIntegerUnsigned(bytes, privateKey.DQ);
-            WriteTagAndIntegerUnsigned(bytes, privateKey.InverseQ);
-            PopSequence(bytes);
-            return bytes.ToArray();
-        }
-
-        private void PopSequence(List<byte> bytes)
-        {
-            int containedLength = bytes.Count - 2;
-            var shiftSize = GetEncodedLengthSubsequentByteCount(containedLength);
-            for (int i = 0; i < shiftSize; i++) bytes.Add(0);
-            byte[] dest = bytes.ToArray();
-            Buffer.BlockCopy(dest, 2, dest, 2 + shiftSize, containedLength);
-            bytes.Clear();
-            bytes.AddRange(dest);
-            WriteOffsetLength(bytes, containedLength, 1);
-        }
-
-        private void WriteTagAndIntegerUnsigned(List<byte> bytes, params byte[] value)
-        {
-            // Integer标识
-            bytes.Add(2);
-            // 写入长度
-            if (value[0] >= 0x80)
-            {
-                WriteLength(bytes, value.Length + 1);
-                bytes.Add(0);
-            }
-            else
-            {
-                WriteLength(bytes, value.Length);
-            }
-            // 写入内容
-            bytes.AddRange(value);
-        }
-
-        private void WriteLength(List<byte> bytes, int length)
-        {
-            if (length == -1)
-            {
-                bytes.Add(0X80);
-                return;
-            }
-
-            if (length >= 0x80)
-            {
-                var lengthLength = GetEncodedLengthSubsequentByteCount(length);
-                bytes.Add((byte)(0x80 | lengthLength));
-                var remaining = length;
-                do
-                {
-                    bytes.Add((byte)remaining);
-                    remaining >>= 8;
-                } while (remaining > 0);
-            }
-            else bytes.Add((byte)length);
-        }
-
-        private void WriteOffsetLength(List<byte> bytes, int length, int offset)
-        {
-            if (length >= 0x80)
-            {
-                var lengthLength = GetEncodedLengthSubsequentByteCount(length);
-                int idx = offset + lengthLength;
-                bytes[offset] = (byte)(0x80 | lengthLength);
-                var remaining = length;
-                do
-                {
-                    bytes[idx] = (byte)remaining;
-                    remaining >>= 8;
-                    idx--;
-                } while (remaining > 0);
-            }
-            else bytes.Add((byte)length);
-        }
-
-        private void WriteTag(List<byte> bytes, int tagValue)
-        {
-            var spaceRequired = BarEncodeSize(tagValue);
-
-            if (spaceRequired == 1)
-            {
-                bytes.Add((byte)(32 | tagValue));
-                return;
-            }
-            else
-            {
-                bytes.Add((byte)(32 | tagValue));
-
-                int count = bytes.Count;
-                int remaining = tagValue;
-
-                while (remaining > 0)
-                {
-                    int segment = remaining & 0x7F; // 超过127则是0
-
-                    if (count != bytes.Count)
-                    {
-                        bytes[--count] = (byte)segment;
-                    }
-                    else
-                    {
-                        bytes.Add((byte)segment);
-                    }
-                    remaining >>= 7; // 推7位:大于127才会大于0
-                }
-            }
-        }
-
-        private int BarEncodeSize(int tagValue)
-        {
-            if (tagValue < 31)
-            {
-                return 1;
-            }
-            else return 2;
-        }
-
-        private int GetEncodedLengthSubsequentByteCount(int value_len)
-        {
-            if (value_len < 0)
-                throw new OverflowException();
-            if (value_len <= 0x7F)
-                return 0;
-            if (value_len <= byte.MaxValue)
-                return 1;
-            if (value_len <= ushort.MaxValue)
-                return 2;
-            if (value_len <= 0x00FFFFFF)
-                return 3;
-
-            return 4;
-        }
-
-        private string ExportPrivatePem()
-        {
-            StringWriter outputStream = new StringWriter();
-            //if (provider.PublicOnly) throw new ArgumentException("CSP does not contain a private key", "csp");
-            //var parameters = provider.ExportParameters(true);
-            //using (var stream = new MemoryStream())
-            //{
-            //    var writer = new BinaryWriter(stream);
-            //    writer.Write((byte)0x30); // SEQUENCE
-            //    using (var innerStream = new MemoryStream())
-            //    {
-            //        var innerWriter = new BinaryWriter(innerStream);
-            //        EncodeIntegerBigEndian(innerWriter, new byte[] { 0x00 }); // Version
-            //        EncodeIntegerBigEndian(innerWriter, parameters.Modulus);
-            //        EncodeIntegerBigEndian(innerWriter, parameters.Exponent);
-            //        EncodeIntegerBigEndian(innerWriter, parameters.D);
-            //        EncodeIntegerBigEndian(innerWriter, parameters.P);
-            //        EncodeIntegerBigEndian(innerWriter, parameters.Q);
-            //        EncodeIntegerBigEndian(innerWriter, parameters.DP);
-            //        EncodeIntegerBigEndian(innerWriter, parameters.DQ);
-            //        EncodeIntegerBigEndian(innerWriter, parameters.InverseQ);
-            //        var length = (int)innerStream.Length;
-            //        EncodeLength(writer, length);
-            //        writer.Write(innerStream.GetBuffer(), 0, length);
-            //    }
-
-            //    var base64 = Convert.ToBase64String(stream.GetBuffer(), 0, (int)stream.Length).ToCharArray();
-            //    // WriteLine terminates with \r\n, we want only \n
-            //    outputStream.Write("-----BEGIN RSA PRIVATE KEY-----\n");
-            //    // Output as Base64 with lines chopped at 64 characters
-            //    for (var i = 0; i < base64.Length; i += 64)
-            //    {
-            //        outputStream.Write(base64, i, Math.Min(64, base64.Length - i));
-            //        outputStream.Write("\n");
-            //    }
-            //    outputStream.Write("-----END RSA PRIVATE KEY-----");
-            //}
-
-            var bytes = ExportPrivateKey();
-
-            var base64 = Convert.ToBase64String(bytes).ToCharArray();
-            outputStream.Write("-----BEGIN RSA PRIVATE KEY-----\n");
-            // Output as Base64 with lines chopped at 64 characters
-            for (var i = 0; i < base64.Length; i += 64)
-            {
-                outputStream.Write(base64, i, Math.Min(64, base64.Length - i));
-                outputStream.Write("\n");
-            }
-            outputStream.Write("-----END RSA PRIVATE KEY-----");
-
-            return outputStream.ToString();
-        }
-
-        private string ExportPublicPem()
-        {
-            StringWriter outputStream = new StringWriter();
-            //var parameters = provider.ExportParameters(false);
-            //using (var stream = new MemoryStream())
-            //{
-            //    var writer = new BinaryWriter(stream);
-            //    writer.Write((byte)0x30); // SEQUENCE
-            //    using (var innerStream = new MemoryStream())
-            //    {
-            //        var innerWriter = new BinaryWriter(innerStream);
-            //        innerWriter.Write((byte)0x30); // SEQUENCE
-            //        EncodeLength(innerWriter, 13);
-            //        innerWriter.Write((byte)0x06); // OBJECT IDENTIFIER
-            //        var rsaEncryptionOid = new byte[] { 0x2a, 0x86, 0x48, 0x86, 0xf7, 0x0d, 0x01, 0x01, 0x01 };
-            //        EncodeLength(innerWriter, rsaEncryptionOid.Length);
-            //        innerWriter.Write(rsaEncryptionOid);
-            //        innerWriter.Write((byte)0x05); // NULL
-            //        EncodeLength(innerWriter, 0);
-            //        innerWriter.Write((byte)0x03); // BIT STRING
-            //        using (var bitStringStream = new MemoryStream())
-            //        {
-            //            var bitStringWriter = new BinaryWriter(bitStringStream);
-            //            bitStringWriter.Write((byte)0x00); // # of unused bits
-            //            bitStringWriter.Write((byte)0x30); // SEQUENCE
-            //            using (var paramsStream = new MemoryStream())
-            //            {
-            //                var paramsWriter = new BinaryWriter(paramsStream);
-            //                EncodeIntegerBigEndian(paramsWriter, parameters.Modulus); // Modulus
-            //                EncodeIntegerBigEndian(paramsWriter, parameters.Exponent); // Exponent
-            //                var paramsLength = (int)paramsStream.Length;
-            //                EncodeLength(bitStringWriter, paramsLength);
-            //                bitStringWriter.Write(paramsStream.GetBuffer(), 0, paramsLength);
-            //            }
-            //            var bitStringLength = (int)bitStringStream.Length;
-            //            EncodeLength(innerWriter, bitStringLength);
-            //            innerWriter.Write(bitStringStream.GetBuffer(), 0, bitStringLength);
-            //        }
-            //        var length = (int)innerStream.Length;
-            //        EncodeLength(writer, length);
-            //        writer.Write(innerStream.GetBuffer(), 0, length);
-            //    }
-
-            //    var base64 = Convert.ToBase64String(stream.GetBuffer(), 0, (int)stream.Length).ToCharArray();
-            //    // WriteLine terminates with \r\n, we want only \n
-            //    outputStream.Write("-----BEGIN PUBLIC KEY-----\n");
-            //    for (var i = 0; i < base64.Length; i += 64)
-            //    {
-            //        outputStream.Write(base64, i, Math.Min(64, base64.Length - i));
-            //        outputStream.Write("\n");
-            //    }
-            //    outputStream.Write("-----END PUBLIC KEY-----");
-            //}
-
-            var bytes = ExportPublicKey();
-
-            var base64 = Convert.ToBase64String(bytes).ToCharArray();
-            // WriteLine terminates with \r\n, we want only \n
-            outputStream.Write("-----BEGIN PUBLIC KEY-----\n");
-            for (var i = 0; i < base64.Length; i += 64)
-            {
-                outputStream.Write(base64, i, Math.Min(64, base64.Length - i));
-                outputStream.Write("\n");
-            }
-            outputStream.Write("-----END PUBLIC KEY-----");
-
-            return outputStream.ToString();
         }
 
         /// <summary>
@@ -578,8 +329,223 @@ namespace BigCookieKit.Algorithm
             GC.SuppressFinalize(this);
         }
 
+        #region Base
 
-        #region Private
+        private byte[] ExportPublicKey()
+        {
+            return provider.ExportRSAPublicKey();
+        }
+
+        private byte[] ExportPrivateKey(bool isPKCS8 = false, string password = null)
+        {
+            return isPKCS8 ? string.IsNullOrEmpty(password) ?
+                          provider.ExportPkcs8PrivateKey() :
+                          provider.ExportEncryptedPkcs8PrivateKey(password.AsSpan(), new PbeParameters(PbeEncryptionAlgorithm.Aes256Cbc, new HashAlgorithmName(HashName), 0))
+                          : provider.ExportRSAPrivateKey();
+        }
+
+        private string ExportPrivatePem()
+        {
+            StringWriter outputStream = new StringWriter();
+
+            var bytes = ExportPrivateKey();
+
+            var base64 = Convert.ToBase64String(bytes).ToCharArray();
+            outputStream.Write("-----BEGIN RSA PRIVATE KEY-----\n");
+            // Output as Base64 with lines chopped at 64 characters
+            for (var i = 0; i < base64.Length; i += 64)
+            {
+                outputStream.Write(base64, i, Math.Min(64, base64.Length - i));
+                outputStream.Write("\n");
+            }
+            outputStream.Write("-----END RSA PRIVATE KEY-----");
+
+            return outputStream.ToString();
+        }
+
+        private string ExportPublicPem()
+        {
+            StringWriter outputStream = new StringWriter();
+
+            var bytes = ExportPublicKey();
+
+            var base64 = Convert.ToBase64String(bytes).ToCharArray();
+            // WriteLine terminates with \r\n, we want only \n
+            outputStream.Write("-----BEGIN PUBLIC KEY-----\n");
+            for (var i = 0; i < base64.Length; i += 64)
+            {
+                outputStream.Write(base64, i, Math.Min(64, base64.Length - i));
+                outputStream.Write("\n");
+            }
+            outputStream.Write("-----END PUBLIC KEY-----");
+
+            return outputStream.ToString();
+        }
+
+        #endregion
+
+        #region 解析T-REC-X.690-201508
+
+        private byte[] ExportPublicKeyTest()
+        {
+            List<byte> bytes = new List<byte>();
+            WriteTag(bytes, 16); //Sequence
+            WriteLength(bytes, -1);
+            WriteTagAndIntegerUnsigned(bytes, publickKey.Modulus);
+            WriteTagAndIntegerUnsigned(bytes, publickKey.Exponent);
+            PopSequence(bytes);
+            return bytes.ToArray();
+        }
+
+        private byte[] ExportPrivateKeyTest(bool isPKCS8 = false, string password = null)
+        {
+            List<byte> bytes = new List<byte>();
+            WriteTag(bytes, 16); //Sequence
+            WriteLength(bytes, -1);
+            WriteTagAndIntegerUnsigned(bytes, 0);
+            WriteTagAndIntegerUnsigned(bytes, privateKey.Modulus);
+            WriteTagAndIntegerUnsigned(bytes, privateKey.Exponent);
+            WriteTagAndIntegerUnsigned(bytes, privateKey.D);
+            WriteTagAndIntegerUnsigned(bytes, privateKey.P);
+            WriteTagAndIntegerUnsigned(bytes, privateKey.Q);
+            WriteTagAndIntegerUnsigned(bytes, privateKey.DP);
+            WriteTagAndIntegerUnsigned(bytes, privateKey.DQ);
+            WriteTagAndIntegerUnsigned(bytes, privateKey.InverseQ);
+            PopSequence(bytes);
+            return bytes.ToArray();
+        }
+
+        private void PopSequence(List<byte> bytes)
+        {
+            int containedLength = bytes.Count - 2;
+            var shiftSize = GetEncodedLengthSubsequentByteCount(containedLength);
+            for (int i = 0; i < shiftSize; i++) bytes.Add(0);
+            byte[] dest = bytes.ToArray();
+            Buffer.BlockCopy(dest, 2, dest, 2 + shiftSize, containedLength);
+            bytes.Clear();
+            bytes.AddRange(dest);
+            WriteOffsetLength(bytes, containedLength, 1);
+        }
+
+        private void WriteTagAndIntegerUnsigned(List<byte> bytes, params byte[] value)
+        {
+            // Integer标识
+            bytes.Add(2);
+            // 写入长度
+            if (value[0] >= 0x80)
+            {
+                WriteLength(bytes, value.Length + 1);
+                bytes.Add(0);
+            }
+            else
+            {
+                WriteLength(bytes, value.Length);
+            }
+            // 写入内容
+            bytes.AddRange(value);
+        }
+
+        private void WriteLength(List<byte> bytes, int length)
+        {
+            if (length == -1)
+            {
+                bytes.Add(0X80);
+                return;
+            }
+
+            if (length >= 0x80)
+            {
+                var lengthLength = GetEncodedLengthSubsequentByteCount(length);
+                bytes.Add((byte)(0x80 | lengthLength));
+                var remaining = length;
+                do
+                {
+                    bytes.Add((byte)remaining);
+                    remaining >>= 8;
+                } while (remaining > 0);
+            }
+            else bytes.Add((byte)length);
+        }
+
+        private void WriteOffsetLength(List<byte> bytes, int length, int offset)
+        {
+            if (length >= 0x80)
+            {
+                var lengthLength = GetEncodedLengthSubsequentByteCount(length);
+                int idx = offset + lengthLength;
+                bytes[offset] = (byte)(0x80 | lengthLength);
+                var remaining = length;
+                do
+                {
+                    bytes[idx] = (byte)remaining;
+                    remaining >>= 8;
+                    idx--;
+                } while (remaining > 0);
+            }
+            else bytes.Add((byte)length);
+        }
+
+        private void WriteTag(List<byte> bytes, int tagValue)
+        {
+            var spaceRequired = BarEncodeSize(tagValue);
+
+            if (spaceRequired == 1)
+            {
+                bytes.Add((byte)(32 | tagValue));
+                return;
+            }
+            else
+            {
+                bytes.Add((byte)(32 | tagValue));
+
+                int count = bytes.Count;
+                int remaining = tagValue;
+
+                while (remaining > 0)
+                {
+                    int segment = remaining & 0x7F; // 超过127则是0
+
+                    if (count != bytes.Count)
+                    {
+                        bytes[--count] = (byte)segment;
+                    }
+                    else
+                    {
+                        bytes.Add((byte)segment);
+                    }
+                    remaining >>= 7; // 推7位:大于127才会大于0
+                }
+            }
+        }
+
+        private int BarEncodeSize(int tagValue)
+        {
+            if (tagValue < 31)
+            {
+                return 1;
+            }
+            else return 2;
+        }
+
+        private int GetEncodedLengthSubsequentByteCount(int value_len)
+        {
+            if (value_len < 0)
+                throw new OverflowException();
+            if (value_len <= 0x7F)
+                return 0;
+            if (value_len <= byte.MaxValue)
+                return 1;
+            if (value_len <= ushort.MaxValue)
+                return 2;
+            if (value_len <= 0x00FFFFFF)
+                return 3;
+
+            return 4;
+        }
+
+        #endregion
+
+        #region 解析XML算法
 
         /// <summary>
         /// 根据Xml包获取子节点的字节流
@@ -624,65 +590,6 @@ namespace BigCookieKit.Algorithm
                 return Convert.FromBase64String(_node.Info.Text);
             }
             return null;
-        }
-
-        private void EncodeLength(BinaryWriter stream, int length)
-        {
-            if (length < 0) throw new ArgumentOutOfRangeException("length", "Length must be non-negative");
-            if (length < 0x80)
-            {
-                // Short form
-                stream.Write((byte)length);
-            }
-            else
-            {
-                // Long form
-                var temp = length;
-                var bytesRequired = 0;
-                while (temp > 0)
-                {
-                    temp >>= 8;
-                    bytesRequired++;
-                }
-                stream.Write((byte)(bytesRequired | 0x80));
-                for (var i = bytesRequired - 1; i >= 0; i--)
-                {
-                    stream.Write((byte)(length >> (8 * i) & 0xff));
-                }
-            }
-        }
-
-        private void EncodeIntegerBigEndian(BinaryWriter stream, byte[] value, bool forceUnsigned = true)
-        {
-            stream.Write((byte)0x02); // INTEGER
-            var prefixZeros = 0;
-            for (var i = 0; i < value.Length; i++)
-            {
-                if (value[i] != 0) break;
-                prefixZeros++;
-            }
-            if (value.Length - prefixZeros == 0)
-            {
-                EncodeLength(stream, 1);
-                stream.Write((byte)0);
-            }
-            else
-            {
-                if (forceUnsigned && value[prefixZeros] > 0x7f)
-                {
-                    // Add a prefix zero to force unsigned if the MSB is 1
-                    EncodeLength(stream, value.Length - prefixZeros + 1);
-                    stream.Write((byte)0);
-                }
-                else
-                {
-                    EncodeLength(stream, value.Length - prefixZeros);
-                }
-                for (var i = prefixZeros; i < value.Length; i++)
-                {
-                    stream.Write(value[i]);
-                }
-            }
         }
 
         #endregion

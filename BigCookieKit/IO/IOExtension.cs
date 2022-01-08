@@ -9,10 +9,11 @@ namespace BigCookieKit.IO
     {
         public static Encoding encode = Encoding.UTF8;
 
-        public static Stream ToStream(this string text)
+        public static Stream ToStream(this string text, bool begin = true)
         {
             var stream = new MemoryStream();
             stream.Write(encode.GetBytes(text));
+            if (begin) stream.Seek(0, SeekOrigin.Begin);
             return stream;
         }
 

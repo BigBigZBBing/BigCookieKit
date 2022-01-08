@@ -27,7 +27,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="num">数字</param>
         /// <returns></returns>
-        public static String MoneyUpper(this decimal num)
+        public static string MoneyUpper(this decimal num)
         {
             string str1 = "零壹贰叁肆伍陆柒捌玖";            //0-9所对应的汉字 
             string str2 = "万仟佰拾亿仟佰拾万仟佰拾元角分"; //数字位所对应的汉字 
@@ -135,7 +135,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="cmd">命令行</param>
         /// <returns></returns>
-        public static String RunShell(string cmd)
+        public static string RunShell(string cmd)
         {
             Process process = new Process();
             process.StartInfo.FileName = "cmd.exe";

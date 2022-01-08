@@ -18,7 +18,7 @@ namespace BigCookieKit
         /// <param name="em">枚举对象</param>
         /// <returns></returns>
 
-        public static String ToDisplay<TEnum>(this TEnum em) where TEnum : Enum
+        public static string ToDisplay<TEnum>(this TEnum em) where TEnum : Enum
         {
             Type type = em.GetType();
             FieldInfo field = type.GetField(em.ToString());
@@ -43,7 +43,7 @@ namespace BigCookieKit
         /// <param name="Entity">实体对象</param>
         /// <returns></returns>
 
-        public static Boolean ModelValidation<TEntity>(this TEntity Entity)
+        public static bool ModelValidation<TEntity>(this TEntity Entity)
         {
             StringBuilder strBuilder = new StringBuilder();
             try
