@@ -1,5 +1,6 @@
 ﻿using BigCookieKit.Attributes;
 using BigCookieKit.Reflect;
+
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -234,7 +235,7 @@ namespace BigCookieKit
             {
                 return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
             }
-            deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, IL =>
+            deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, (Action<FuncGenerator>)(IL =>
             {
                 if (source.IsCustomClass())
                 {
@@ -245,10 +246,10 @@ namespace BigCookieKit
 
                     void AutoGenerate(FieldObject source, FieldObject target)
                     {
-                        foreach (var sourceItem in source.Type.GetProperties())
+                        foreach (var targetItem in target.Type.GetProperties())
                         {
-                            var targetItem = target.Type.GetProperty(sourceItem.Name);
-                            if (targetItem == null || sourceItem.PropertyType != targetItem.PropertyType)
+                            var sourceItem = source.Type.GetProperty(targetItem.Name);
+                            if (sourceItem == null || sourceItem.PropertyType != targetItem.PropertyType)
                                 continue;
                             target.SetPropterty(targetItem.Name, source.GetPropterty(targetItem.Name));
                         }
@@ -257,16 +258,11 @@ namespace BigCookieKit
                 else throw new TypeAccessException();
 
                 IL.Return();
-            });
+            }));
 
-            if (!Cache.MapToCache.TryAdd($"{typeof(TSource).FullName}+{typeof(TSource).FullName}", deleg))
-            {
-                throw new ArgumentException();
-            }
+            Cache.MapToCache.TryAdd($"{typeof(TSource).FullName}+{typeof(TSource).FullName}", deleg);
 
             return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
-
-
         }
 
         /// <summary>
