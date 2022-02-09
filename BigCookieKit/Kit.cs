@@ -225,17 +225,71 @@ namespace BigCookieKit
         /// <returns></returns>
         /// <exception cref="ArgumentException">参数不可为空</exception>
         /// <exception cref="TypeAccessException">无效类型</exception>
+        public static void CopyTo<TSource, TTarget>(this TSource source, TTarget target)
+            where TSource : class
+            where TTarget : class
+        {
+            if (source == null) throw new ArgumentNullException();
+            if (target == null) throw new ArgumentNullException();
+
+            string Key = $"{typeof(TSource).FullName}+{typeof(TTarget).FullName}+CopyTo";
+
+            if (Cache.MapToCache.TryGetValue(Key, out Delegate deleg))
+            {
+                ((Action<TSource, TTarget>)deleg)?.Invoke(source, target);
+                return;
+            }
+            deleg = SmartBuilder.DynamicMethod<Action<TSource, TTarget>>(string.Empty, IL =>
+            {
+                if (source.IsCustomClass())
+                {
+                    var _source = IL.Object(IL.ArgumentRef<TSource>(0));
+                    var _target = IL.Object(IL.ArgumentRef<TTarget>(1));
+                    AutoGenerate(_source, _target);
+
+                    void AutoGenerate(FieldObject source, FieldObject target)
+                    {
+                        foreach (var targetItem in target.Type.GetProperties())
+                        {
+                            var sourceItem = source.Type.GetProperty(targetItem.Name);
+                            if (sourceItem == null || sourceItem.PropertyType != targetItem.PropertyType)
+                                continue;
+                            target.SetPropterty(targetItem.Name, source.GetPropterty(targetItem.Name));
+                        }
+                    }
+                }
+                else throw new TypeAccessException();
+
+                IL.Return();
+            });
+
+            Cache.MapToCache.TryAdd(Key, deleg);
+
+            ((Action<TSource, TTarget>)deleg)?.Invoke(source, target);
+        }
+
+        /// <summary>
+        /// 深拷贝
+        /// </summary>
+        /// <typeparam name="TSource">源类型</typeparam>
+        /// <typeparam name="TTarget">目标类型</typeparam>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">参数不可为空</exception>
+        /// <exception cref="TypeAccessException">无效类型</exception>
         public static TTarget MapTo<TSource, TTarget>(this TSource source)
             where TSource : class
             where TTarget : class
         {
             if (source == null) throw new ArgumentNullException();
 
-            if (Cache.MapToCache.TryGetValue($"{typeof(TSource).FullName}+{typeof(TTarget).FullName}", out Delegate deleg))
+            string Key = $"{typeof(TSource).FullName}+{typeof(TTarget).FullName}+MapTo";
+
+            if (Cache.MapToCache.TryGetValue(Key, out Delegate deleg))
             {
                 return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
             }
-            deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, (Action<FuncGenerator>)(IL =>
+            deleg = SmartBuilder.DynamicMethod<Func<TSource, TTarget>>(string.Empty, IL =>
             {
                 if (source.IsCustomClass())
                 {
@@ -258,9 +312,9 @@ namespace BigCookieKit
                 else throw new TypeAccessException();
 
                 IL.Return();
-            }));
+            });
 
-            Cache.MapToCache.TryAdd($"{typeof(TSource).FullName}+{typeof(TSource).FullName}", deleg);
+            Cache.MapToCache.TryAdd(Key, deleg);
 
             return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
         }

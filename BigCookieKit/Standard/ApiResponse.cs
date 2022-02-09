@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace BigCookieKit.Standard
 {
     public abstract class ApiResponse
     {
-        public virtual int Code { get; set; }
+        public virtual HttpStatusCode Code { get; set; }
         public object Data { get; set; }
         public string Message { get; set; }
     }
@@ -25,7 +26,7 @@ namespace BigCookieKit.Standard
             Message = message;
         }
 
-        public override int Code { get; set; } = 200;
+        public override HttpStatusCode Code { get; set; } = HttpStatusCode.OK;
     }
 
     public class ApiResponseFail : ApiResponse
@@ -35,6 +36,6 @@ namespace BigCookieKit.Standard
             Message = message;
         }
 
-        public override int Code { get; set; } = 500;
+        public override HttpStatusCode Code { get; set; } = HttpStatusCode.InternalServerError;
     }
 }
