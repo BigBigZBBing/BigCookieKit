@@ -66,7 +66,7 @@ namespace BigCookieKit
             }
             else
             {
-                if (typeof(T) == typeof(String))
+                if (typeof(T) == typeof(string))
                 {
                     if (format.HasFlag(DbValueFormat.DisTrim))
                     {

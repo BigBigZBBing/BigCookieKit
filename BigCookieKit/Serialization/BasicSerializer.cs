@@ -12,7 +12,7 @@ namespace BigCookieKit.Serialization
     /// </summary>
     public class BasicSerializer : ISerializer
     {
-        public void StringEncode(String source)
+        public void StringEncode(string source)
         {
             byte[] bits = Kit.GetBytes(source.ToCharArray());
         }

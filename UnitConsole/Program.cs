@@ -15,6 +15,9 @@ using System.Net.Sockets;
 using System.Reflection;
 using BigCookieKit.IO;
 using System.Collections.Generic;
+using BigCookieKit.Algorithm;
+using System.Security.Cryptography;
+using BigCookieKit;
 
 namespace UnitConsole
 {
@@ -32,6 +35,26 @@ namespace UnitConsole
             //Encode encode = new Encode();
             //encode.MemoryStreamEncode();
 
+            //BPlusTreeTest.Example();
+
+            Snowflake.WorkId = 0;
+
+            for (int i = 0; i < 1000; i++)
+            {
+                Console.WriteLine(Snowflake.NextId());
+            }
+
+            Console.ReadKey();
+
+            //var provider = new RSAProvider<SHA256>();
+            //var t1 = provider.ExportPublicKey();
+            //var t2 = RSATest.WritePkcs1PublicKey(provider.publickKey).Encode();
+            //var res = t1.Except(t2.ToList()).ToList();
+
+            //var t3 = provider.ExportPrivateKey();
+            //var t4 = RSATest.WritePkcs1PrivateKey(provider.privateKey).Encode();
+            //var t6 = RSATest.WritePkcs8PrivateKey(t4).Encode();
+            //var res1 = t3.Except(t4.ToList()).ToList();
         }
     }
 }

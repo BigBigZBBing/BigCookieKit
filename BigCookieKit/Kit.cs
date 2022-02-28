@@ -1,5 +1,6 @@
 ﻿using BigCookieKit.Attributes;
 using BigCookieKit.Reflect;
+
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -27,7 +28,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="num">数字</param>
         /// <returns></returns>
-        public static String MoneyUpper(this decimal num)
+        public static string MoneyUpper(this decimal num)
         {
             string str1 = "零壹贰叁肆伍陆柒捌玖";            //0-9所对应的汉字 
             string str2 = "万仟佰拾亿仟佰拾万仟佰拾元角分"; //数字位所对应的汉字 
@@ -135,7 +136,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="cmd">命令行</param>
         /// <returns></returns>
-        public static String RunShell(string cmd)
+        public static string RunShell(string cmd)
         {
             Process process = new Process();
             process.StartInfo.FileName = "cmd.exe";
@@ -224,13 +225,67 @@ namespace BigCookieKit
         /// <returns></returns>
         /// <exception cref="ArgumentException">参数不可为空</exception>
         /// <exception cref="TypeAccessException">无效类型</exception>
+        public static void CopyTo<TSource, TTarget>(this TSource source, TTarget target)
+            where TSource : class
+            where TTarget : class
+        {
+            if (source == null) throw new ArgumentNullException();
+            if (target == null) throw new ArgumentNullException();
+
+            string Key = $"{typeof(TSource).FullName}+{typeof(TTarget).FullName}+CopyTo";
+
+            if (Cache.MapToCache.TryGetValue(Key, out Delegate deleg))
+            {
+                ((Action<TSource, TTarget>)deleg)?.Invoke(source, target);
+                return;
+            }
+            deleg = SmartBuilder.DynamicMethod<Action<TSource, TTarget>>(string.Empty, IL =>
+            {
+                if (source.IsCustomClass())
+                {
+                    var _source = IL.Object(IL.ArgumentRef<TSource>(0));
+                    var _target = IL.Object(IL.ArgumentRef<TTarget>(1));
+                    AutoGenerate(_source, _target);
+
+                    void AutoGenerate(FieldObject source, FieldObject target)
+                    {
+                        foreach (var targetItem in target.Type.GetProperties())
+                        {
+                            var sourceItem = source.Type.GetProperty(targetItem.Name);
+                            if (sourceItem == null || sourceItem.PropertyType != targetItem.PropertyType)
+                                continue;
+                            target.SetPropterty(targetItem.Name, source.GetPropterty(targetItem.Name));
+                        }
+                    }
+                }
+                else throw new TypeAccessException();
+
+                IL.Return();
+            });
+
+            Cache.MapToCache.TryAdd(Key, deleg);
+
+            ((Action<TSource, TTarget>)deleg)?.Invoke(source, target);
+        }
+
+        /// <summary>
+        /// 深拷贝
+        /// </summary>
+        /// <typeparam name="TSource">源类型</typeparam>
+        /// <typeparam name="TTarget">目标类型</typeparam>
+        /// <param name="source">The source.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException">参数不可为空</exception>
+        /// <exception cref="TypeAccessException">无效类型</exception>
         public static TTarget MapTo<TSource, TTarget>(this TSource source)
             where TSource : class
             where TTarget : class
         {
             if (source == null) throw new ArgumentNullException();
 
-            if (Cache.MapToCache.TryGetValue($"{typeof(TSource).FullName}+{typeof(TTarget).FullName}", out Delegate deleg))
+            string Key = $"{typeof(TSource).FullName}+{typeof(TTarget).FullName}+MapTo";
+
+            if (Cache.MapToCache.TryGetValue(Key, out Delegate deleg))
             {
                 return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
             }
@@ -245,10 +300,10 @@ namespace BigCookieKit
 
                     void AutoGenerate(FieldObject source, FieldObject target)
                     {
-                        foreach (var sourceItem in source.Type.GetProperties())
+                        foreach (var targetItem in target.Type.GetProperties())
                         {
-                            var targetItem = target.Type.GetProperty(sourceItem.Name);
-                            if (targetItem == null || sourceItem.PropertyType != targetItem.PropertyType)
+                            var sourceItem = source.Type.GetProperty(targetItem.Name);
+                            if (sourceItem == null || sourceItem.PropertyType != targetItem.PropertyType)
                                 continue;
                             target.SetPropterty(targetItem.Name, source.GetPropterty(targetItem.Name));
                         }
@@ -259,14 +314,9 @@ namespace BigCookieKit
                 IL.Return();
             });
 
-            if (!Cache.MapToCache.TryAdd($"{typeof(TSource).FullName}+{typeof(TSource).FullName}", deleg))
-            {
-                throw new ArgumentException();
-            }
+            Cache.MapToCache.TryAdd(Key, deleg);
 
             return ((Func<TSource, TTarget>)deleg)?.Invoke(source);
-
-
         }
 
         /// <summary>

@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BigCookieKit
 {
     public static partial class Kit
     {
-        public static Byte[] GetBytes(Char[] value)
+        public static byte[] GetBytes(Char[] value)
         {
-            Int32 i;
-            List<Byte> bytes = new List<Byte>();
+            int i;
+            List<byte> bytes = new List<byte>();
             for (i = 0; i < value.Length; i++)
             {
                 bytes.AddRange(GetBytes(value[i]));
@@ -21,12 +19,12 @@ namespace BigCookieKit
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Byte[] GetBytes(Char value)
+        public static unsafe byte[] GetBytes(Char value)
         {
             UInt32 ChLen = 1;
             if (value >= SByte.MaxValue) ChLen = 2;
-            Byte[] bytes = new Byte[ChLen];
-            fixed (Byte* buf = bytes)
+            byte[] bytes = new byte[ChLen];
+            fixed (byte* buf = bytes)
             {
                 *(Char*)buf = value;
             }
@@ -34,10 +32,10 @@ namespace BigCookieKit
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Byte[] GetBytes(Int16 value)
+        public static unsafe byte[] GetBytes(Int16 value)
         {
-            Byte[] bytes = new Byte[2];
-            fixed (Byte* buf = bytes)
+            byte[] bytes = new byte[2];
+            fixed (byte* buf = bytes)
             {
                 *(Int16*)buf = value;
             }
@@ -45,55 +43,54 @@ namespace BigCookieKit
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Byte[] GetBytes(Int32 value)
+        public static unsafe byte[] GetBytes(int value)
         {
-            Byte[] bytes = new Byte[4];
-            fixed (Byte* buf = bytes)
+            byte[] bytes = new byte[4];
+            fixed (byte* buf = bytes)
             {
-                *(Int32*)buf = value;
+                *(int*)buf = value;
             }
             return bytes;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Byte[] GetBytes(Int64 value)
+        public static unsafe byte[] GetBytes(long value)
         {
-            Byte[] bytes = new Byte[8];
-            fixed (Byte* b = bytes)
+            byte[] bytes = new byte[8];
+            fixed (byte* b = bytes)
             {
-                *((Int64*)b) = value;
+                *((long*)b) = value;
             }
             return bytes;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Byte[] GetBytes(Single value)
+        public static unsafe byte[] GetBytes(float value)
         {
-            Byte[] bytes = new Byte[4];
-            fixed (Byte* b = bytes)
+            byte[] bytes = new byte[4];
+            fixed (byte* b = bytes)
             {
-                *((Single*)b) = value;
+                *((float*)b) = value;
             }
             return bytes;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Byte[] GetBytes(Double value)
+        public static unsafe byte[] GetBytes(double value)
         {
-            Byte[] bytes = new Byte[8];
-            fixed (Byte* b = bytes)
+            byte[] bytes = new byte[8];
+            fixed (byte* b = bytes)
             {
-                *((Double*)b) = value;
+                *((double*)b) = value;
             }
             return bytes;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Byte[] GetBytes(Decimal value)
+        public static byte[] GetBytes(decimal value)
         {
-            Int32 i;
-            List<Byte> bytes = new List<Byte>();
-            Int32[] bits = Decimal.GetBits(value);
+            int i;
+            List<byte> bytes = new List<byte>();
+            int[] bits = decimal.GetBits(value);
             for (i = 0; i < bits.Length; i++)
             {
                 bytes.AddRange(GetBytes(bits[i]));
@@ -101,73 +98,73 @@ namespace BigCookieKit
             return bytes.ToArray();
         }
 
-        public static String BitToString(Byte[] data, Encoding encoding = default)
+        public static string BitToString(byte[] data, Encoding encoding = default)
         {
             return (encoding ?? Encoding.UTF8).GetString(data);
         }
 
-        public static Char[] BitToCharArray(Byte[] data)
+        public static Char[] BitToCharArray(byte[] data)
         {
             return Encoding.UTF8.GetChars(data);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Char BitToChar(Byte[] data)
+        public static unsafe Char BitToChar(byte[] data)
         {
-            fixed (Byte* pbyte = &data[0])
+            fixed (byte* pbyte = &data[0])
             {
                 return *(Char*)pbyte;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Int16 BitToInt16(Byte[] data)
+        public static unsafe Int16 BitToInt16(byte[] data)
         {
-            fixed (Byte* pbyte = &data[0])
+            fixed (byte* pbyte = &data[0])
             {
                 return *(Int16*)pbyte;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Int32 BitToInt32(Byte[] data)
+        public static unsafe int BitToInt32(byte[] data)
         {
-            fixed (Byte* pbyte = &data[0])
+            fixed (byte* pbyte = &data[0])
             {
-                return *(Int32*)pbyte;
+                return *(int*)pbyte;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Int64 BitToInt64(Byte[] data)
+        public static unsafe long BitToInt64(byte[] data)
         {
-            fixed (Byte* pbyte = &data[0])
+            fixed (byte* pbyte = &data[0])
             {
-                return *(Int64*)pbyte;
+                return *(long*)pbyte;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Single BitToSingle(Byte[] data)
+        public static unsafe float BitToSingle(byte[] data)
         {
-            fixed (Byte* pbyte = &data[0])
+            fixed (byte* pbyte = &data[0])
             {
-                return *(Single*)pbyte;
+                return *(float*)pbyte;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe static Double BitToDouble(Byte[] data)
+        public static unsafe double BitToDouble(byte[] data)
         {
-            fixed (Byte* pbyte = &data[0])
+            fixed (byte* pbyte = &data[0])
             {
-                return *(Double*)pbyte;
+                return *(double*)pbyte;
             }
         }
 
-        public static Decimal BitToDecimal(Byte[] data)
+        public static decimal BitToDecimal(byte[] data)
         {
-            return new Decimal(new Int32[] {
+            return new decimal(new int[] {
                 BitToInt32(data.AsSpan(0, 4).ToArray()),
                 BitToInt32(data.AsSpan(4, 4).ToArray()),
                 BitToInt32(data.AsSpan(8, 4).ToArray()),

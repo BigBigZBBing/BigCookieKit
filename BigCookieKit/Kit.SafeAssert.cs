@@ -11,12 +11,12 @@ namespace BigCookieKit
         /// 判断对象为NULL或者默认值
         /// <para/>class判断NULL
         /// <para/>struct判断是否为默认值
-        /// <para/>String判断IsNullOrEmpty
+        /// <para/>string判断IsNullOrEmpty
         /// </summary>
         /// <param name="obj">对象</param>
         /// <param name="def">是否判断默认值</param>
         /// <returns></returns>
-        public static Boolean IsNull(this Object obj, Boolean def = true)
+        public static bool IsNull(this Object obj, bool def = true)
         {
             if (obj == null) return true;
             Type type = obj.GetType();
@@ -41,7 +41,7 @@ namespace BigCookieKit
         /// <param name="obj">对象</param>
         /// <param name="def">是否包含默认值</param>
         /// <returns></returns>
-        public static Boolean NotNull(this Object obj, Boolean def = true)
+        public static bool NotNull(this Object obj, bool def = true)
         {
             return !obj.IsNull(def);
         }
@@ -53,7 +53,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="collection">集合</param>
         /// <returns></returns>
-        public static Boolean Exist<T>(this IEnumerable<T> collection)
+        public static bool Exist<T>(this IEnumerable<T> collection)
         {
             if (collection.IsNull() || collection.Count().IsNull())
             {
@@ -68,7 +68,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="collection">集合</param>
         /// <returns></returns>
-        public static Boolean NotExist<T>(this IEnumerable<T> collection)
+        public static bool NotExist<T>(this IEnumerable<T> collection)
         {
             return !collection.Exist();
         }
@@ -81,7 +81,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="ds"></param>
         /// <returns></returns>
-        public static Boolean Exist(this DataSet ds)
+        public static bool Exist(this DataSet ds)
         {
             if (ds.IsNull() || ds.Tables.IsNull() || ds.Tables.Count.IsNull())
             {
@@ -96,7 +96,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="ds"></param>
         /// <returns></returns>
-        public static Boolean NotExist(this DataSet ds)
+        public static bool NotExist(this DataSet ds)
         {
             return !ds.Exist();
         }
@@ -111,7 +111,7 @@ namespace BigCookieKit
         /// <param name="ds"></param>
         /// <param name="index">Tables的索引</param>
         /// <returns></returns>
-        public static Boolean Exist(this DataSet ds, Int32 index)
+        public static bool Exist(this DataSet ds, int index)
         {
             if (ds.IsNull() || ds.Tables.IsNull() || ds.Tables.Count.IsNull() || ds.Tables[index].NotExist())
             {
@@ -127,7 +127,7 @@ namespace BigCookieKit
         /// <param name="ds"></param>
         /// <param name="index">Tables的索引</param>
         /// <returns></returns>
-        public static Boolean NotExist(this DataSet ds, Int32 index)
+        public static bool NotExist(this DataSet ds, int index)
         {
             return !ds.Exist(index);
         }
@@ -140,7 +140,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public static Boolean Exist(this DataTable dt)
+        public static bool Exist(this DataTable dt)
         {
             if (dt.IsNull() || dt.Rows.IsNull() || dt.Rows.Count.IsNull())
             {
@@ -151,11 +151,11 @@ namespace BigCookieKit
 
         /// <summary>
         /// 判断DataTable不存在行数据
-        /// <para/>直接反向 <seealso cref="Exist(DataSet,Int32)"/> 结果
+        /// <para/>直接反向 <seealso cref="Exist(DataSet,int)"/> 结果
         /// </summary>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public static Boolean NotExist(this DataTable dt)
+        public static bool NotExist(this DataTable dt)
         {
             return !dt.Exist();
         }
@@ -166,7 +166,7 @@ namespace BigCookieKit
         /// <param name="str"></param>
         /// <param name="parameters">参数顺序代表{0} {1}</param>
         /// <returns></returns>
-        public static Boolean AllOwn(this String str, params String[] parameters)
+        public static bool AllOwn(this string str, params string[] parameters)
         {
             foreach (var item in parameters)
             {
@@ -183,7 +183,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static Boolean IsClass(this Object obj)
+        public static bool IsClass(this Object obj)
         {
             if (obj.GetType().IsClass)
             {
@@ -197,11 +197,11 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static Boolean IsCustomClass(this Object obj)
+        public static bool IsCustomClass(this Object obj)
         {
             Type type = obj.GetType();
             // 不是原始类型 && 并且是引用类型 && 并且不是数组 && 并且不是通用类型 && 不是字符串
-            if (!type.IsPrimitive && type.IsClass && !type.IsArray && !type.IsGenericType && type != typeof(String))
+            if (!type.IsPrimitive && type.IsClass && !type.IsArray && !type.IsGenericType && type != typeof(string))
             {
                 return true;
             }
@@ -213,10 +213,10 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="type">类型</param>
         /// <returns></returns>
-        public static Boolean IsCustomClass(this Type type)
+        public static bool IsCustomClass(this Type type)
         {
             // 不是原始类型 && 并且是引用类型 && 并且不是数组 && 并且不是通用类型 && 不是字符串
-            if (!type.IsPrimitive && type.IsClass && !type.IsArray && !type.IsGenericType && type != typeof(String))
+            if (!type.IsPrimitive && type.IsClass && !type.IsArray && !type.IsGenericType && type != typeof(string))
             {
                 return true;
             }
@@ -228,7 +228,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static Boolean IsValue(this Object obj)
+        public static bool IsValue(this Object obj)
         {
             Type type = obj.GetType();
             if (type.IsValueType)
@@ -243,7 +243,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static Boolean IsStruct(this Object obj)
+        public static bool IsStruct(this Object obj)
         {
             Type type = obj.GetType();
             if (!type.IsEnum && type.IsValueType)
@@ -258,7 +258,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="type">类型</param>
         /// <returns></returns>
-        public static Boolean IsStruct(this Type type)
+        public static bool IsStruct(this Type type)
         {
             if (!type.IsEnum && type.IsValueType)
             {
@@ -272,7 +272,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static Boolean IsEnum(this Object obj)
+        public static bool IsEnum(this Object obj)
         {
             if (obj.GetType().IsEnum)
             {
@@ -286,7 +286,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static Boolean IsArray(this Object obj)
+        public static bool IsArray(this Object obj)
         {
             if (obj.GetType().IsArray)
             {
@@ -300,7 +300,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static Boolean IsNullable(this Object obj)
+        public static bool IsNullable(this Object obj)
         {
             Type type = obj.GetType();
             return (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)));
@@ -311,7 +311,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="type">类型</param>
         /// <returns></returns>
-        public static Boolean IsNullable(this Type type)
+        public static bool IsNullable(this Type type)
         {
             return (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)));
         }
@@ -321,7 +321,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj">对象</param>
         /// <returns></returns>
-        public static String ToStr(this Object obj)
+        public static string ToStr(this Object obj)
         {
             if (obj.NotNull(false))
             {
@@ -335,7 +335,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static String ToStrEmpty(this Object obj)
+        public static string ToStrEmpty(this Object obj)
         {
             if (obj.NotNull(false))
             {

@@ -18,7 +18,7 @@ namespace BigCookieKit
         /// <param name="em">枚举对象</param>
         /// <returns></returns>
 
-        public static String ToDisplay<TEnum>(this TEnum em) where TEnum : Enum
+        public static string ToDisplay<TEnum>(this TEnum em) where TEnum : Enum
         {
             Type type = em.GetType();
             FieldInfo field = type.GetField(em.ToString());
@@ -43,7 +43,7 @@ namespace BigCookieKit
         /// <param name="Entity">实体对象</param>
         /// <returns></returns>
 
-        public static Boolean ModelValidation<TEntity>(this TEntity Entity)
+        public static bool ModelValidation<TEntity>(this TEntity Entity)
         {
             StringBuilder strBuilder = new StringBuilder();
             try
@@ -169,14 +169,14 @@ namespace BigCookieKit
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能小于{attr.Less}"));
                 return false;
             }
-            if (attr.Equal.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.Equal))
+            if (attr.Equal.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.Equal))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能等于{attr.Equal}"));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"必须等于{attr.Equal}"));
                 return false;
             }
-            if (attr.NoEqual.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.NoEqual))
+            if (attr.NoEqual.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.NoEqual))
             {
-                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"必须等于{attr.NoEqual}"));
+                strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能等于{attr.NoEqual}"));
                 return false;
             }
             return true;

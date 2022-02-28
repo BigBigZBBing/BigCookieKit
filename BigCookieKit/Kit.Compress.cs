@@ -20,7 +20,7 @@ namespace BigCookieKit
         /// </summary>
         /// <param name="ZipFilePath">Zip文件目标路径</param>
         /// <param name="DirPath">文件夹路径</param>
-        public static Boolean DirToFormZipPacket(String zipFilePath, String dirPath)
+        public static bool DirToFormZipPacket(string zipFilePath, string dirPath)
         {
             FileInfo zipFile = new FileInfo(zipFilePath);
             if (!zipFile.Exists)
@@ -40,7 +40,7 @@ namespace BigCookieKit
         /// <param name="zipFilePath">Zip文件目标路径</param>
         /// <param name="filesPath">所有的文件路径</param>
         /// <returns></returns>
-        public static Boolean FileToFormZipPacket(String zipFilePath, params String[] filesPath)
+        public static bool FileToFormZipPacket(string zipFilePath, params string[] filesPath)
         {
             FileInfo zipFile = new FileInfo(zipFilePath);
             if (zipFile.Exists)

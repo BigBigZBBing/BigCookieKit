@@ -69,7 +69,7 @@ namespace BigCookieKit
         /// </summary>
         /// <typeparam name="TEnum">枚举类型</typeparam>
         /// <returns></returns>
-        public static IDictionary<Int32, String> ToEnumKeyDisplay<TEnum>() where TEnum : Enum
+        public static IDictionary<int, string> ToEnumKeyDisplay<TEnum>() where TEnum : Enum
         {
             return ToEnumKeyDisplay(typeof(TEnum));
         }
