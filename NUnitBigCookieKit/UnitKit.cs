@@ -541,10 +541,13 @@ namespace NUnitBigCookieKit
             provider.ImportXml(t0.Item1);
             provider.ImportXml(t0.Item2);
             var t1 = provider.GetBase64Secret();
-            var t2 = provider.ExportPublicKey();
-            var t3 = provider.ExportPrivateKey();
 
+            var keys = provider.GetSymmetryKey();
+            //var t2 = provider.ExportPublicKey();
+            //var t3 = provider.ExportPrivateKey();
 
+            provider.ResolveKey(keys.PublicKey, out var b1, out var b2);
+            provider.ResolveKey(keys.PrivateKey, out var b3, out var b4);
         }
 
         #region 性能比较单元测试

@@ -58,29 +58,38 @@ namespace BigCookieKit.Reflect
             return res;
         }
 
-        internal static FieldManager<T> Compute<T, T1>(FieldManager<T> field, T1 value, OpCode code)
+        internal static FieldManager<T> Compute<T, T1>(FieldManager<T> field, T1 value, params OpCode[] codes)
         {
             field.Output();
             field.EmitValue(value);
-            field.Emit(code);
+            foreach (var code in codes)
+            {
+                field.Emit(code);
+            }
             field.Input();
             return field;
         }
 
-        internal static VariableManager Compute<T>(FieldManager<T> field, LocalBuilder value, OpCode code)
+        internal static VariableManager Compute<T>(FieldManager<T> field, LocalBuilder value, params OpCode[] codes)
         {
             field.Output();
             field.Emit(OpCodes.Ldloc_S, value);
-            field.Emit(code);
+            foreach (var code in codes)
+            {
+                field.Emit(code);
+            }
             field.Input();
             return field;
         }
 
-        internal static FieldManager<T> Compute<T, T1>(FieldManager<T> field, FieldManager<T1> value, OpCode code)
+        internal static FieldManager<T> Compute<T, T1>(FieldManager<T> field, FieldManager<T1> value, params OpCode[] codes)
         {
             field.Output();
             value.Output();
-            field.Emit(code);
+            foreach (var code in codes)
+            {
+                field.Emit(code);
+            }
             field.Input();
             return field;
         }

@@ -112,6 +112,88 @@ namespace BigCookieKit.Reflect
             return prop.Call("GetValue", this).ReturnRef();
         }
 
+        public FieldObject Operator(OperatorCode oper, object value)
+        {
+            decimal t1 = 100;
+            int t2 = 10;
+            var tt2 = t1 % t2;
+            var tt3 = (int)t1 << t2;
+            var tt4 = (int)t1 >> t2;
+            var tt5 = (int)t1 & t2;
+            var tt6 = (int)t1 | t2;
+            var tt7 = (int)t1 ^ t2;
+            var tt1 = DateTime.Now - DateTime.Now;
+            var Type = value.GetType();
+            if (Type != typeof(byte)
+                && Type != typeof(short)
+                && Type != typeof(int)
+                && Type != typeof(long)
+                && Type != typeof(float)
+                && Type != typeof(double)
+                && Type != typeof(decimal)
+                && Type != typeof(DateTime))
+            {
+                if (Type == typeof(DateTime) && this.Type == typeof(DateTime))
+                {
+                }
+                else
+                    return this.NewObject();
+            }
+
+            try
+            {
+                FieldManager<object> res = null;
+
+                switch (oper)
+                {
+                    case OperatorCode.Add:
+                        res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Add);
+                        break;
+                    case OperatorCode.Sub:
+                        res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Sub);
+                        break;
+                    case OperatorCode.Mul:
+                        res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Mul);
+                        break;
+                    case OperatorCode.Div:
+                        res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Div);
+                        break;
+                    case OperatorCode.Rem:
+                        res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Rem);
+                        break;
+                }
+
+                if (Type != typeof(DateTime) && this.Type != typeof(DateTime))
+                {
+                    switch (oper)
+                    {
+                        case OperatorCode.Rem:
+                            res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Rem);
+                            break;
+                    }
+
+                    if (true)
+                    {
+                        switch (oper)
+                        {
+                            case OperatorCode.Shl:
+                                res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.And, OpCodes.Shl);
+                                break;
+                            case OperatorCode.Shr:
+                                res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.And, OpCodes.Shl);
+                                break;
+                        }
+                    }
+                }
+
+                return this.NewObject(res);
+            }
+            catch
+            {
+                return this.NewObject();
+            }
+        }
+
         public override MethodManager Call(String methodName, params LocalBuilder[] parameters)
         {
             return this.ReflectMethod(methodName, asidentity, parameters);
