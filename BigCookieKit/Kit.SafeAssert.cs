@@ -9,30 +9,33 @@ namespace BigCookieKit
     {
         /// <summary>
         /// 判断对象为NULL或者默认值
-        /// <para/>class判断NULL
-        /// <para/>struct判断是否为默认值
-        /// <para/>string判断IsNullOrEmpty
+        /// <code>
+        /// 默认值判断:
+        /// class判断NULL
+        /// struct判断是否为默认值
+        /// string判断IsNullOrEmpty
+        /// </code>
         /// </summary>
         /// <param name="obj">对象</param>
         /// <param name="def">是否判断默认值</param>
         /// <returns></returns>
-        public static bool IsNull(this Object obj, bool def = true)
-        {
-            if (obj == null) return true;
-            Type type = obj.GetType();
-            if (def && type == typeof(string))
-            {
-                return (string)obj == "";
-            }
-            else if (def && obj.IsValue())
-            {
-                if (Equals(obj, Activator.CreateInstance(type)))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        //public static bool IsNull(this Object obj, bool def = true)
+        //{
+        //    if (obj == null) return true;
+        //    Type type = obj.GetType();
+        //    if (def && type == typeof(string))
+        //    {
+        //        return (string)obj == "";
+        //    }
+        //    else if (def && obj.IsValue())
+        //    {
+        //        if (Equals(obj, Activator.CreateInstance(type)))
+        //        {
+        //            return true;
+        //        }
+        //    }
+        //    return false;
+        //}
 
         /// <summary>
         /// 判断对象不为NULL或者默认值
@@ -41,10 +44,10 @@ namespace BigCookieKit
         /// <param name="obj">对象</param>
         /// <param name="def">是否包含默认值</param>
         /// <returns></returns>
-        public static bool NotNull(this Object obj, bool def = true)
-        {
-            return !obj.IsNull(def);
-        }
+        //public static bool NotNull(this Object obj, bool def = true)
+        //{
+        //    return !obj.IsNull(def);
+        //}
 
         /// <summary>
         /// 集合是存在内容
@@ -55,7 +58,7 @@ namespace BigCookieKit
         /// <returns></returns>
         public static bool Exist<T>(this IEnumerable<T> collection)
         {
-            if (collection.IsNull() || collection.Count().IsNull())
+            if (collection == null || collection.Count() == 0)
             {
                 return false;
             }
@@ -83,7 +86,7 @@ namespace BigCookieKit
         /// <returns></returns>
         public static bool Exist(this DataSet ds)
         {
-            if (ds.IsNull() || ds.Tables.IsNull() || ds.Tables.Count.IsNull())
+            if (ds == null || ds.Tables == null || ds.Tables.Count == 0)
             {
                 return false;
             }
@@ -106,14 +109,14 @@ namespace BigCookieKit
         /// <para/>判断 DataSet 是否为NULLs
         /// <para/>判断 DataSet.Tables 是否为NULL
         /// <para/>判断 DataSet.Tables.Count 是否为0
-        /// <para/>判断 <seealso cref="NotExist"/> 结果
+        /// <para/>判断 DataSet.Tables[<paramref name="name"/>] 是否存在
         /// </summary>
         /// <param name="ds"></param>
         /// <param name="index">Tables的索引</param>
         /// <returns></returns>
-        public static bool Exist(this DataSet ds, int index)
+        public static bool ExistName(this DataSet ds, string name = null)
         {
-            if (ds.IsNull() || ds.Tables.IsNull() || ds.Tables.Count.IsNull() || ds.Tables[index].NotExist())
+            if (ds == null || ds.Tables == null || ds.Tables.Count == 0 || (name != null && !ds.Tables.Contains(name)))
             {
                 return false;
             }
@@ -127,9 +130,9 @@ namespace BigCookieKit
         /// <param name="ds"></param>
         /// <param name="index">Tables的索引</param>
         /// <returns></returns>
-        public static bool NotExist(this DataSet ds, int index)
+        public static bool NotExistName(this DataSet ds, string name = null)
         {
-            return !ds.Exist(index);
+            return !ds.ExistName(name);
         }
 
         /// <summary>
@@ -142,7 +145,7 @@ namespace BigCookieKit
         /// <returns></returns>
         public static bool Exist(this DataTable dt)
         {
-            if (dt.IsNull() || dt.Rows.IsNull() || dt.Rows.Count.IsNull())
+            if (dt == null || dt.Rows == null || dt.Rows.Count == 0)
             {
                 return false;
             }
@@ -314,34 +317,6 @@ namespace BigCookieKit
         public static bool IsNullable(this Type type)
         {
             return (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)));
-        }
-
-        /// <summary>
-        /// 转成字符串(默认为NULL)
-        /// </summary>
-        /// <param name="obj">对象</param>
-        /// <returns></returns>
-        public static string ToStr(this Object obj)
-        {
-            if (obj.NotNull(false))
-            {
-                return obj.ToString();
-            }
-            return null;
-        }
-
-        /// <summary>
-        /// 转成字符串(默认为空字符串)
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        public static string ToStrEmpty(this Object obj)
-        {
-            if (obj.NotNull(false))
-            {
-                return obj.ToString();
-            }
-            return "";
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BigCookieKit.Attributes;
 using BigCookieKit.Reflect;
+
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -53,7 +54,7 @@ namespace BigCookieKit
                 {
                     foreach (PropertyInfo propertie in properties)
                     {
-                        if (propertie.GetCustomAttribute(typeof(RequiredRuleAttribute)).NotNull())
+                        if (propertie.GetCustomAttribute(typeof(RequiredRuleAttribute)) != null)
                         {
                             var attr = propertie.GetCustomAttribute(typeof(RequiredRuleAttribute)) as RequiredRuleAttribute;
                             if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
@@ -61,7 +62,7 @@ namespace BigCookieKit
                         }
 
                         if (propertie.PropertyType == typeof(string)
-                            && propertie.GetCustomAttribute(typeof(StringRuleAttribute)).NotNull())
+                            && propertie.GetCustomAttribute(typeof(StringRuleAttribute)) != null)
                         {
                             var attr = propertie.GetCustomAttribute(typeof(StringRuleAttribute)) as StringRuleAttribute;
                             if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
@@ -70,7 +71,7 @@ namespace BigCookieKit
 
                         if ((propertie.PropertyType == typeof(int) || propertie.PropertyType == typeof(long)
                             || propertie.PropertyType == typeof(int?) || propertie.PropertyType == typeof(long?))
-                            && propertie.GetCustomAttribute(typeof(NumericRuleAttribute)).NotNull())
+                            && propertie.GetCustomAttribute(typeof(NumericRuleAttribute)) != null)
                         {
                             var attr = propertie.GetCustomAttribute(typeof(NumericRuleAttribute)) as NumericRuleAttribute;
                             if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
@@ -79,7 +80,7 @@ namespace BigCookieKit
 
                         if ((propertie.PropertyType == typeof(float) || propertie.PropertyType == typeof(double) || propertie.PropertyType == typeof(decimal)
                             || propertie.PropertyType == typeof(float?) || propertie.PropertyType == typeof(double?) || propertie.PropertyType == typeof(decimal?))
-                            && propertie.GetCustomAttribute(typeof(DecimalRuleAttribute)).NotNull())
+                            && propertie.GetCustomAttribute(typeof(DecimalRuleAttribute)) != null)
                         {
                             var attr = propertie.GetCustomAttribute(typeof(DecimalRuleAttribute)) as DecimalRuleAttribute;
                             if (!BasicValidation(new FastProperty(propertie, Entity), attr, strBuilder))
@@ -102,12 +103,12 @@ namespace BigCookieKit
 
         static bool BasicValidation<T>(FastProperty propertie, T attr, StringBuilder strBuilder) where T : BasicAttribute
         {
-            if (attr.NotNull() && attr.Message.NotNull())
+            if (attr != null && attr.Message != null)
             {
                 Type Type = propertie.PropertyType;
                 string Name = propertie.PropertyName;
                 object Value = propertie.Get();
-                if (attr.Required == true && Value.IsNull())
+                if (attr.Required == true && Value == null)
                 {
                     strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", "必须赋值"));
                     return false;
@@ -136,17 +137,17 @@ namespace BigCookieKit
         {
             string Name = propertie.PropertyName;
             object Value = propertie.Get();
-            if (attr.MinLength.NotNull() && Value.NotNull() && Value.ToString().Length < (int?)attr.MinLength)
+            if (attr.MinLength != null && Value != null && Value.ToString().Length < (int?)attr.MinLength)
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能少于{attr.MinLength}位"));
                 return false;
             }
-            if (attr.MaxLength.NotNull() && Value.NotNull() && Value.ToString().Length > (int?)attr.MaxLength)
+            if (attr.MaxLength != null && Value != null && Value.ToString().Length > (int?)attr.MaxLength)
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能超过{attr.MaxLength}位"));
                 return false;
             }
-            if (attr.RegExp.NotNull() && Value.NotNull() && !Regex.IsMatch(Value.ToString(), attr.RegExp))
+            if (attr.RegExp != null && Value != null && !Regex.IsMatch(Value.ToString(), attr.RegExp))
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"正则匹配失败"));
                 return false;
@@ -159,22 +160,22 @@ namespace BigCookieKit
         {
             string Name = propertie.PropertyName;
             object Value = propertie.Get();
-            if (attr.Greater.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) > Convert.ToDecimal(attr.Greater))
+            if (attr.Greater != null && Value != null && Convert.ToDecimal(Value) > Convert.ToDecimal(attr.Greater))
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能大于{attr.Greater}"));
                 return false;
             }
-            if (attr.Less.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) < Convert.ToDecimal(attr.Less))
+            if (attr.Less != null && Value != null && Convert.ToDecimal(Value) < Convert.ToDecimal(attr.Less))
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能小于{attr.Less}"));
                 return false;
             }
-            if (attr.Equal.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.Equal))
+            if (attr.Equal != null && Value != null && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.Equal))
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"必须等于{attr.Equal}"));
                 return false;
             }
-            if (attr.NoEqual.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.NoEqual))
+            if (attr.NoEqual != null && Value != null && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.NoEqual))
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能等于{attr.NoEqual}"));
                 return false;
@@ -187,27 +188,27 @@ namespace BigCookieKit
         {
             string Name = propertie.PropertyName;
             object Value = propertie.Get();
-            if (attr.Greater.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) > Convert.ToDecimal(attr.Greater))
+            if (attr.Greater != null && Value != null && Convert.ToDecimal(Value) > Convert.ToDecimal(attr.Greater))
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能大于{attr.Greater}"));
                 return false;
             }
-            if (attr.Less.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) < Convert.ToDecimal(attr.Less))
+            if (attr.Less != null && Value != null && Convert.ToDecimal(Value) < Convert.ToDecimal(attr.Less))
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能小于{attr.Less}"));
                 return false;
             }
-            if (attr.Equal.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.Equal))
+            if (attr.Equal != null && Value != null && Convert.ToDecimal(Value) == Convert.ToDecimal(attr.Equal))
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"不能等于{attr.Equal}"));
                 return false;
             }
-            if (attr.NoEqual.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.NoEqual))
+            if (attr.NoEqual != null && Value != null && Convert.ToDecimal(Value) != Convert.ToDecimal(attr.NoEqual))
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"必须等于{attr.NoEqual}"));
                 return false;
             }
-            if (attr.Precision.NotNull(false) && Value.NotNull(false) && Convert.ToDecimal(Value).GetPrecision() > (int?)attr.Precision)
+            if (attr.Precision != null && Value != null && Convert.ToDecimal(Value).GetPrecision() > (int?)attr.Precision)
             {
                 strBuilder.AppendLine(string.Format(attr.Message, Name, attr.Name, Value ?? "NULL", $"精度不能超过{attr.Precision}"));
                 return false;

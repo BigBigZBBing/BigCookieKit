@@ -126,7 +126,7 @@ namespace BigCookieKit.IO
         public void Add(T item)
         {
             var xnew = new ChainNode<T>();
-            if (m_chain.IsNull())
+            if (m_chain == null)
             {
                 xnew.top = xnew;
                 xnew.m_position = 0;
@@ -180,7 +180,7 @@ namespace BigCookieKit.IO
         /// <returns></returns>
         public bool ReadNext()
         {
-            if (m_chain.next.IsNull())
+            if (m_chain.next == null)
             {
                 return false;
             }

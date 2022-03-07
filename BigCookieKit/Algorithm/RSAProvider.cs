@@ -172,16 +172,16 @@ namespace BigCookieKit.Algorithm
         {
             return Tuple.Create(
                 Convert.ToBase64String(ExportPublicKey()),
-                Convert.ToBase64String(ExportPrivateKey()));
+                Convert.ToBase64String(ExportPrivateKey(isPKCS8, password)));
         }
 
         /// <summary>
         /// 获取Pem公钥密钥
         /// </summary>
         /// <returns></returns>
-        public Tuple<string, string> GetPemSecret()
+        public Tuple<string, string> GetPemSecret(bool isPKCS8 = false, string password = null)
         {
-            return Tuple.Create(ExportPublicPem(), ExportPrivatePem());
+            return Tuple.Create(ExportPublicPem(), ExportPrivatePem(isPKCS8, password));
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace BigCookieKit.Algorithm
                           : provider.ExportRSAPrivateKey();
         }
 
-        private string ExportPrivatePem()
+        private string ExportPrivatePem(bool isPKCS8 = false, string password = null)
         {
             StringWriter outputStream = new StringWriter();
 

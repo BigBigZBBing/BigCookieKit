@@ -169,7 +169,7 @@ namespace BigCookieKit.Algorithm
 
         #endregion
 
-        public RSAParameters getKeyPara(string hashKey, int type)
+        private RSAParameters getKeyPara(string hashKey, int type)
         {
             RSAParameters rsaP = new RSAParameters();
             byte[] tmpKeyNoB64 = Convert.FromBase64String(hashKey);

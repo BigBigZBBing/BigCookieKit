@@ -174,11 +174,11 @@ namespace BigCookieKit
                 foreach (var ele in eles.Elements())
                 {
                     var prop = type.GetProperty(ele.Name.LocalName);
-                    if (prop.IsNull() || !prop.PropertyType.IsGenericType || prop.PropertyType.GenericTypeArguments.NotExist()) continue;
+                    if (prop == null || !prop.PropertyType.IsGenericType || prop.PropertyType.GenericTypeArguments.NotExist()) continue;
                     var List = prop.GetValue(param0) ?? Activator.CreateInstance(prop.PropertyType);
                     var itemType = prop.PropertyType.GenericTypeArguments.FirstOrDefault();
                     var Add = prop.PropertyType.GetMethod("Add", new[] { itemType });
-                    if (Add.IsNull()) continue;
+                    if (Add == null) continue;
                     var instance = Activator.CreateInstance(itemType);
                     Add.Invoke(List, new object[] { instance });
                     AttrSetProp(ele.Attributes(), instance);
@@ -196,7 +196,7 @@ namespace BigCookieKit
                 foreach (var attr in attrs)
                 {
                     var prop = type.GetProperty(attr.Name.LocalName);
-                    if (prop.IsNull()) continue;
+                    if (prop == null) continue;
                     prop.SetValue(param1, attr.Value);
                 }
             }
@@ -209,7 +209,7 @@ namespace BigCookieKit
         /// <returns></returns>
         public static string FirstLower(this string str)
         {
-            if (str.NotNull())
+            if (!string.IsNullOrEmpty(str))
             {
                 return str.Substring(0, 1).ToLower() + str.Substring(1, str.Length - 1);
             }

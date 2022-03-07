@@ -23,7 +23,7 @@ namespace BigCookieKit
         public static void CellSetValue(this DataRow dr, string filed, object value)
         {
             Type filedType = dr.Table.Columns[filed].DataType;
-            if (value == DBNull.Value || value.IsNull(false))
+            if (value == DBNull.Value || value == null)
             {
                 dr[filed] = DBNull.Value;
             }
@@ -59,7 +59,7 @@ namespace BigCookieKit
         {
             Type filedType = dr.Table.Columns[field].DataType;
             if (dr[field] == DBNull.Value
-                || dr[field].IsNull(false)
+                || dr[field] == null
                 || !dr[field].TryParse<T>(out var item))
             {
                 return default(T);

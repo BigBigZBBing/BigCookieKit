@@ -50,7 +50,7 @@ namespace BigCookieKit.File
             get
             {
                 var res = Sections.FirstOrDefault(x => x.Name.Equals(section, StringComparison.OrdinalIgnoreCase));
-                if (res.IsNull())
+                if (res == null)
                 {
                     Section nRoot = new Section();
                     nRoot.Name = section;
@@ -107,7 +107,7 @@ namespace BigCookieKit.File
             set
             {
                 var node = Parameters.FirstOrDefault(x => x.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
-                if (node.IsNull())
+                if (node == null)
                 {
                     Parameters.Add(new Parameter(key, value));
                     ToMap(this);
