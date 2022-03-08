@@ -72,7 +72,7 @@ namespace BigCookieKit.Reflect
             {
                 constructorBuilder.GetILGenerator().Emit(OpCodes.Ldarg_0);
                 constructorBuilder.GetILGenerator().Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
-                constructorBuilder.GetILGenerator().Emit(OpCodes.Ret);
+                //constructorBuilder.GetILGenerator().Emit(OpCodes.Ret);
             }
 
             return new CtorStroke(constructorBuilder);
@@ -183,10 +183,10 @@ namespace BigCookieKit.Reflect
 
 #endif
 
-        public object Generation()
+        public object Generation(params object[] args)
         {
             SaveType();
-            return _instance = Activator.CreateInstance(_dymaticType);
+            return _instance = Activator.CreateInstance(_dymaticType, args);
         }
 
         public FastDynamic InitEntity()

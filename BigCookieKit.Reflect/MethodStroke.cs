@@ -8,25 +8,35 @@ namespace BigCookieKit.Reflect
 
     {
         private MethodBuilder methodBuilder;
+        private FuncGenerator generator;
 
         internal MethodStroke(MethodBuilder methodBuilder)
         {
             this.methodBuilder = methodBuilder;
+            generator = new FuncGenerator(methodBuilder.GetILGenerator());
         }
 
-        public void Builder(Action<FuncGenerator> builder)
+        public MethodStroke Builder(Action<FuncGenerator> builder)
         {
-            builder(new FuncGenerator(methodBuilder.GetILGenerator()));
+            builder(generator);
+            return this;
         }
 
-        public void CustomAttr(ConstructorInfo ctor, params object[] args)
+        public MethodStroke CustomAttr(ConstructorInfo ctor, params object[] args)
         {
             methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(ctor, args));
+            return this;
         }
 
-        public void CustomAttr(ConstructorInfo ctor, params byte[] binary)
+        public MethodStroke CustomAttr(ConstructorInfo ctor, params byte[] binary)
         {
             methodBuilder.SetCustomAttribute(ctor, binary);
+            return this;
+        }
+
+        public void End()
+        {
+            generator.Return();
         }
     }
 }

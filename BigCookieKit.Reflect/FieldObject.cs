@@ -112,18 +112,10 @@ namespace BigCookieKit.Reflect
             return prop.Call("GetValue", this).ReturnRef();
         }
 
-        public FieldObject Operator(OperatorCode oper, object value)
+        public FieldObject Operator(string oper, object value)
         {
-            decimal t1 = 100;
-            int t2 = 10;
-            var tt2 = t1 % t2;
-            var tt3 = (int)t1 << t2;
-            var tt4 = (int)t1 >> t2;
-            var tt5 = (int)t1 & t2;
-            var tt6 = (int)t1 | t2;
-            var tt7 = (int)t1 ^ t2;
-            var tt1 = DateTime.Now - DateTime.Now;
             var Type = value.GetType();
+
             if (Type != typeof(byte)
                 && Type != typeof(short)
                 && Type != typeof(int)
@@ -133,11 +125,7 @@ namespace BigCookieKit.Reflect
                 && Type != typeof(decimal)
                 && Type != typeof(DateTime))
             {
-                if (Type == typeof(DateTime) && this.Type == typeof(DateTime))
-                {
-                }
-                else
-                    return this.NewObject();
+                return this.NewObject();
             }
 
             try
@@ -146,43 +134,40 @@ namespace BigCookieKit.Reflect
 
                 switch (oper)
                 {
-                    case OperatorCode.Add:
+                    case "+":
                         res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Add);
                         break;
-                    case OperatorCode.Sub:
+                    case "-":
                         res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Sub);
                         break;
-                    case OperatorCode.Mul:
+                    case "*":
                         res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Mul);
                         break;
-                    case OperatorCode.Div:
+                    case "/":
                         res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Div);
                         break;
-                    case OperatorCode.Rem:
-                        res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Rem);
-                        break;
+
                 }
 
                 if (Type != typeof(DateTime) && this.Type != typeof(DateTime))
                 {
                     switch (oper)
                     {
-                        case OperatorCode.Rem:
+                        case "%":
                             res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Rem);
                             break;
-                    }
-
-                    if (true)
-                    {
-                        switch (oper)
-                        {
-                            case OperatorCode.Shl:
-                                res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.And, OpCodes.Shl);
-                                break;
-                            case OperatorCode.Shr:
-                                res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.And, OpCodes.Shl);
-                                break;
-                        }
+                        case "<<":
+                            res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.And, OpCodes.Shl);
+                            break;
+                        case ">>":
+                            res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.And, OpCodes.Shl);
+                            break;
+                        case "^":
+                            res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.Xor);
+                            break;
+                        case "&":
+                            res = ManagerGX.Compute(this, this.NewObject(value), OpCodes.And);
+                            break;
                     }
                 }
 

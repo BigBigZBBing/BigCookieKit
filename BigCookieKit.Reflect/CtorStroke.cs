@@ -7,25 +7,35 @@ namespace BigCookieKit.Reflect
     public sealed class CtorStroke
     {
         private ConstructorBuilder constructorBuilder;
+        private FuncGenerator generator;
 
         internal CtorStroke(ConstructorBuilder constructorBuilder)
         {
             this.constructorBuilder = constructorBuilder;
+            generator = new FuncGenerator(constructorBuilder.GetILGenerator());
         }
 
-        public void Builder(Action<FuncGenerator> builder)
+        public CtorStroke Builder(Action<FuncGenerator> builder)
         {
-            builder(new FuncGenerator(constructorBuilder.GetILGenerator()));
+            builder(generator);
+            return this;
         }
 
-        public void CustomAttr(ConstructorInfo ctor, params object[] args)
+        public CtorStroke CustomAttr(ConstructorInfo ctor, params object[] args)
         {
             constructorBuilder.SetCustomAttribute(new CustomAttributeBuilder(ctor, args));
+            return this;
         }
 
-        public void CustomAttr(ConstructorInfo ctor, params byte[] binary)
+        public CtorStroke CustomAttr(ConstructorInfo ctor, params byte[] binary)
         {
             constructorBuilder.SetCustomAttribute(ctor, binary);
+            return this;
+        }
+
+        public void End()
+        {
+            generator.Return();
         }
     }
 }

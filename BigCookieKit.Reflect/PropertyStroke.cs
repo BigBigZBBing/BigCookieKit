@@ -25,6 +25,11 @@ namespace BigCookieKit.Reflect
             fieldStroke.Constant(method);
         }
 
+        public void Constant(FuncGenerator generator, LocalBuilder constant)
+        {
+            fieldStroke.Constant(generator, constant);
+        }
+
         public void CustomAttr(ConstructorInfo ctor, params object[] args)
         {
             propertyBuilder.SetCustomAttribute(new CustomAttributeBuilder(ctor, args));
