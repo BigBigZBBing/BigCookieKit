@@ -91,7 +91,7 @@ namespace BigCookieKit
         /// <typeparam name="T"></typeparam>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static DataTable ToDataTable<T>(this IEnumerable<T> list)
+        public static DataTable ToDataTable<T>(this IEnumerable<T> list, params string[] ignore)
         {
             DataTable dt = new DataTable();
             bool first = true;
@@ -104,7 +104,8 @@ namespace BigCookieKit
                     type = type ?? item.GetType();
                     properties = properties ?? type.GetProperties();
                     foreach (var prop in properties)
-                        dt.Columns.Add(prop.Name, prop.PropertyType);
+                        if (!ignore.Contains(prop.Name))
+                            dt.Columns.Add(prop.Name, prop.PropertyType);
                     first = false;
                 }
                 DataRow value = dt.NewRow();
@@ -123,34 +124,9 @@ namespace BigCookieKit
         /// DataTable转集合
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public static IEnumerable<T> ToEnumerable<T>(this DataTable table)
-        {
-            Type type = typeof(T);
-            PropertyInfo[] properties = type.GetProperties();
-            foreach (DataRow dr in table.Rows)
-            {
-                var instance = Activator.CreateInstance(type);
-                foreach (DataColumn dc in table.Columns)
-                {
-                    var prop = properties.FirstOrDefault(x => x.Name == dc.ColumnName);
-                    if (prop != null && dc.DataType == prop.PropertyType)
-                    {
-                        prop.SetValue(instance, dr[dc.ColumnName]);
-                    }
-                }
-                yield return (T)instance;
-            }
-        }
-
-        /// <summary>
-        /// DataTable转集合
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="dt"></param>
         /// <returns></returns>
-        public static IEnumerable<T> ToModel<T>(DataTable dt) where T : class
+        public static IEnumerable<T> ToEnumerable<T>(this DataTable dt) where T : class
         {
             Type type = typeof(T);
             var props = type.GetProperties();

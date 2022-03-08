@@ -1,5 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
+
 using BigCookieKit;
+using BigCookieKit.Algorithm;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,13 +50,13 @@ Since configuration affects many areas of the system, including plugins, individ
         [Benchmark]
         public void BoyerMooreByte()
         {
-            Kit.BoyerMooreFirstMatch(content_byte, pettern_byte);
+            BoyerMoore.BoyerMooreFirstMatch(content_byte, pettern_byte);
         }
 
         [Benchmark]
         public void BoyerMooreChar()
         {
-            Kit.BoyerMooreFirstMatch(content_char, pettern_char);
+            BoyerMoore.BoyerMooreFirstMatch(content_char, pettern_char);
         }
     }
 }

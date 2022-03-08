@@ -49,36 +49,6 @@ namespace NUnitBigCookieKit
         }
 
         /// <summary>
-        /// 空值断言单元测试
-        /// </summary>
-        [Test]
-        public void NullAssertUnit()
-        {
-            //类型
-            VerifyModel model = null;
-            model.IsNull();
-            model.NotNull();
-
-            //引用类型
-            string str = "";
-            //默认值和NULL都为true
-            str.IsNull();
-            str.NotNull();
-            str.IsNull(false);
-            str.NotNull(false);
-
-            //值类型
-            int value = 0;
-            //默认值和NULL都为true
-            value.IsNull();
-            value.IsNull(false);
-            value.NotNull();
-            value.NotNull(false);
-
-            Assert.IsTrue(true);
-        }
-
-        /// <summary>
         /// 获取特性附带值单元测试
         /// </summary>
         [Test]
@@ -456,12 +426,6 @@ namespace NUnitBigCookieKit
             iniMap.Save();
         }
 
-        [Test]
-        public void CommonUnit()
-        {
-            var info = Common.GetXlsxResource("[Content_Types].xml");
-        }
-
         /// <summary>
         /// 生成Excel
         /// </summary>
@@ -541,13 +505,6 @@ namespace NUnitBigCookieKit
             provider.ImportXml(t0.Item1);
             provider.ImportXml(t0.Item2);
             var t1 = provider.GetBase64Secret();
-
-            var keys = provider.GetSymmetryKey();
-            //var t2 = provider.ExportPublicKey();
-            //var t3 = provider.ExportPrivateKey();
-
-            provider.ResolveKey(keys.PublicKey, out var b1, out var b2);
-            provider.ResolveKey(keys.PrivateKey, out var b3, out var b4);
         }
 
         #region 性能比较单元测试
