@@ -14,6 +14,7 @@ namespace BigCookieKit.Network
         public NetworkClient(string Host, int Port) : base(Host, Port)
         {
         }
+
         void ICilent.DispatchCenter(object sender, SocketAsyncEventArgs e)
         {
             switch (e.LastOperation)
@@ -32,19 +33,25 @@ namespace BigCookieKit.Network
 
         public void Start()
         {
-            switch (Protocol)
-            {
-                case NetworkProtocol.Tcp:
-                case NetworkProtocol.Http1:
-                case NetworkProtocol.Http2:
-                    CurrSocket = new XSocket(AddressFamily, SocketType, ProtocolType.Tcp);
-                    break;
-                case NetworkProtocol.Udp:
-                    CurrSocket = new XSocket(AddressFamily, SocketType, ProtocolType.Udp);
-                    break;
-            }
+            if (CurrSocket == null)
+                switch (Protocol)
+                {
+                    case NetworkProtocol.Tcp:
+                    case NetworkProtocol.Http1:
+                    case NetworkProtocol.Http2:
+                        CurrSocket = new XSocket(AddressFamily, SocketType, ProtocolType.Tcp);
+                        break;
+                    case NetworkProtocol.Udp:
+                        CurrSocket = new XSocket(AddressFamily, SocketType, ProtocolType.Udp);
+                        break;
+                }
             CurrSocket.Mode = ApplyMode.Client;
             ((ICilent)this).Open();
+        }
+
+        public void Close()
+        {
+            CurrSocket.Shutdown(SocketShutdown.Both);
         }
 
         void ICilent.Open()
@@ -96,7 +103,7 @@ namespace BigCookieKit.Network
 
                 ThreadPool.QueueUserWorkItem(e => OnConnect?.Invoke(session));
 
-                if (Certificate.NotNull())
+                if (Certificate != null)
                 {
                     session.SendMessage(Certificate.GetRawCertData());
                 }

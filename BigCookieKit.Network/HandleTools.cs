@@ -11,7 +11,7 @@ namespace BigCookieKit.Network
     {
         internal static Handle Define(this Handle handle, EventHandler<SocketAsyncEventArgs> _event)
         {
-            if (handle.NotNull())
+            if (handle != null)
             {
                 handle.callback = _event;
             }
@@ -20,7 +20,7 @@ namespace BigCookieKit.Network
 
         internal static Handle Define(this Handle handle, byte[] buffer, EventHandler<SocketAsyncEventArgs> _event)
         {
-            if (handle.NotNull())
+            if (handle != null)
             {
                 handle.buffer = buffer;
                 handle.callback = _event;

@@ -22,7 +22,7 @@ namespace BigCookieKit.Network
                 Kit.GetBytes(bytes.Length).CopyTo(stream, 1);
                 bytes.CopyTo(stream, 5);
             }
-            Communication.Buffer.SetBuffer(this, stream);
+            BigCookieKit.Network.Buffer.SetBuffer(this, stream);
         }
 
         public override void Decode(Action<byte[]> packet)

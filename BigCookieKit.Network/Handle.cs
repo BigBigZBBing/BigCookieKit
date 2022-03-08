@@ -18,7 +18,7 @@ namespace BigCookieKit.Network
 
         private EventHandler<SocketAsyncEventArgs> _callback;
 
-        internal byte[] buffer { get { return _buffer; } set { Communication.Buffer.SetBuffer(this, value); } }
+        internal byte[] buffer { get { return _buffer; } set { BigCookieKit.Network.Buffer.SetBuffer(this, value); } }
 
         internal EventHandler<SocketAsyncEventArgs> callback { get { return _callback; } set { Completed += value; } }
 

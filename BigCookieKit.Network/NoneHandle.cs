@@ -10,7 +10,7 @@ namespace BigCookieKit.Network
     {
         public override void Encode(byte[] bytes)
         {
-            Communication.Buffer.SetBuffer(this, bytes);
+            BigCookieKit.Network.Buffer.SetBuffer(this, bytes);
         }
 
         public override void Decode(Action<byte[]> packet)
