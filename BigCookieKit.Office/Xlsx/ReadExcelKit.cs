@@ -1,5 +1,6 @@
 ﻿using BigCookieKit.Reflect;
 using BigCookieKit.XML;
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -128,7 +129,7 @@ namespace BigCookieKit.Office.Xlsx
 
                 var elements = doc.Root.Elements();
 
-                if (elements.IsNull()) return;
+                if (elements == null) return;
 
                 sharedStrings = new List<string>();
 
@@ -151,7 +152,7 @@ namespace BigCookieKit.Office.Xlsx
 
                 var elements = doc.Root.Elements().FirstOrDefault(x => x.Name.LocalName == "numFmts")?.Elements();
 
-                if (elements.IsNull()) return;
+                if (elements == null) return;
 
                 numFmts = new Dictionary<string, string>();
 
@@ -175,7 +176,7 @@ namespace BigCookieKit.Office.Xlsx
 
                 var elements = doc.Root.Elements().FirstOrDefault(x => x.Name.LocalName == "cellXfs")?.Elements();
 
-                if (elements.IsNull()) return;
+                if (elements == null) return;
 
                 cellXfs = new List<string>();
 
@@ -200,7 +201,7 @@ namespace BigCookieKit.Office.Xlsx
 
                 var elements = doc.Root.Elements().FirstOrDefault(e => e.Name.LocalName == "sheets").Elements();
 
-                if (elements.IsNull()) return;
+                if (elements == null) return;
 
                 foreach (var element in elements)
                 {
