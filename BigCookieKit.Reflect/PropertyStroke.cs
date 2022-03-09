@@ -20,14 +20,19 @@ namespace BigCookieKit.Reflect
             fieldStroke.Constant(constant);
         }
 
-        public void Constant(MethodInfo method)
+        public void Constant(MethodInfo method, params LocalBuilder[] parameters)
         {
-            fieldStroke.Constant(method);
+            fieldStroke.Constant(method, parameters);
         }
 
-        public void Constant(FuncGenerator generator, LocalBuilder constant)
+        public LocalBuilder GetValue(FuncGenerator generator)
         {
-            fieldStroke.Constant(generator, constant);
+            return fieldStroke.GetValue(generator);
+        }
+
+        public void SetValue(FuncGenerator generator, LocalBuilder constant)
+        {
+            fieldStroke.SetValue(generator, constant);
         }
 
         public void CustomAttr(ConstructorInfo ctor, params object[] args)

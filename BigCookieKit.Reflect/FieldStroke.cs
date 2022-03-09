@@ -37,12 +37,16 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        public void Constant(MethodInfo method)
+        public void Constant(MethodInfo method, params LocalBuilder[] parameters)
         {
             FuncGenerator func;
             if (fieldBuilder.IsStatic)
             {
                 func = new FuncGenerator(staticBuilder.GetILGenerator());
+                foreach (var item in parameters)
+                {
+                    func.Emit(OpCodes.Ldloc, item);
+                }
                 func.Emit(OpCodes.Call, method);
                 func.Emit(OpCodes.Stsfld, fieldBuilder);
             }
@@ -50,12 +54,34 @@ namespace BigCookieKit.Reflect
             {
                 func = new FuncGenerator(publicBuilder.GetILGenerator());
                 func.Emit(OpCodes.Ldarg_0);
+                foreach (var item in parameters)
+                {
+                    func.Emit(OpCodes.Ldloc, item);
+                }
                 func.Emit(OpCodes.Call, method);
                 func.Emit(OpCodes.Stfld, fieldBuilder);
             }
         }
 
-        public void Constant(FuncGenerator generator, LocalBuilder constant)
+        public LocalBuilder GetValue(FuncGenerator generator)
+        {
+            FuncGenerator func = generator;
+            LocalBuilder item = func.DeclareLocal(fieldBuilder.FieldType);
+            if (fieldBuilder.IsStatic)
+            {
+                func.Emit(OpCodes.Ldsfld, fieldBuilder);
+                func.Emit(OpCodes.Stloc, item);
+            }
+            else
+            {
+                func.Emit(OpCodes.Ldarg_0);
+                func.Emit(OpCodes.Ldfld, fieldBuilder);
+                func.Emit(OpCodes.Stloc, item);
+            }
+            return item;
+        }
+
+        public void SetValue(FuncGenerator generator, LocalBuilder constant)
         {
             FuncGenerator func = generator;
             if (fieldBuilder.IsStatic)

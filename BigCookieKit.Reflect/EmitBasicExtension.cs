@@ -63,7 +63,7 @@ namespace BigCookieKit.Reflect
         internal static MethodManager ReflectMethod<T>(this VariableManager basic, String MethodName)
         {
             Type type = typeof(T);
-            MethodInfo method = type.GetMethod(MethodName, Type.EmptyTypes);
+            MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard, Type.EmptyTypes, null);
             basic.Output();
             basic.Emit(OpCodes.Callvirt, method);
             if (method.ReturnType != null && method.ReturnType != typeof(void)) basic.tiggerPop = true;
@@ -73,7 +73,7 @@ namespace BigCookieKit.Reflect
         internal static MethodManager ReflectMethod<T>(this VariableManager basic, String MethodName, params LocalBuilder[] parameters)
         {
             Type type = typeof(T);
-            MethodInfo method = type.GetMethod(MethodName, parameters.Select(x => x.LocalType).ToArray());
+            MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard, parameters.Select(x => x.LocalType).ToArray(), null);
             basic.Output();
             parameters.ToList().ForEach(x => basic.Emit(OpCodes.Ldloc_S, x));
             basic.Emit(OpCodes.Callvirt, method);
@@ -83,7 +83,7 @@ namespace BigCookieKit.Reflect
 
         internal static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type)
         {
-            MethodInfo method = type.GetMethod(MethodName, Type.EmptyTypes);
+            MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard, Type.EmptyTypes, null);
             basic.Output();
             basic.Emit(OpCodes.Callvirt, method);
             if (method.ReturnType != null && method.ReturnType != typeof(void)) basic.tiggerPop = true;
@@ -92,7 +92,7 @@ namespace BigCookieKit.Reflect
 
         internal static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type, params LocalBuilder[] parameters)
         {
-            MethodInfo method = type.GetMethod(MethodName, parameters.Select(x => x.LocalType).ToArray());
+            MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard, parameters.Select(x => x.LocalType).ToArray(), null);
             if (method == null) throw new MethodAccessException("Not exists this method!");
             basic.Output();
             parameters.ToList().ForEach(x => basic.Emit(OpCodes.Ldloc_S, x));
@@ -103,7 +103,7 @@ namespace BigCookieKit.Reflect
 
         public static MethodManager ReflectStaticMethod(this EmitBasic basic, String MethodName, Type type)
         {
-            MethodInfo method = type.GetMethod(MethodName, Type.EmptyTypes);
+            MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, CallingConventions.Standard, Type.EmptyTypes, null);
             basic.Emit(OpCodes.Call, method);
             if (method.ReturnType != null && method.ReturnType != typeof(void)) basic.tiggerPop = true;
             return new MethodManager(basic, method.ReturnType);
@@ -111,7 +111,7 @@ namespace BigCookieKit.Reflect
 
         public static MethodManager ReflectStaticMethod(this EmitBasic basic, String MethodName, Type type, params LocalBuilder[] parameters)
         {
-            MethodInfo method = type.GetMethod(MethodName, parameters.Select(x => x.LocalType).ToArray());
+            MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, CallingConventions.Standard, parameters.Select(x => x.LocalType).ToArray(), null);
             parameters.ToList().ForEach(x => basic.Emit(OpCodes.Ldloc_S, x));
             basic.Emit(OpCodes.Call, method);
             if (method.ReturnType != null && method.ReturnType != typeof(void)) basic.tiggerPop = true;
