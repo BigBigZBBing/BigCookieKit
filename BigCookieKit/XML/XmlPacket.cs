@@ -37,31 +37,4 @@ namespace BigCookieKit.XML
             return default;
         }
     }
-
-    internal enum PacketState
-    {
-        None,
-        Start,
-        End
-    }
-
-    [StructLayout(LayoutKind.Auto)]
-    public struct XmlInfo
-    {
-        public bool HasValue;
-        public string Name;
-        public string Text;
-        public XmlAttribute[] Attributes;
-    }
-
-    /// <summary>
-    /// XML标签的属性
-    /// </summary>
-    [StructLayout(LayoutKind.Auto)]
-    public struct XmlAttribute
-    {
-        public string Name;
-
-        public string Text;
-    }
 }

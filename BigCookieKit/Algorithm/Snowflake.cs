@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 
-namespace BigCookieKit
+namespace BigCookieKit.Algorithm
 {
     /// <summary>
     /// 雪花算法(变种版)

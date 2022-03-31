@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using BigCookieKit.Algorithm;
 using System.Security.Cryptography;
 using BigCookieKit;
+using BigCookieKit.Rpc;
 
 namespace UnitConsole
 {
@@ -55,6 +56,16 @@ namespace UnitConsole
             //var t4 = RSATest.WritePkcs1PrivateKey(provider.privateKey).Encode();
             //var t6 = RSATest.WritePkcs8PrivateKey(t4).Encode();
             //var res1 = t3.Except(t4.ToList()).ToList();
+
+
+            ApiClient api = new ApiClient("127.0.0.1", 8888);
+
+            IApiContact api1 = api.GetInstance<IApiContact>();
         }
+    }
+
+    public interface IApiContact
+    {
+        public void Ok();
     }
 }

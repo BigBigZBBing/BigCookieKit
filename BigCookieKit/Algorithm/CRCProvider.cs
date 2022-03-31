@@ -48,7 +48,6 @@ namespace BigCookieKit.Algorithm
             return c;
         }
 
-
         public static byte[] Crc16Verify(byte[] data, bool Reverse = false)
         {
             int len = data.Length;

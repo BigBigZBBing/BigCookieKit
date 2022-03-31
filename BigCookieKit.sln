@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29609.76
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitConsole", "UnitConsole\UnitConsole.csproj", "{5A00CC08-F081-4D8E-94A1-FCB25A4CAF11}"
 EndProject
@@ -25,7 +25,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Network", "Big
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Office", "BigCookieKit.Office\BigCookieKit.Office.csproj", "{1CD5EE79-C5FE-45C3-81D0-8D9FC4CC6D2F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitBenchmark", "UnitBenchmark\UnitBenchmark.csproj", "{3FCBF44C-18BE-47B8-9117-CB674E8EA565}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitBenchmark", "UnitBenchmark\UnitBenchmark.csproj", "{3FCBF44C-18BE-47B8-9117-CB674E8EA565}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Distributed", "BigCookieKit.Distributed\BigCookieKit.Distributed.csproj", "{2AE339E2-C766-4B46-AD90-886E55428AF2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Rpc", "BigCookieKit.Rpc\BigCookieKit.Rpc.csproj", "{1307136A-117B-456D-ACC8-6BF3C6CF5BA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCookieKit.AspCore", "BigCookieKit.AspCore\BigCookieKit.AspCore.csproj", "{DF46411E-F89B-4E17-9B51-3ECC53B04D14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,6 +87,18 @@ Global
 		{3FCBF44C-18BE-47B8-9117-CB674E8EA565}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FCBF44C-18BE-47B8-9117-CB674E8EA565}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FCBF44C-18BE-47B8-9117-CB674E8EA565}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AE339E2-C766-4B46-AD90-886E55428AF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AE339E2-C766-4B46-AD90-886E55428AF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AE339E2-C766-4B46-AD90-886E55428AF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AE339E2-C766-4B46-AD90-886E55428AF2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1307136A-117B-456D-ACC8-6BF3C6CF5BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1307136A-117B-456D-ACC8-6BF3C6CF5BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1307136A-117B-456D-ACC8-6BF3C6CF5BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1307136A-117B-456D-ACC8-6BF3C6CF5BA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF46411E-F89B-4E17-9B51-3ECC53B04D14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF46411E-F89B-4E17-9B51-3ECC53B04D14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF46411E-F89B-4E17-9B51-3ECC53B04D14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF46411E-F89B-4E17-9B51-3ECC53B04D14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
