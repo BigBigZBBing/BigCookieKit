@@ -67,7 +67,7 @@ VALUES(@AppName,@TraceId,@TraceType,@Message,@Elapsed,@ExecuteTime,@IsSend);";
                 }
                 else
                 {
-                    cmd.Parameters.Add(new SQLiteParameter("Message", $"Request:{context.FormatApiRequestMessage()} Response:{context.FormatApiResponseMessage()}"));
+                    cmd.Parameters.Add(new SQLiteParameter("Message", $"Path:{context.Request.Path} Request:{context.FormatApiRequestMessage()} Response:{context.FormatApiResponseMessage()}"));
                 }
                 cmd.Parameters.Add(new SQLiteParameter("Elapsed", $"{stopwatch.ElapsedMilliseconds}ms"));
                 cmd.Parameters.Add(new SQLiteParameter("ExecuteTime", DateTime.Now));

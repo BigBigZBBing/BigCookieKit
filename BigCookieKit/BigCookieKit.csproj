@@ -86,12 +86,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BigCookieKit.Reflect\BigCookieKit.Reflect.csproj" />
+    <Folder Include="FTP\" />
+    <Folder Include="RPA\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="FTP\" />
-    <Folder Include="RPA\" />
+    <ProjectReference Include="..\BigCookieKit.Reflect\BigCookieKit.Reflect.csproj" />
   </ItemGroup>
 
 </Project>

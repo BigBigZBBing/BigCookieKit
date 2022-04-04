@@ -1,5 +1,6 @@
 ﻿
 using BigCookieKit;
+using BigCookieKit.Algorithm;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;

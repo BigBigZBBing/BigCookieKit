@@ -1,4 +1,5 @@
 ﻿using BigCookieKit;
+using BigCookieKit.Algorithm;
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;

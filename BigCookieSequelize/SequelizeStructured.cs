@@ -1,6 +1,8 @@
 ﻿using BigCookieKit;
 using BigCookieKit.Reflect;
+
 using MySql.Data.MySqlClient;
+
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -51,7 +53,7 @@ namespace BigCookieSequelize
             using (var command = con.CreateCommand())
             {
                 command.CommandText = commandText;
-                if (tran.NotNull()) command.Transaction = tran;
+                if (tran != null) command.Transaction = tran;
                 using (var abapter = new MySqlDataAdapter(command))
                 {
                     DataTable tmpDt = new DataTable(MainTable);
@@ -84,11 +86,11 @@ namespace BigCookieSequelize
 
             // 显示的字段名(必须带主键) [2021-1-25 zhangbingbin]
             var fieldsProp = config.GetType().GetProperty("fields");
-            if (fieldsProp.IsNull()) throw new ArgumentNullException("fields不可为空 请使用数组格式展示字段");
+            if (fieldsProp == null) throw new ArgumentNullException("fields不可为空 请使用数组格式展示字段");
 
             // 表名 [2021-1-25 zhangbingbin]
             var modelProp = config.GetType().GetProperty("model");
-            if (modelProp.IsNull()) throw new ArgumentNullException("model不可为空 请输入表名");
+            if (modelProp == null) throw new ArgumentNullException("model不可为空 请输入表名");
 
             // 查询条件 [2021-1-25 zhangbingbin]
             var where = config.GetType().GetProperty("where");
@@ -133,7 +135,7 @@ namespace BigCookieSequelize
             }
 
             // 获取查询条件 [2021-1-23 zhangbingbin]
-            if (where.NotNull())
+            if (where != null)
             {
                 cache = SequelizeCriteria(where.GetValue(config), modelStr);
             }
@@ -149,7 +151,7 @@ namespace BigCookieSequelize
             {
                 // 联合关联字段 [2021-1-26 zhangbingbin]
                 var join = config.GetType().GetProperty("join");
-                if (join.IsNull()) throw new ArgumentNullException("关联模式必须填关联字段");
+                if (join == null) throw new ArgumentNullException("关联模式必须填关联字段");
 
                 var joinObj = join.GetValue(config);
                 var keyOn = "";
@@ -163,7 +165,7 @@ namespace BigCookieSequelize
                         UniqueMapping.Add(item.Name, value.ToString());
                 }
                 // 如果存在条件又不设置 则转成内连接 [2021-1-24 zhangbingbin]
-                if (where.IsNull() || (required.NotNull() && !(bool)required.GetValue(config)))
+                if (where == null || (required != null && !(bool)required.GetValue(config)))
                 {
                     sql += $" LEFT OUTER JOIN `{modelStr}` AS `_{modelStr}` ON {keyOn} ";
                     if (cache.Count > 0) sql += "AND " + string.Join(" AND ", cache);
@@ -175,7 +177,7 @@ namespace BigCookieSequelize
                 }
             }
 
-            if (include.NotNull())
+            if (include != null)
             {
                 var join = include.GetValue(config);
                 if (join is Array includes)
@@ -191,7 +193,7 @@ namespace BigCookieSequelize
             if (prev == "" && cache.Count > 0)
                 sql += " WHERE " + string.Join(" AND ", cache);
 
-            if (limit.NotNull())
+            if (limit != null)
             {
                 sql += $" LIMIT {limit.GetValue(config)} ";
             }

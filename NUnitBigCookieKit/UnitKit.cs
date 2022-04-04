@@ -499,12 +499,26 @@ namespace NUnitBigCookieKit
         [Test]
         public void RSAProvider()
         {
-            var provider = new RSAProvider<SHA256>();
+            var provider = new RSAProvider<SHA1>();
 
             var t0 = provider.GetXmlSecret();
             provider.ImportXml(t0.Item1);
             provider.ImportXml(t0.Item2);
             var t1 = provider.GetBase64Secret();
+
+            string testStr = "这是条测试内容";
+            var encrypt = provider.Encrypt(Encoding.Unicode.GetBytes(testStr));
+            var decrypt = Encoding.Unicode.GetString(provider.Decrypt(encrypt));
+        }
+
+        [Test]
+        public void SymmetricProvider()
+        {
+            var provider = new SymmetricProvider<Aes>();
+
+            string testStr = "{\"Id\":1,\"Username\":\"zbb5896\",\"RemoteAddress\":\"127.0.0.1\"}";
+            var encrypt = provider.Encrypt(testStr);
+            var decrypt = provider.Decrypt(encrypt);
         }
 
         #region 性能比较单元测试
