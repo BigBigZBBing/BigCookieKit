@@ -17,19 +17,19 @@ namespace BigCookieKit.Reflect
 
         public static implicit operator FieldDateTime(FieldManager<T> field) => new FieldDateTime(field.instance, field.generator);
 
-        public static implicit operator FieldByte(FieldManager<T> field) => new FieldByte(field.instance, field.generator);
+        //public static implicit operator FieldByte(FieldManager<T> field) => new FieldByte(field.instance, field.generator);
 
-        public static implicit operator FieldInt16(FieldManager<T> field) => new FieldInt16(field.instance, field.generator);
+        //public static implicit operator FieldInt16(FieldManager<T> field) => new FieldInt16(field.instance, field.generator);
 
-        public static implicit operator FieldInt32(FieldManager<T> field) => new FieldInt32(field.instance, field.generator);
+        //public static implicit operator FieldInt32(FieldManager<T> field) => new FieldInt32(field.instance, field.generator);
 
-        public static implicit operator FieldInt64(FieldManager<T> field) => new FieldInt64(field.instance, field.generator);
+        //public static implicit operator FieldInt64(FieldManager<T> field) => new FieldInt64(field.instance, field.generator);
 
-        public static implicit operator FieldFloat(FieldManager<T> field) => new FieldFloat(field.instance, field.generator);
+        //public static implicit operator FieldFloat(FieldManager<T> field) => new FieldFloat(field.instance, field.generator);
 
-        public static implicit operator FieldDouble(FieldManager<T> field) => new FieldDouble(field.instance, field.generator);
+        //public static implicit operator FieldDouble(FieldManager<T> field) => new FieldDouble(field.instance, field.generator);
 
-        public static implicit operator FieldDecimal(FieldManager<T> field) => new FieldDecimal(field.instance, field.generator);
+        //public static implicit operator FieldDecimal(FieldManager<T> field) => new FieldDecimal(field.instance, field.generator);
 
         public static implicit operator CanCompute<Byte>(FieldManager<T> field) => new CanCompute<Byte>(field.instance, field.generator);
 
