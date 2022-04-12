@@ -8,9 +8,9 @@ namespace BigCookieKit.Network
 {
     public enum NetworkProtocol
     {
+        None,
         Tcp,
         Udp,
-        None,
         Http1,
         Http2
     }

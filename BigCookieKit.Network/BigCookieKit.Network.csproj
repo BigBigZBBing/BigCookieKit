@@ -22,7 +22,7 @@
     <Version>1.2021.9.5</Version>
     <PackageOutputPath>../Nuget</PackageOutputPath>
     <OutputType>Library</OutputType>
-    <Optimize>true</Optimize>
+    <!--<Optimize>true</Optimize>-->
   </PropertyGroup>
 
   <ItemGroup>

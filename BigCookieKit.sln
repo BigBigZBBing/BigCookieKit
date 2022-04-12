@@ -13,10 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpClientExmaple", "TcpClie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TcpServerExmaple", "TcpServerExmaple\TcpServerExmaple.csproj", "{556A957C-A4A5-4A85-AB0C-D97C6F3F9E3B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieEntityFrameworkKit.SqlServer", "BigCookieEntityFrameworkKit.SqlServer\BigCookieEntityFrameworkKit.SqlServer.csproj", "{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieEntityFrameworkKit.Mysql", "BigCookieEntityFrameworkKit.Mysql\BigCookieEntityFrameworkKit.Mysql.csproj", "{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieSequelize", "BigCookieSequelize\BigCookieSequelize.csproj", "{B4F21A00-7D87-4F13-830B-4AEE7C08028B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Reflect", "BigCookieKit.Reflect\BigCookieKit.Reflect.csproj", "{4C729F6E-30FA-4C36-83A5-2E1B77D1BFB1}"
@@ -31,7 +27,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Distributed", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Rpc", "BigCookieKit.Rpc\BigCookieKit.Rpc.csproj", "{1307136A-117B-456D-ACC8-6BF3C6CF5BA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCookieKit.AspCore", "BigCookieKit.AspCore\BigCookieKit.AspCore.csproj", "{DF46411E-F89B-4E17-9B51-3ECC53B04D14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.AspCore", "BigCookieKit.AspCore\BigCookieKit.AspCore.csproj", "{DF46411E-F89B-4E17-9B51-3ECC53B04D14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,14 +55,6 @@ Global
 		{556A957C-A4A5-4A85-AB0C-D97C6F3F9E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{556A957C-A4A5-4A85-AB0C-D97C6F3F9E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{556A957C-A4A5-4A85-AB0C-D97C6F3F9E3B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7CDEF1C-47FB-4081-B54D-FCE98CE01E04}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9AB2210-53CE-4D21-BAE5-25250DEFEFEC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B4F21A00-7D87-4F13-830B-4AEE7C08028B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B4F21A00-7D87-4F13-830B-4AEE7C08028B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B4F21A00-7D87-4F13-830B-4AEE7C08028B}.Release|Any CPU.ActiveCfg = Release|Any CPU

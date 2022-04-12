@@ -54,10 +54,13 @@
   <ItemGroup>
     <Compile Remove="Contract\**" />
     <Compile Remove="ORM\**" />
+    <Compile Remove="RPA\**" />
     <EmbeddedResource Remove="Contract\**" />
     <EmbeddedResource Remove="ORM\**" />
+    <EmbeddedResource Remove="RPA\**" />
     <None Remove="Contract\**" />
     <None Remove="ORM\**" />
+    <None Remove="RPA\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -87,7 +90,6 @@
 
   <ItemGroup>
     <Folder Include="FTP\" />
-    <Folder Include="RPA\" />
   </ItemGroup>
 
   <ItemGroup>

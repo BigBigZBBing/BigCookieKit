@@ -35,6 +35,7 @@ namespace BigCookieKit.Network
         {
             switch (Protocol)
             {
+                case NetworkProtocol.None:
                 case NetworkProtocol.Tcp:
                 case NetworkProtocol.Http1:
                 case NetworkProtocol.Http2:
@@ -63,6 +64,7 @@ namespace BigCookieKit.Network
                     Encoder = Encoder,
                     RecHandle = Handle?.New().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter) ?? Protocol switch
                     {
+                        NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         NetworkProtocol.Udp => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         NetworkProtocol.Http1 => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
@@ -71,6 +73,7 @@ namespace BigCookieKit.Network
                     },
                     SendHandle = Handle?.New().Define(((IServer)this).DispatchCenter) ?? Protocol switch
                     {
+                        NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         NetworkProtocol.Tcp => new TcpHandle().Define(((IServer)this).DispatchCenter),
                         NetworkProtocol.Udp => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),
                         NetworkProtocol.Http1 => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((IServer)this).DispatchCenter),

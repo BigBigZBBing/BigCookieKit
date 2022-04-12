@@ -9,6 +9,12 @@ namespace BigCookieKit.IO
     {
         public static Encoding encode = Encoding.UTF8;
 
+        /// <summary>
+        /// 字符串转成流对象
+        /// </summary>
+        /// <param name="text">字符串</param>
+        /// <param name="begin">流首位</param>
+        /// <returns></returns>
         public static Stream ToStream(this string text, bool begin = true)
         {
             var stream = new MemoryStream();
@@ -17,6 +23,40 @@ namespace BigCookieKit.IO
             return stream;
         }
 
+        /// <summary>
+        /// 获取流内的字节数组
+        /// </summary>
+        /// <param name="stream">流</param>
+        /// <param name="close">是否自动关闭</param>
+        /// <returns></returns>
+        public static byte[] GetBytes(this Stream stream, bool close = false)
+        {
+            byte[] bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, bytes.Length);
+            if (close) stream.Close();
+            return bytes;
+        }
+
+        /// <summary>
+        /// 获取流内的字符串
+        /// </summary>
+        /// <param name="stream">流</param>
+        /// <param name="close">是否自动关闭</param>
+        /// <returns></returns>
+        public static string GetString(this Stream stream, bool close = false)
+        {
+            var sr = new StreamReader(stream);
+            string result = sr.ReadToEnd();
+            if (close) stream.Close();
+            return result;
+        }
+
+        /// <summary>
+        /// 七位压缩法-压缩
+        /// </summary>
+        /// <param name="value">64位值</param>
+        /// <param name="reverse">是否反转</param>
+        /// <returns></returns>
         public static byte[] Encode7Bit(long value, bool reverse = false)
         {
             byte[] stream = new byte[16];
@@ -49,6 +89,12 @@ namespace BigCookieKit.IO
             return stream.AsSpan(0, count).ToArray();
         }
 
+        /// <summary>
+        /// 七位压缩法-解压缩
+        /// </summary>
+        /// <param name="value">字节流</param>
+        /// <param name="reverse">是否反转</param>
+        /// <returns></returns>
         public static long Dncode7Bit(byte[] value, bool reverse = false)
         {
             ulong rs = 0;

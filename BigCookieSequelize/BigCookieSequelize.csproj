@@ -12,7 +12,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BigCookieEntityFrameworkKit.Mysql\BigCookieEntityFrameworkKit.Mysql.csproj" />
     <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
   </ItemGroup>
 

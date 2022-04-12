@@ -1,4 +1,5 @@
 ﻿using BigCookieKit.Network;
+
 using System;
 using System.Net;
 using System.Text;
@@ -9,13 +10,18 @@ namespace TcpServerExmaple
 {
     class Program
     {
+        static int connection = 0;
+
         static void Main(string[] args)
         {
+            Console.Title = $"连接数:{connection}";
             NetworkServer tcpServer = new NetworkServer(7447);
             tcpServer.BufferSize = 4096;
             tcpServer.OnConnect = user =>
             {
                 Console.WriteLine($"{user.UserHost}:{user.UserPort}接入~");
+                Interlocked.Increment(ref connection);
+                Console.Title = $"连接数:{connection}";
             };
 
             tcpServer.OnReceive = (user, packet) =>
@@ -28,6 +34,8 @@ namespace TcpServerExmaple
             tcpServer.OnExit = user =>
             {
                 Console.WriteLine($"{user.UserHost}:{user.UserPort}离开~");
+                Interlocked.Decrement(ref connection);
+                Console.Title = $"连接数:{connection}";
             };
 
             //tcpServer.Handle = new EasyHandle();

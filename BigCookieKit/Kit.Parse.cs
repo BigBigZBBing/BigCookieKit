@@ -29,10 +29,16 @@ namespace BigCookieKit
                 value = (string)obj;
                 return true;
             }
+            //0,1转bool
+            if (type == typeof(bool) && (obj.Equals("0") || obj.Equals("1")))
+            {
+                value = obj == "1" ? true : false;
+                return true;
+            }
             //获取类型的TryParse方法
             MethodInfo methodInfo = type.GetMethod("TryParse", new[] { typeof(string), type.MakeByRefType() });
             object[] parameters = new object[] { obj.ToString(), Activator.CreateInstance(type) };
-            if (methodInfo != null && (bool)methodInfo.Invoke(type, parameters))
+            if (methodInfo != null && (bool)methodInfo.Invoke(null, parameters))
             {
                 value = parameters[1];
                 return true;

@@ -15,7 +15,7 @@ namespace BigCookieKit.Standard
         /// <summary>
         /// 键
         /// </summary>
-        public bool Key { get; set; }
+        public string Key { get; set; }
 
         /// <summary>
         /// 是否成功
