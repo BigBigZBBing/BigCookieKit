@@ -20,6 +20,7 @@ namespace TcpClientExmaple
                 {
                     var message = Console.ReadLine();
                     user.SendMessage(message);
+
                     //user.SendMessage(RamdomString());
                     //string str = Console.ReadLine();
                     //switch (str)

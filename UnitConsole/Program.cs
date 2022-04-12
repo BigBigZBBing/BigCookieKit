@@ -38,14 +38,14 @@ namespace UnitConsole
 
             //BPlusTreeTest.Example();
 
-            Snowflake.WorkId = 0;
+            //Snowflake.WorkId = 0;
 
-            for (int i = 0; i < 1000; i++)
-            {
-                Console.WriteLine(Snowflake.NextId());
-            }
+            //for (int i = 0; i < 1000; i++)
+            //{
+            //    Console.WriteLine(Snowflake.NextId());
+            //}
 
-            Console.ReadKey();
+            //Console.ReadKey();
 
             //var provider = new RSAProvider<SHA256>();
             //var t1 = provider.ExportPublicKey();
@@ -58,14 +58,17 @@ namespace UnitConsole
             //var res1 = t3.Except(t4.ToList()).ToList();
 
 
-            ApiClient api = new ApiClient("127.0.0.1", 8888);
+            RpcClient api = new RpcClient("127.0.0.1", 8888);
 
             IApiContact api1 = api.GetInstance<IApiContact>();
+            api1.Test("name");
         }
     }
 
     public interface IApiContact
     {
         public void Ok();
+
+        public void Test(string name);
     }
 }

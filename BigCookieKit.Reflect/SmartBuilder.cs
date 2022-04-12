@@ -51,9 +51,14 @@ namespace BigCookieKit.Reflect
 #endif
         }
 
-        public ClassStroke Class(String ClassName, Qualifier ClassType = Qualifier.Public)
+        public ClassStroke Class(String ClassName, ClassQualifier ClassType = ClassQualifier.Public)
         {
-            typeBuilder = moduleBuilder.DefineType(ClassName, (TypeAttributes)ClassType);
+            return Class(ClassName, (TypeAttributes)ClassType);
+        }
+
+        public ClassStroke Class(String ClassName, TypeAttributes ClassType)
+        {
+            typeBuilder = moduleBuilder.DefineType(ClassName, ClassType);
 
             publicBuilder = typeBuilder.DefineConstructor(MethodAttributes.Public, CallingConventions.Standard, Type.EmptyTypes);
 
@@ -62,7 +67,12 @@ namespace BigCookieKit.Reflect
             return new ClassStroke(typeBuilder, publicBuilder, staticBuilder);
         }
 
-        public CtorStroke Ctor(Type[] ParamTypes, MethodAttributes Attr = MethodAttributes.Public)
+        public CtorStroke Ctor(Type[] ParamTypes, MethodQualifier MethodType = MethodQualifier.Public)
+        {
+            return Ctor(ParamTypes, (MethodAttributes)MethodType);
+        }
+
+        public CtorStroke Ctor(Type[] ParamTypes, MethodAttributes Attr)
         {
             if (ParamTypes.Equals(Type.EmptyTypes)) throw new ArrayTypeMismatchException();
 
@@ -72,20 +82,29 @@ namespace BigCookieKit.Reflect
             {
                 constructorBuilder.GetILGenerator().Emit(OpCodes.Ldarg_0);
                 constructorBuilder.GetILGenerator().Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));
-                //constructorBuilder.GetILGenerator().Emit(OpCodes.Ret);
             }
 
             return new CtorStroke(constructorBuilder);
         }
 
-        public FieldStroke Field(String FieldName, Type Type, FieldAttributes Attr = FieldAttributes.Private)
+        public FieldStroke Field(String FieldName, Type Type, FieldQualifier FieldType = FieldQualifier.Public)
+        {
+            return Field(FieldName, Type, (FieldAttributes)FieldType);
+        }
+
+        public FieldStroke Field(String FieldName, Type Type, FieldAttributes Attr)
         {
             fieldBuilder = typeBuilder.DefineField(FieldName, Type, Attr);
 
             return new FieldStroke(fieldBuilder, publicBuilder, staticBuilder);
         }
 
-        public PropertyStroke Property(String PropertyName, Type Type, MethodAttributes Attr = MethodAttributes.Public)
+        public PropertyStroke Property(String PropertyName, Type Type, PropertyQualifier PropertyType = PropertyQualifier.Public)
+        {
+            return Property(PropertyName, Type, (MethodAttributes)PropertyType);
+        }
+
+        public PropertyStroke Property(String PropertyName, Type Type, MethodAttributes Attr)
         {
             var fieldStroke = Field($"<{PropertyName}>k__BackingField", Type);
             fieldStroke.CustomAttr(typeof(CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes), 01, 00, 00, 00);
@@ -98,7 +117,12 @@ namespace BigCookieKit.Reflect
             return new PropertyStroke(propertyBuilder, fieldStroke);
         }
 
-        public MethodStroke Method(String MethodName, Type RetType = null, Type[] ParamTypes = null, MethodAttributes Attr = MethodAttributes.Public)
+        public MethodStroke Method(String MethodName, Type RetType = null, Type[] ParamTypes = null, MethodQualifier MethodType = MethodQualifier.Public)
+        {
+            return Method(MethodName, RetType, ParamTypes, (MethodAttributes)MethodType);
+        }
+
+        public MethodStroke Method(String MethodName, Type RetType, Type[] ParamTypes, MethodAttributes Attr)
         {
             methodBuilder = typeBuilder.DefineMethod(
                 MethodName,
@@ -110,7 +134,7 @@ namespace BigCookieKit.Reflect
             return new MethodStroke(methodBuilder);
         }
 
-        private void get_Item(String PropertyName, Type Type, MethodAttributes Attr)
+        internal void get_Item(String PropertyName, Type Type, MethodAttributes Attr)
         {
             methodBuilder = typeBuilder.DefineMethod(
                 "get_" + PropertyName,
@@ -135,7 +159,7 @@ namespace BigCookieKit.Reflect
             propertyBuilder.SetGetMethod(methodBuilder);
         }
 
-        private void set_Item(String PropertyName, Type Type, MethodAttributes Attr)
+        internal void set_Item(String PropertyName, Type Type, MethodAttributes Attr)
         {
             methodBuilder = typeBuilder.DefineMethod(
                 "set_" + PropertyName,
@@ -163,7 +187,7 @@ namespace BigCookieKit.Reflect
             propertyBuilder.SetSetMethod(methodBuilder);
         }
 
-        private void SaveType()
+        internal void SaveType()
         {
             publicBuilder.GetILGenerator().Emit(OpCodes.Ldarg_0);
             publicBuilder.GetILGenerator().Emit(OpCodes.Call, typeof(object).GetConstructor(Type.EmptyTypes));

@@ -36,6 +36,7 @@ namespace BigCookieKit.Network
             if (CurrSocket == null)
                 switch (Protocol)
                 {
+                    case NetworkProtocol.None:
                     case NetworkProtocol.Tcp:
                     case NetworkProtocol.Http1:
                     case NetworkProtocol.Http2:
@@ -64,20 +65,20 @@ namespace BigCookieKit.Network
                 RemoteEndPoint = GetAddress(),
                 RecHandle = Handle?.New().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter) ?? Protocol switch
                 {
+                    NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     NetworkProtocol.Tcp => new TcpHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     NetworkProtocol.Udp => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     NetworkProtocol.Http1 => throw new NotImplementedException(),
                     NetworkProtocol.Http2 => throw new NotImplementedException(),
-                    NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     _ => throw new NotImplementedException(),
                 },
                 SendHandle = Handle?.New().Define(((ICilent)this).DispatchCenter) ?? Protocol switch
                 {
+                    NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     NetworkProtocol.Tcp => new TcpHandle().Define(((ICilent)this).DispatchCenter),
                     NetworkProtocol.Udp => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     NetworkProtocol.Http1 => throw new NotImplementedException(),
                     NetworkProtocol.Http2 => throw new NotImplementedException(),
-                    NetworkProtocol.None => new NoneHandle().Define(BufferPool.Rent(BufferSize), ((ICilent)this).DispatchCenter),
                     _ => throw new NotImplementedException(),
                 },
             };

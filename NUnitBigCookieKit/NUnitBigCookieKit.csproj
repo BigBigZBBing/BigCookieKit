@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BigCookieKit.Office\BigCookieKit.Office.csproj" />
     <ProjectReference Include="..\BigCookieKit.Reflect\BigCookieKit.Reflect.csproj" />
+    <ProjectReference Include="..\BigCookieKit.Rpc\BigCookieKit.Rpc.csproj" />
     <ProjectReference Include="..\BigCookieSequelize\BigCookieSequelize.csproj" />
   </ItemGroup>
 

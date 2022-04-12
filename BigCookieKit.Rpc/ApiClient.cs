@@ -8,14 +8,17 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Text.Json;
+using System.Collections.Concurrent;
 
 namespace BigCookieKit.Rpc
 {
-    public class ApiClient
+    public class RpcClient
     {
         NetworkClient client { get; set; }
 
-        public ApiClient(string host, int port)
+        BlockingCollection<object> blocking = new BlockingCollection<object>();
+
+        public RpcClient(string host, int port)
         {
             client = new NetworkClient(host, port);
         }
@@ -31,12 +34,12 @@ namespace BigCookieKit.Rpc
             var classStorke = builder.Class(type.Name + ".Instance");
             classStorke.InheritInterface(type);
 
-            var _client = builder.Property("_client", typeof(ApiClient));
+            var _client = builder.Property("_client", typeof(RpcClient));
 
-            var ctorStorke = builder.Ctor(new Type[] { typeof(ApiClient) });
+            var ctorStorke = builder.Ctor(new Type[] { typeof(RpcClient) });
             ctorStorke.Builder(il =>
             {
-                _client.SetValue(il, il.ArgumentRef<ApiClient>(1));
+                _client.SetValue(il, il.ArgumentRef<RpcClient>(1));
             }).End();
 
             foreach (var method in methods)
@@ -45,7 +48,7 @@ namespace BigCookieKit.Rpc
                       method.Name,
                       method.ReturnType,
                       method.GetParameters().Select(x => x.ParameterType).ToArray(),
-                      MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual);
+                      MethodAttributes.Public | MethodAttributes.Final | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual);
 
                 methodStorke.Builder(il =>
                 {
@@ -61,17 +64,25 @@ namespace BigCookieKit.Rpc
                     }
 
                     var client = il.Object(_client.GetValue(il));
-                    client.Call("TransmitContact", il.String($"{type.FullName}.{method.Name}"), dicObj);
-
+                    var retCall = client.Call("TransmitContact", il.String($"{type.FullName}.{method.Name}"), dicObj);
+                    if (method.ReturnType != typeof(void))
+                        il.Object(retCall.ReturnRef()).As(method.ReturnType).Output();
                 }).End();
             }
 
             return builder.Generation(this) as T;
         }
 
-        private void TransmitContact(string router, Dictionary<string, object> packet)
+        private object TransmitContact(string router, Dictionary<string, object> packet)
         {
-
+            client.Start();
+            client.OnConnect = (session) =>
+            {
+                //session.SendMessage()
+            };
+            blocking.TryTake(out object obj);
+            client.Close();
+            return obj;
         }
     }
 }

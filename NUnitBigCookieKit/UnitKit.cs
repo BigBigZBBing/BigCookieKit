@@ -21,6 +21,7 @@ using System.Threading.Tasks.Dataflow;
 using System.Xml.Linq;
 using BigCookieKit.Algorithm;
 using System.Security.Cryptography;
+using BigCookieKit.Rpc;
 
 namespace NUnitBigCookieKit
 {
@@ -304,7 +305,7 @@ namespace NUnitBigCookieKit
         [Test]
         public async Task ActorModelUnit()
         {
-            var batch = new ActorModel<string>(1, async strs =>
+            var batch = new Actor<string>(1, async strs =>
             {
                 foreach (var item in strs)
                 {
