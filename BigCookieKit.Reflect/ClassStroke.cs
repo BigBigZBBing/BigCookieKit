@@ -2,16 +2,19 @@
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace BigCookieKit.Reflect
 {
     public sealed class ClassStroke
     {
-        private TypeBuilder typeBuilder;
+        internal TypeBuilder typeBuilder;
 
-        private ConstructorBuilder publicBuilder;
+        internal ConstructorBuilder publicBuilder;
 
-        private ConstructorBuilder staticBuilder;
+        internal ConstructorBuilder staticBuilder;
+
+        internal ClassStroke() { }
 
         internal ClassStroke(TypeBuilder typeBuilder, ConstructorBuilder publicBuilder, ConstructorBuilder staticBuilder)
         {
@@ -20,24 +23,43 @@ namespace BigCookieKit.Reflect
             this.staticBuilder = staticBuilder;
         }
 
-        public void CustomAttribute(Type type, params object[] args)
+        public ClassStroke AddAttribute(Type type, params object[] args)
         {
             typeBuilder.SetCustomAttribute(new CustomAttributeBuilder(type.GetConstructor(args.Select(x => x.GetType()).ToArray()), args));
+            return this;
         }
 
-        public void CustomGeneric(params string[] typeNames)
+        public ClassStroke AddAttribute(ConstructorInfo ctor, params byte[] binary)
+        {
+            typeBuilder.SetCustomAttribute(ctor, binary);
+            return this;
+        }
+
+        public ClassStroke AddGeneric(params string[] typeNames)
         {
             typeBuilder.DefineGenericParameters(typeNames);
+            return this;
         }
 
-        public void InheritClass(Type type)
+        public ClassStroke AddGeneric(Action<GenericStroke> stroke)
+        {
+            var generic = new GenericStroke(typeBuilder);
+            stroke.Invoke(generic);
+            generic.Builder();
+            return this;
+        }
+
+        public ClassStroke InheritClass(Type type)
         {
             typeBuilder.SetParent(type);
+            return this;
         }
 
-        public void InheritInterface(Type type)
+        public ClassStroke InheritInterface(Type type)
         {
             typeBuilder.AddInterfaceImplementation(type);
+            return this;
         }
     }
+
 }

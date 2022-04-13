@@ -1,13 +1,18 @@
-﻿using System.Reflection;
+﻿using System.Linq;
+using System;
+using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace BigCookieKit.Reflect
 {
     public sealed class PropertyStroke
     {
-        private PropertyBuilder propertyBuilder;
+        internal PropertyBuilder propertyBuilder;
 
-        private FieldStroke fieldStroke;
+        internal FieldStroke fieldStroke;
+
+        internal PropertyStroke() { }
 
         internal PropertyStroke(PropertyBuilder propertyBuilder, FieldStroke fieldStroke)
         {
@@ -35,14 +40,16 @@ namespace BigCookieKit.Reflect
             fieldStroke.SetValue(generator, constant);
         }
 
-        public void CustomAttr(ConstructorInfo ctor, params object[] args)
+        public PropertyStroke AddAttribute(Type type, params object[] args)
         {
-            propertyBuilder.SetCustomAttribute(new CustomAttributeBuilder(ctor, args));
+            propertyBuilder.SetCustomAttribute(new CustomAttributeBuilder(type.GetConstructor(args.Select(x => x.GetType()).ToArray()), args));
+            return this;
         }
 
-        public void CustomAttr(ConstructorInfo ctor, params byte[] binary)
+        public PropertyStroke AddAttribute(ConstructorInfo ctor, params byte[] binary)
         {
             propertyBuilder.SetCustomAttribute(ctor, binary);
+            return this;
         }
     }
 }

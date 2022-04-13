@@ -107,8 +107,8 @@ namespace BigCookieKit.Reflect
         public PropertyStroke Property(String PropertyName, Type Type, MethodAttributes Attr)
         {
             var fieldStroke = Field($"<{PropertyName}>k__BackingField", Type);
-            fieldStroke.CustomAttr(typeof(CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes), 01, 00, 00, 00);
-            fieldStroke.CustomAttr(
+            fieldStroke.AddAttribute(typeof(CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes), 01, 00, 00, 00);
+            fieldStroke.AddAttribute(
                 typeof(System.Diagnostics.DebuggerBrowsableAttribute).GetConstructor(new Type[] { typeof(System.Diagnostics.DebuggerBrowsableState) }),
                 01, 00, 00, 00, 00, 00, 00, 00);
             propertyBuilder = typeBuilder.DefineProperty(PropertyName, PropertyAttributes.None, Type, null);

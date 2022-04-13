@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.InteropServices;
 
 namespace BigCookieKit.Reflect
 {
-    public class MethodStroke
-
+    public sealed class MethodStroke
     {
-        private MethodBuilder methodBuilder;
-        private FuncGenerator generator;
+        internal MethodBuilder methodBuilder;
+
+        internal FuncGenerator generator;
+
+        internal MethodStroke() { }
 
         internal MethodStroke(MethodBuilder methodBuilder)
         {
@@ -22,15 +26,29 @@ namespace BigCookieKit.Reflect
             return this;
         }
 
-        public MethodStroke CustomAttr(ConstructorInfo ctor, params object[] args)
+        public MethodStroke AddAttribute(Type type, params object[] args)
         {
-            methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(ctor, args));
+            methodBuilder.SetCustomAttribute(new CustomAttributeBuilder(type.GetConstructor(args.Select(x => x.GetType()).ToArray()), args));
             return this;
         }
 
-        public MethodStroke CustomAttr(ConstructorInfo ctor, params byte[] binary)
+        public MethodStroke AddAttribute(ConstructorInfo ctor, params byte[] binary)
         {
             methodBuilder.SetCustomAttribute(ctor, binary);
+            return this;
+        }
+
+        public MethodStroke AddGeneric(params string[] typeNames)
+        {
+            methodBuilder.DefineGenericParameters(typeNames);
+            return this;
+        }
+
+        public MethodStroke AddGeneric(Action<GenericStroke> stroke)
+        {
+            var generic = new GenericStroke(methodBuilder);
+            stroke.Invoke(generic);
+            generic.Builder();
             return this;
         }
 

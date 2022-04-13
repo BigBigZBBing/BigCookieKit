@@ -84,4 +84,11 @@ namespace BigCookieKit.Reflect
 
         Property = MethodAttributes.SpecialName
     }
+
+    public enum GenericQualifier
+    {
+        Class = GenericParameterAttributes.ReferenceTypeConstraint,
+        ClassNew = GenericParameterAttributes.ReferenceTypeConstraint | GenericParameterAttributes.DefaultConstructorConstraint,
+        Struct = GenericParameterAttributes.NotNullableValueTypeConstraint | GenericParameterAttributes.DefaultConstructorConstraint
+    }
 }
