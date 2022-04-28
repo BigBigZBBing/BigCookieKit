@@ -10,38 +10,38 @@ namespace BigCookieKit.Reflect
             this.generator = generator;
         }
 
-        public void For(Int32 init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
+        public void For(int init, LocalBuilder length, Action<CanCompute<int>, TabManager> build)
         {
-            if (length.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int32]");
+            if (length.LocalType != typeof(int)) ManagerGX.ShowEx<TypeAccessException>("Type not is [int]");
             ManagerGX.For(this, init, length, build);
         }
 
-        public void For(LocalBuilder init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
+        public void For(LocalBuilder init, LocalBuilder length, Action<CanCompute<int>, TabManager> build)
         {
-            if (init.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int32]");
-            if (length.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int32]");
+            if (init.LocalType != typeof(int)) ManagerGX.ShowEx<TypeAccessException>("Type not is [int]");
+            if (length.LocalType != typeof(int)) ManagerGX.ShowEx<TypeAccessException>("Type not is [int]");
             ManagerGX.For(this, init, length, build);
         }
 
-        public void For(Int32 init, Int32 length, Action<CanCompute<Int32>, TabManager> build)
+        public void For(int init, int length, Action<CanCompute<int>, TabManager> build)
         {
             ManagerGX.For(this, init, length, build);
         }
 
-        public void Forr(Int32 init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
+        public void Forr(int init, LocalBuilder length, Action<CanCompute<int>, TabManager> build)
         {
-            if (length.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int32]");
+            if (length.LocalType != typeof(int)) ManagerGX.ShowEx<TypeAccessException>("Type not is [int]");
             ManagerGX.Forr(this, init, length, build);
         }
 
-        public void Forr(LocalBuilder init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
+        public void Forr(LocalBuilder init, LocalBuilder length, Action<CanCompute<int>, TabManager> build)
         {
-            if (init.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int32]");
-            if (length.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int32]");
+            if (init.LocalType != typeof(int)) ManagerGX.ShowEx<TypeAccessException>("Type not is [int]");
+            if (length.LocalType != typeof(int)) ManagerGX.ShowEx<TypeAccessException>("Type not is [int]");
             ManagerGX.Forr(this, init, length, build);
         }
 
-        public void Forr(Int32 init, Int32 length, Action<CanCompute<Int32>, TabManager> build)
+        public void Forr(int init, int length, Action<CanCompute<int>, TabManager> build)
         {
             ManagerGX.Forr(this, init, length, build);
         }
@@ -52,11 +52,11 @@ namespace BigCookieKit.Reflect
 
         public AssertManager IF(LocalBuilder assert, Action builder)
         {
-            if (assert.LocalType != typeof(Boolean)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Boolean]");
+            if (assert.LocalType != typeof(bool)) ManagerGX.ShowEx<TypeAccessException>("Type not is [bool]");
             return new AssertManager(this, new Tuple<LocalBuilder, Action>(assert, builder));
         }
 
-        public AssertManager IF(FieldManager<Boolean> assert, Action builder)
+        public AssertManager IF(FieldManager<bool> assert, Action builder)
         {
             return new AssertManager(this, new Tuple<LocalBuilder, Action>(assert, builder));
         }

@@ -6,7 +6,7 @@ namespace BigCookieKit.Reflect
 {
     internal static class CacheManager
     {
-        internal static Dictionary<String, FastProperty[]> EntityCache => new Dictionary<String, FastProperty[]>();
+        internal static Dictionary<string, FastProperty[]> EntityCache => new Dictionary<string, FastProperty[]>();
 
         internal static FastProperty[] CachePropsManager(this Type type)
         {

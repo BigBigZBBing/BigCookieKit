@@ -21,7 +21,7 @@ namespace BigCookieKit.Reflect
             return this;
         }
 
-        public AssertManager ElseIF(FieldManager<Boolean> assert, Action builder)
+        public AssertManager ElseIF(FieldManager<bool> assert, Action builder)
         {
             context.Add(new Tuple<LocalBuilder, Action>(assert, builder));
             return this;
@@ -31,7 +31,7 @@ namespace BigCookieKit.Reflect
         {
             Label end = generator.DefineLabel();
             Label lab = generator.DefineLabel();
-            Boolean first = true;
+            bool first = true;
             foreach (var item in context)
             {
                 if (!first) generator.MarkLabel(lab);
@@ -52,7 +52,7 @@ namespace BigCookieKit.Reflect
         {
             Label end = generator.DefineLabel();
             Label lab = generator.DefineLabel();
-            Boolean first = true;
+            bool first = true;
             foreach (var item in context)
             {
                 if (!first) generator.MarkLabel(lab);

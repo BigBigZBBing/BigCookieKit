@@ -11,7 +11,7 @@ namespace BigCookieKit.Reflect
         {
         }
 
-        public Object this[String Name]
+        public object this[string Name]
         {
             get
             {
@@ -23,15 +23,15 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        public IDictionary<String, FastProperty> Properties { get; internal set; }
+        public IDictionary<string, FastProperty> Properties { get; internal set; }
 
-        internal Object Instance { get; set; }
+        internal object Instance { get; set; }
 
         public static FastDynamic GetFastDynamic<T>(T entity) where T : class, new()
         {
             return new FastDynamic()
             {
-                Properties = new ConcurrentDictionary<String, FastProperty>(ManagerGX.GetProps(entity.GetType().GetProperties(), entity)),
+                Properties = new ConcurrentDictionary<string, FastProperty>(ManagerGX.GetProps(entity.GetType().GetProperties(), entity)),
                 Instance = entity
             };
         }

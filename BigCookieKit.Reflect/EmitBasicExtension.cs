@@ -12,7 +12,7 @@ namespace BigCookieKit.Reflect
             return new FieldNullable<T>(field, field.generator);
         }
 
-        public static void Argument(this EmitBasic basic, Int32 index)
+        public static void Argument(this EmitBasic basic, int index)
         {
             switch (index)
             {
@@ -24,7 +24,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        public static LocalBuilder ArgumentRef<T>(this EmitBasic basic, Int32 index) where T : class
+        public static LocalBuilder ArgumentRef<T>(this EmitBasic basic, int index) where T : class
         {
             LocalBuilder param = basic.DeclareLocal(typeof(T));
             basic.Argument(index);
@@ -32,7 +32,7 @@ namespace BigCookieKit.Reflect
             return param;
         }
 
-        public static LocalBuilder ArgumentRef(this EmitBasic basic, Int32 index, Type type)
+        public static LocalBuilder ArgumentRef(this EmitBasic basic, int index, Type type)
         {
             LocalBuilder param = basic.DeclareLocal(type);
             basic.Argument(index);
@@ -51,16 +51,16 @@ namespace BigCookieKit.Reflect
             basic.Emit(OpCodes.Throw);
         }
 
-        public static void Throw<T>(this EmitBasic basic, String message = null) where T : Exception
+        public static void Throw<T>(this EmitBasic basic, string message = null) where T : Exception
         {
             var _ex = basic.DeclareLocal(typeof(T));
             basic.EmitValue(message);
-            basic.Emit(OpCodes.Newobj, typeof(T).GetConstructor(new[] { typeof(String) }));
+            basic.Emit(OpCodes.Newobj, typeof(T).GetConstructor(new[] { typeof(string) }));
             basic.Emit(OpCodes.Stloc_S, _ex);
             basic.Throw(_ex);
         }
 
-        internal static MethodManager ReflectMethod<T>(this VariableManager basic, String MethodName)
+        internal static MethodManager ReflectMethod<T>(this VariableManager basic, string MethodName)
         {
             Type type = typeof(T);
             MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard, Type.EmptyTypes, null);
@@ -70,7 +70,7 @@ namespace BigCookieKit.Reflect
             return new MethodManager(basic, method.ReturnType);
         }
 
-        internal static MethodManager ReflectMethod<T>(this VariableManager basic, String MethodName, params LocalBuilder[] parameters)
+        internal static MethodManager ReflectMethod<T>(this VariableManager basic, string MethodName, params LocalBuilder[] parameters)
         {
             Type type = typeof(T);
             MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard, parameters.Select(x => x.LocalType).ToArray(), null);
@@ -81,7 +81,7 @@ namespace BigCookieKit.Reflect
             return new MethodManager(basic, method.ReturnType);
         }
 
-        internal static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type)
+        internal static MethodManager ReflectMethod(this VariableManager basic, string MethodName, Type type)
         {
             MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard, Type.EmptyTypes, null);
             basic.Output();
@@ -90,7 +90,7 @@ namespace BigCookieKit.Reflect
             return new MethodManager(basic, method.ReturnType);
         }
 
-        internal static MethodManager ReflectMethod(this VariableManager basic, String MethodName, Type type, params LocalBuilder[] parameters)
+        internal static MethodManager ReflectMethod(this VariableManager basic, string MethodName, Type type, params LocalBuilder[] parameters)
         {
             MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, CallingConventions.Standard, parameters.Select(x => x.LocalType).ToArray(), null);
             if (method == null) throw new MethodAccessException("Not exists this method!");
@@ -101,7 +101,7 @@ namespace BigCookieKit.Reflect
             return new MethodManager(basic, method.ReturnType);
         }
 
-        public static MethodManager ReflectStaticMethod(this EmitBasic basic, String MethodName, Type type)
+        public static MethodManager ReflectStaticMethod(this EmitBasic basic, string MethodName, Type type)
         {
             MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, CallingConventions.Standard, Type.EmptyTypes, null);
             basic.Emit(OpCodes.Call, method);
@@ -109,7 +109,7 @@ namespace BigCookieKit.Reflect
             return new MethodManager(basic, method.ReturnType);
         }
 
-        public static MethodManager ReflectStaticMethod(this EmitBasic basic, String MethodName, Type type, params LocalBuilder[] parameters)
+        public static MethodManager ReflectStaticMethod(this EmitBasic basic, string MethodName, Type type, params LocalBuilder[] parameters)
         {
             MethodInfo method = type.GetMethod(MethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance, null, CallingConventions.Standard, parameters.Select(x => x.LocalType).ToArray(), null);
             parameters.ToList().ForEach(x => basic.Emit(OpCodes.Ldloc_S, x));

@@ -27,7 +27,7 @@ namespace BigCookieKit.Reflect
         }
 
         [Obsolete("Change is wipe new")]
-        public FieldString NewString(String value = default(String))
+        public FieldString NewString(string value = default(string))
         {
             return ManagerGX.NewString(this, value);
         }
@@ -35,23 +35,23 @@ namespace BigCookieKit.Reflect
         [Obsolete("Change is wipe new")]
         public FieldString NewString(LocalBuilder value)
         {
-            if (value.LocalType != typeof(String)) ManagerGX.ShowEx<TypeAccessException>("Type not is [String]");
+            if (value.LocalType != typeof(string)) ManagerGX.ShowEx<TypeAccessException>("Type not is [string]");
             return new FieldString(value, this);
         }
 
-        public FieldString String(String value = default(String))
+        public FieldString String(string value = default(string))
         {
             return ManagerGX.NewString(this, value);
         }
 
         public FieldString String(LocalBuilder value)
         {
-            if (value.LocalType != typeof(String)) ManagerGX.ShowEx<TypeAccessException>("Type not is [String]");
+            if (value.LocalType != typeof(string)) ManagerGX.ShowEx<TypeAccessException>("Type not is [string]");
             return new FieldString(value, this);
         }
 
         [Obsolete("Change is wipe new")]
-        public FieldBoolean NewBoolean(Boolean value = default(Boolean))
+        public FieldBoolean NewBoolean(bool value = default(bool))
         {
             return ManagerGX.NewBoolean(this, value);
         }
@@ -59,187 +59,187 @@ namespace BigCookieKit.Reflect
         [Obsolete("Change is wipe new")]
         public FieldBoolean NewBoolean(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Boolean)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Boolean]");
+            if (value.LocalType != typeof(bool)) ManagerGX.ShowEx<TypeAccessException>("Type not is [bool]");
             return new FieldBoolean(value, this);
         }
 
-        public FieldBoolean Boolean(Boolean value = default(Boolean))
+        public FieldBoolean Boolean(bool value = default(bool))
         {
             return ManagerGX.NewBoolean(this, value);
         }
 
         public FieldBoolean Boolean(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Boolean)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Boolean]");
+            if (value.LocalType != typeof(bool)) ManagerGX.ShowEx<TypeAccessException>("Type not is [bool]");
             return new FieldBoolean(value, this);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Byte> NewByte(Byte value = default(Byte))
+        public CanCompute<byte> NewByte(byte value = default(byte))
         {
             return ManagerGX.NewByte(this, value);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Byte> NewByte(LocalBuilder value)
+        public CanCompute<byte> NewByte(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Byte)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Byte]");
-            return new CanCompute<Byte>(value, this);
+            if (value.LocalType != typeof(byte)) ManagerGX.ShowEx<TypeAccessException>("Type not is [byte]");
+            return new CanCompute<byte>(value, this);
         }
 
-        public CanCompute<Byte> Byte(Byte value = default(Byte))
+        public CanCompute<byte> Byte(byte value = default(byte))
         {
             return ManagerGX.NewByte(this, value);
         }
 
-        public CanCompute<Byte> Byte(LocalBuilder value)
+        public CanCompute<byte> Byte(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Byte)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Byte]");
-            return new CanCompute<Byte>(value, this);
+            if (value.LocalType != typeof(byte)) ManagerGX.ShowEx<TypeAccessException>("Type not is [byte]");
+            return new CanCompute<byte>(value, this);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Int16> NewInt16(Int16 value = default(Int16))
+        public CanCompute<short> NewInt16(short value = default(short))
         {
             return ManagerGX.NewInt16(this, value);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Int16> NewInt16(LocalBuilder value)
+        public CanCompute<short> NewInt16(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int16)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int16]");
-            return new CanCompute<Int16>(value, this);
+            if (value.LocalType != typeof(short)) ManagerGX.ShowEx<TypeAccessException>("Type not is [short]");
+            return new CanCompute<short>(value, this);
         }
 
-        public CanCompute<Int16> Int16(Int16 value = default(Int16))
+        public CanCompute<short> Int16(short value = default(short))
         {
             return ManagerGX.NewInt16(this, value);
         }
 
-        public CanCompute<Int16> Int16(LocalBuilder value)
+        public CanCompute<short> Int16(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int16)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int16]");
-            return new CanCompute<Int16>(value, this);
+            if (value.LocalType != typeof(short)) ManagerGX.ShowEx<TypeAccessException>("Type not is [short]");
+            return new CanCompute<short>(value, this);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Int32> NewInt32(Int32 value = default(Int32))
+        public CanCompute<int> NewInt32(int value = default(int))
         {
             return ManagerGX.NewInt32(this, value);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Int32> NewInt32(LocalBuilder value)
+        public CanCompute<int> NewInt32(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int32]");
-            return new CanCompute<Int32>(value, this);
+            if (value.LocalType != typeof(int)) ManagerGX.ShowEx<TypeAccessException>("Type not is [int]");
+            return new CanCompute<int>(value, this);
         }
 
-        public CanCompute<Int32> Int32(Int32 value = default(Int32))
+        public CanCompute<int> Int32(int value = default(int))
         {
             return ManagerGX.NewInt32(this, value);
         }
 
-        public CanCompute<Int32> Int32(LocalBuilder value)
+        public CanCompute<int> Int32(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int32]");
-            return new CanCompute<Int32>(value, this);
+            if (value.LocalType != typeof(int)) ManagerGX.ShowEx<TypeAccessException>("Type not is [int]");
+            return new CanCompute<int>(value, this);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Int64> NewInt64(Int64 value = default(Int64))
+        public CanCompute<long> NewInt64(long value = default(long))
         {
             return ManagerGX.NewInt64(this, value);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Int64> NewInt64(LocalBuilder value)
+        public CanCompute<long> NewInt64(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int64)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int64]");
-            return new CanCompute<Int64>(value, this);
+            if (value.LocalType != typeof(long)) ManagerGX.ShowEx<TypeAccessException>("Type not is [long]");
+            return new CanCompute<long>(value, this);
         }
 
-        public CanCompute<Int64> Int64(Int64 value = default(Int64))
+        public CanCompute<long> Int64(long value = default(long))
         {
             return ManagerGX.NewInt64(this, value);
         }
 
-        public CanCompute<Int64> Int64(LocalBuilder value)
+        public CanCompute<long> Int64(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int64)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Int64]");
-            return new CanCompute<Int64>(value, this);
+            if (value.LocalType != typeof(long)) ManagerGX.ShowEx<TypeAccessException>("Type not is [long]");
+            return new CanCompute<long>(value, this);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Single> NewFloat(Single value = default(Single))
+        public CanCompute<float> NewFloat(float value = default(float))
         {
             return ManagerGX.NewFloat(this, value);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Single> NewFloat(LocalBuilder value)
+        public CanCompute<float> NewFloat(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Single)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Single]");
-            return new CanCompute<Single>(value, this);
+            if (value.LocalType != typeof(float)) ManagerGX.ShowEx<TypeAccessException>("Type not is [float]");
+            return new CanCompute<float>(value, this);
         }
 
-        public CanCompute<Single> Float(Single value = default(Single))
+        public CanCompute<float> Float(float value = default(float))
         {
             return ManagerGX.NewFloat(this, value);
         }
 
-        public CanCompute<Single> Float(LocalBuilder value)
+        public CanCompute<float> Float(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Single)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Single]");
-            return new CanCompute<Single>(value, this);
+            if (value.LocalType != typeof(float)) ManagerGX.ShowEx<TypeAccessException>("Type not is [float]");
+            return new CanCompute<float>(value, this);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Double> NewDouble(Double value = default(Double))
+        public CanCompute<double> NewDouble(double value = default(double))
         {
             return ManagerGX.NewDouble(this, value);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Double> NewDouble(LocalBuilder value)
+        public CanCompute<double> NewDouble(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Double)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Double]");
-            return new CanCompute<Double>(value, this);
+            if (value.LocalType != typeof(double)) ManagerGX.ShowEx<TypeAccessException>("Type not is [double]");
+            return new CanCompute<double>(value, this);
         }
 
-        public CanCompute<Double> Double(Double value = default(Double))
+        public CanCompute<double> Double(double value = default(double))
         {
             return ManagerGX.NewDouble(this, value);
         }
 
-        public CanCompute<Double> Double(LocalBuilder value)
+        public CanCompute<double> Double(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Double)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Double]");
-            return new CanCompute<Double>(value, this);
+            if (value.LocalType != typeof(double)) ManagerGX.ShowEx<TypeAccessException>("Type not is [double]");
+            return new CanCompute<double>(value, this);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Decimal> NewDecimal(Decimal value = default(Decimal))
+        public CanCompute<decimal> NewDecimal(decimal value = default(decimal))
         {
             return ManagerGX.NewDecimal(this, value);
         }
 
         [Obsolete("Change is wipe new")]
-        public CanCompute<Decimal> NewDecimal(LocalBuilder value)
+        public CanCompute<decimal> NewDecimal(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Decimal)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Decimal]");
-            return new CanCompute<Decimal>(value, this);
+            if (value.LocalType != typeof(decimal)) ManagerGX.ShowEx<TypeAccessException>("Type not is [decimal]");
+            return new CanCompute<decimal>(value, this);
         }
 
-        public CanCompute<Decimal> Decimal(Decimal value = default(Decimal))
+        public CanCompute<decimal> Decimal(decimal value = default(decimal))
         {
             return ManagerGX.NewDecimal(this, value);
         }
 
-        public CanCompute<Decimal> Decimal(LocalBuilder value)
+        public CanCompute<decimal> Decimal(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Decimal)) ManagerGX.ShowEx<TypeAccessException>("Type not is [Decimal]");
-            return new CanCompute<Decimal>(value, this);
+            if (value.LocalType != typeof(decimal)) ManagerGX.ShowEx<TypeAccessException>("Type not is [decimal]");
+            return new CanCompute<decimal>(value, this);
         }
 
         [Obsolete("Change is wipe new")]
@@ -266,29 +266,29 @@ namespace BigCookieKit.Reflect
             return new FieldDateTime(value, this);
         }
 
-        public FieldArray<T> NewArray<T>(Int32 length)
+        public FieldArray<T> NewArray<T>(int length)
         {
             return ManagerGX.NewArray<T>(this, length);
         }
 
-        public FieldArray<T> NewArray<T>(CanCompute<Int32> length)
+        public FieldArray<T> NewArray<T>(CanCompute<int> length)
         {
             return ManagerGX.NewArray<T>(this, length);
         }
 
-        public FieldArray NewArray(Type type, Int32 length)
+        public FieldArray NewArray(Type type, int length)
         {
             return ManagerGX.NewArray(this, type, length);
         }
 
-        public FieldArray NewArray(Type type, CanCompute<Int32> length)
+        public FieldArray NewArray(Type type, CanCompute<int> length)
         {
             return ManagerGX.NewArray(this, type, length);
         }
 
         public FieldArray<T> NewArray<T>(LocalBuilder value)
         {
-            if (value.LocalType != typeof(Int32)) ManagerGX.ShowEx<TypeAccessException>($"Type not is [Int32]");
+            if (value.LocalType != typeof(int)) ManagerGX.ShowEx<TypeAccessException>($"Type not is [int]");
             return new FieldArray<T>(value, this, -1);
         }
 

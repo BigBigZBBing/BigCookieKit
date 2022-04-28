@@ -5,10 +5,10 @@ namespace BigCookieKit.Reflect
 {
     public class FieldArray<T> : FieldManager<T[]>
     {
-        internal Int32 Length { get; set; }
-        internal CanCompute<Int32> ILLength { get; set; }
+        internal int Length { get; set; }
+        internal CanCompute<int> ILLength { get; set; }
 
-        internal FieldArray(LocalBuilder stack, ILGenerator generator, Int32 Length) : base(stack, generator)
+        internal FieldArray(LocalBuilder stack, ILGenerator generator, int Length) : base(stack, generator)
         {
             this.Length = Length;
         }
@@ -18,7 +18,7 @@ namespace BigCookieKit.Reflect
             return this.IsNull(this);
         }
 
-        public LocalBuilder this[Int32 index]
+        public LocalBuilder this[int index]
         {
             get
             {
@@ -39,7 +39,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        public LocalBuilder GetValue(CanCompute<Int32> index)
+        public LocalBuilder GetValue(CanCompute<int> index)
         {
             var value = DeclareLocal(typeof(T));
             Emit(OpCodes.Ldloc_S, instance);
@@ -49,7 +49,7 @@ namespace BigCookieKit.Reflect
             return value;
         }
 
-        public void SetValue(CanCompute<Int32> index, LocalBuilder value)
+        public void SetValue(CanCompute<int> index, LocalBuilder value)
         {
             Emit(OpCodes.Ldloc_S, instance);
             Emit(OpCodes.Ldloc_S, index);
@@ -77,7 +77,7 @@ namespace BigCookieKit.Reflect
             return result;
         }
 
-        public CanCompute<Int32> FindIndex(LocalBuilder value)
+        public CanCompute<int> FindIndex(LocalBuilder value)
         {
             var result = this.NewInt32(-1);
             Label trueTo = DefineLabel();
@@ -97,7 +97,7 @@ namespace BigCookieKit.Reflect
             return result;
         }
 
-        public void Copy(FieldArray<T> target, CanCompute<Int32> length)
+        public void Copy(FieldArray<T> target, CanCompute<int> length)
         {
             this.For(0, length, (int1, tab) =>
             {
@@ -108,17 +108,17 @@ namespace BigCookieKit.Reflect
             });
         }
 
-        public CanCompute<Int32> GetLength()
+        public CanCompute<int> GetLength()
         {
             if ((object)ILLength == null)
             {
                 if (Length == -1)
                 {
-                    LocalBuilder temp = DeclareLocal(typeof(Int32));
+                    LocalBuilder temp = DeclareLocal(typeof(int));
                     Output();
                     Emit(OpCodes.Ldlen);
                     Emit(OpCodes.Stloc_S, temp);
-                    ILLength = new CanCompute<Int32>(temp, generator);
+                    ILLength = new CanCompute<int>(temp, generator);
                 }
                 else
                     ILLength = this.NewInt32(Length);
@@ -129,10 +129,10 @@ namespace BigCookieKit.Reflect
 
     public class FieldArray : FieldManager
     {
-        internal Int32 Length { get; set; }
-        internal CanCompute<Int32> ILLength { get; set; }
+        internal int Length { get; set; }
+        internal CanCompute<int> ILLength { get; set; }
 
-        internal FieldArray(LocalBuilder stack, ILGenerator generator, Int32 Length) : base(stack, generator)
+        internal FieldArray(LocalBuilder stack, ILGenerator generator, int Length) : base(stack, generator)
         {
             this.Length = Length;
         }
@@ -142,7 +142,7 @@ namespace BigCookieKit.Reflect
             return this.IsNull(this);
         }
 
-        public LocalBuilder this[Int32 index]
+        public LocalBuilder this[int index]
         {
             get
             {
@@ -163,7 +163,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        public LocalBuilder GetValue(CanCompute<Int32> index)
+        public LocalBuilder GetValue(CanCompute<int> index)
         {
             var value = DeclareLocal(instance.LocalType);
             Emit(OpCodes.Ldloc_S, instance);
@@ -173,7 +173,7 @@ namespace BigCookieKit.Reflect
             return value;
         }
 
-        public void SetValue(CanCompute<Int32> index, LocalBuilder value)
+        public void SetValue(CanCompute<int> index, LocalBuilder value)
         {
             Emit(OpCodes.Ldloc_S, instance);
             Emit(OpCodes.Ldloc_S, index);
@@ -201,7 +201,7 @@ namespace BigCookieKit.Reflect
             return result;
         }
 
-        public CanCompute<Int32> FindIndex(LocalBuilder value)
+        public CanCompute<int> FindIndex(LocalBuilder value)
         {
             var result = this.NewInt32(-1);
             Label trueTo = DefineLabel();
@@ -221,22 +221,22 @@ namespace BigCookieKit.Reflect
             return result;
         }
 
-        public void Copy(LocalBuilder target, CanCompute<Int32> length)
+        public void Copy(LocalBuilder target, CanCompute<int> length)
         {
             Call("CopyTo", target, length);
         }
 
-        public CanCompute<Int32> GetLength()
+        public CanCompute<int> GetLength()
         {
             if ((object)ILLength == null)
             {
                 if (Length == -1)
                 {
-                    LocalBuilder temp = DeclareLocal(typeof(Int32));
+                    LocalBuilder temp = DeclareLocal(typeof(int));
                     Output();
                     Emit(OpCodes.Ldlen);
                     Emit(OpCodes.Stloc_S, temp);
-                    ILLength = new CanCompute<Int32>(temp, generator);
+                    ILLength = new CanCompute<int>(temp, generator);
                 }
                 else
                     ILLength = this.NewInt32(Length);

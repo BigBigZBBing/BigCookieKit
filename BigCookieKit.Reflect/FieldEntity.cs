@@ -8,13 +8,13 @@ namespace BigCookieKit.Reflect
 {
     public class FieldEntity<T> : FieldManager<T>
     {
-        private Dictionary<String, EntityProperty> EntityBody;
+        private Dictionary<string, EntityProperty> EntityBody;
 
-        public List<String> Fields => EntityBody.Keys.ToList();
+        public List<string> Fields => EntityBody.Keys.ToList();
 
         internal FieldEntity(LocalBuilder stack, ILGenerator generator) : base(stack, generator)
         {
-            EntityBody = new Dictionary<String, EntityProperty>();
+            EntityBody = new Dictionary<string, EntityProperty>();
             Type type = typeof(T);
             foreach (PropertyInfo prop in type.GetProperties())
             {
@@ -22,7 +22,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        public LocalBuilder this[String Name]
+        public LocalBuilder this[string Name]
         {
             get
             {
@@ -48,7 +48,7 @@ namespace BigCookieKit.Reflect
             return this.IsNull(this);
         }
 
-        public LocalBuilder GetValue(String FieldName)
+        public LocalBuilder GetValue(string FieldName)
         {
             if (!ContanisKey(FieldName)) ManagerGX.ShowEx("Entity property is null;");
             LocalBuilder item = generator.DeclareLocal(EntityBody[FieldName].type);
@@ -58,7 +58,7 @@ namespace BigCookieKit.Reflect
             return item;
         }
 
-        public void SetValue(String FieldName, LocalBuilder value)
+        public void SetValue(string FieldName, LocalBuilder value)
         {
             if (!ContanisKey(FieldName)) ManagerGX.ShowEx("Entity property is null;");
             Output();
@@ -66,7 +66,7 @@ namespace BigCookieKit.Reflect
             Emit(OpCodes.Callvirt, EntityBody[FieldName].set);
         }
 
-        private Boolean ContanisKey(String Name)
+        private bool ContanisKey(string Name)
         {
             return EntityBody.ContainsKey(Name);
         }
@@ -87,13 +87,13 @@ namespace BigCookieKit.Reflect
 
     public class FieldEntity : FieldManager
     {
-        private Dictionary<String, EntityProperty> EntityBody;
+        private Dictionary<string, EntityProperty> EntityBody;
 
-        public List<String> Fields => EntityBody.Keys.ToList();
+        public List<string> Fields => EntityBody.Keys.ToList();
 
         internal FieldEntity(LocalBuilder stack, ILGenerator generator) : base(stack, generator)
         {
-            EntityBody = new Dictionary<String, EntityProperty>();
+            EntityBody = new Dictionary<string, EntityProperty>();
             Type type = stack.LocalType;
             foreach (PropertyInfo prop in type.GetProperties())
             {
@@ -101,7 +101,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        public LocalBuilder this[String Name]
+        public LocalBuilder this[string Name]
         {
             get
             {
@@ -127,7 +127,7 @@ namespace BigCookieKit.Reflect
             return this.IsNull(this);
         }
 
-        public LocalBuilder GetValue(String FieldName)
+        public LocalBuilder GetValue(string FieldName)
         {
             if (!ContanisKey(FieldName)) ManagerGX.ShowEx("Entity property is null;");
             LocalBuilder item = generator.DeclareLocal(EntityBody[FieldName].type);
@@ -137,7 +137,7 @@ namespace BigCookieKit.Reflect
             return item;
         }
 
-        public void SetValue(String FieldName, LocalBuilder value)
+        public void SetValue(string FieldName, LocalBuilder value)
         {
             if (!ContanisKey(FieldName)) ManagerGX.ShowEx("Entity property is null;");
             Output();
@@ -145,7 +145,7 @@ namespace BigCookieKit.Reflect
             Emit(OpCodes.Callvirt, EntityBody[FieldName].set);
         }
 
-        private Boolean ContanisKey(String Name)
+        private bool ContanisKey(string Name)
         {
             return EntityBody.ContainsKey(Name);
         }

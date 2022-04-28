@@ -7,49 +7,49 @@ namespace BigCookieKit.Reflect
 {
     internal static partial class ManagerGX
     {
-        internal static FieldString NewString(this EmitBasic basic, String value = default(String))
+        internal static FieldString NewString(this EmitBasic basic, string value = default(string))
         {
             return new FieldString(NewField(basic, value), basic);
         }
 
-        internal static FieldBoolean NewBoolean(this EmitBasic basic, Boolean value = default(Boolean))
+        internal static FieldBoolean NewBoolean(this EmitBasic basic, bool value = default(bool))
         {
             return new FieldBoolean(NewField(basic, value), basic);
         }
 
-        internal static CanCompute<Byte> NewByte(this EmitBasic basic, Byte value = default(Byte))
+        internal static CanCompute<byte> NewByte(this EmitBasic basic, byte value = default(byte))
         {
-            return new CanCompute<Byte>(NewField(basic, value), basic);
+            return new CanCompute<byte>(NewField(basic, value), basic);
         }
 
-        internal static CanCompute<Int16> NewInt16(this EmitBasic basic, Int16 value = default(Int16))
+        internal static CanCompute<short> NewInt16(this EmitBasic basic, short value = default(short))
         {
-            return new CanCompute<Int16>(NewField(basic, value), basic);
+            return new CanCompute<short>(NewField(basic, value), basic);
         }
 
-        internal static CanCompute<Int32> NewInt32(this EmitBasic basic, Int32 value = default(Int32))
+        internal static CanCompute<int> NewInt32(this EmitBasic basic, int value = default(int))
         {
-            return new CanCompute<Int32>(NewField(basic, value), basic);
+            return new CanCompute<int>(NewField(basic, value), basic);
         }
 
-        internal static CanCompute<Int64> NewInt64(this EmitBasic basic, Int64 value = default(Int64))
+        internal static CanCompute<long> NewInt64(this EmitBasic basic, long value = default(long))
         {
-            return new CanCompute<Int64>(NewField(basic, value), basic);
+            return new CanCompute<long>(NewField(basic, value), basic);
         }
 
-        internal static CanCompute<Single> NewFloat(this EmitBasic basic, Single value = default(Single))
+        internal static CanCompute<float> NewFloat(this EmitBasic basic, float value = default(float))
         {
-            return new CanCompute<Single>(NewField(basic, value), basic);
+            return new CanCompute<float>(NewField(basic, value), basic);
         }
 
-        internal static CanCompute<Double> NewDouble(this EmitBasic basic, Double value = default(Double))
+        internal static CanCompute<double> NewDouble(this EmitBasic basic, double value = default(double))
         {
-            return new CanCompute<Double>(NewField(basic, value), basic);
+            return new CanCompute<double>(NewField(basic, value), basic);
         }
 
-        internal static CanCompute<Decimal> NewDecimal(this EmitBasic basic, Decimal value = default(Decimal))
+        internal static CanCompute<decimal> NewDecimal(this EmitBasic basic, decimal value = default(decimal))
         {
-            return new CanCompute<Decimal>(NewField(basic, value), basic);
+            return new CanCompute<decimal>(NewField(basic, value), basic);
         }
 
         internal static FieldDateTime NewDateTime(this EmitBasic basic, DateTime value = default(DateTime))
@@ -57,7 +57,7 @@ namespace BigCookieKit.Reflect
             return new FieldDateTime(NewField(basic, value), basic);
         }
 
-        internal static FieldObject NewObject(this EmitBasic basic, Object value = default(Object))
+        internal static FieldObject NewObject(this EmitBasic basic, object value = default(object))
         {
             return new FieldObject(NewField(basic, value), basic);
         }
@@ -83,7 +83,7 @@ namespace BigCookieKit.Reflect
             return new FieldEntity<T>(basic.MapToEntity(value), basic);
         }
 
-        internal static FieldArray<T> NewArray<T>(this EmitBasic basic, Int32 length = default(Int32))
+        internal static FieldArray<T> NewArray<T>(this EmitBasic basic, int length = default(int))
         {
             LocalBuilder item = basic.DeclareLocal(typeof(T[]));
             basic.IntegerMap(length);
@@ -101,7 +101,7 @@ namespace BigCookieKit.Reflect
             return new FieldArray<T>(item, basic, -1);
         }
 
-        internal static FieldArray NewArray(this EmitBasic basic, Type type, Int32 length = default(Int32))
+        internal static FieldArray NewArray(this EmitBasic basic, Type type, int length = default(int))
         {
             LocalBuilder item = basic.DeclareLocal(type);
             basic.IntegerMap(length);
@@ -135,17 +135,17 @@ namespace BigCookieKit.Reflect
             return new FieldList(item, basic);
         }
 
-        internal static void For(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
+        internal static void For(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<CanCompute<int>, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
             Label _break = basic.DefineLabel();
-            LocalBuilder index = basic.DeclareLocal(typeof(Int32));
+            LocalBuilder index = basic.DeclareLocal(typeof(int));
             basic.Emit(OpCodes.Ldloc_S, init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new CanCompute<Int32>(index, basic), new TabManager(basic, _break));
+            build?.Invoke(new CanCompute<int>(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Add);
@@ -158,17 +158,17 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-        internal static void For(this EmitBasic basic, Int32 init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
+        internal static void For(this EmitBasic basic, int init, LocalBuilder length, Action<CanCompute<int>, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
             Label _break = basic.DefineLabel();
-            LocalBuilder index = basic.DeclareLocal(typeof(Int32));
+            LocalBuilder index = basic.DeclareLocal(typeof(int));
             basic.IntegerMap(init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new CanCompute<Int32>(index, basic), new TabManager(basic, _break));
+            build?.Invoke(new CanCompute<int>(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Add);
@@ -181,17 +181,17 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-        internal static void For(this EmitBasic basic, Int32 init, Int32 length, Action<CanCompute<Int32>, TabManager> build)
+        internal static void For(this EmitBasic basic, int init, int length, Action<CanCompute<int>, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
             Label _break = basic.DefineLabel();
-            LocalBuilder index = basic.DeclareLocal(typeof(Int32));
+            LocalBuilder index = basic.DeclareLocal(typeof(int));
             basic.IntegerMap(init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new CanCompute<Int32>(index, basic), new TabManager(basic, _break));
+            build?.Invoke(new CanCompute<int>(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Add);
@@ -204,17 +204,17 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-        internal static void Forr(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
+        internal static void Forr(this EmitBasic basic, LocalBuilder init, LocalBuilder length, Action<CanCompute<int>, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
             Label _break = basic.DefineLabel();
-            LocalBuilder index = basic.DeclareLocal(typeof(Int32));
+            LocalBuilder index = basic.DeclareLocal(typeof(int));
             basic.Emit(OpCodes.Ldloc_S, init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new CanCompute<Int32>(index, basic), new TabManager(basic, _break));
+            build?.Invoke(new CanCompute<int>(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Sub);
@@ -226,17 +226,17 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-        internal static void Forr(this EmitBasic basic, Int32 init, LocalBuilder length, Action<CanCompute<Int32>, TabManager> build)
+        internal static void Forr(this EmitBasic basic, int init, LocalBuilder length, Action<CanCompute<int>, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
             Label _break = basic.DefineLabel();
-            LocalBuilder index = basic.DeclareLocal(typeof(Int32));
+            LocalBuilder index = basic.DeclareLocal(typeof(int));
             basic.IntegerMap(init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new CanCompute<Int32>(index, basic), new TabManager(basic, _break));
+            build?.Invoke(new CanCompute<int>(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Sub);
@@ -248,17 +248,17 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-        internal static void Forr(this EmitBasic basic, Int32 init, Int32 length, Action<CanCompute<Int32>, TabManager> build)
+        internal static void Forr(this EmitBasic basic, int init, int length, Action<CanCompute<int>, TabManager> build)
         {
             Label _for = basic.DefineLabel();
             Label _endfor = basic.DefineLabel();
             Label _break = basic.DefineLabel();
-            LocalBuilder index = basic.DeclareLocal(typeof(Int32));
+            LocalBuilder index = basic.DeclareLocal(typeof(int));
             basic.IntegerMap(init);
             basic.Emit(OpCodes.Stloc_S, index);
             basic.Emit(OpCodes.Br, _endfor);
             basic.MarkLabel(_for);
-            build?.Invoke(new CanCompute<Int32>(index, basic), new TabManager(basic, _break));
+            build?.Invoke(new CanCompute<int>(index, basic), new TabManager(basic, _break));
             basic.Emit(OpCodes.Ldloc_S, index);
             basic.Emit(OpCodes.Ldc_I4_1);
             basic.Emit(OpCodes.Sub);
@@ -270,17 +270,17 @@ namespace BigCookieKit.Reflect
             basic.MarkLabel(_break);
         }
 
-        internal static IEnumerable<KeyValuePair<String, FastProperty>> GetProps(PropertyInfo[] Props, Object Instance)
+        internal static IEnumerable<KeyValuePair<string, FastProperty>> GetProps(PropertyInfo[] Props, object Instance)
         {
             foreach (var Prop in Props)
             {
-                yield return new KeyValuePair<String, FastProperty>(Prop.Name, new FastProperty(Prop, Instance));
+                yield return new KeyValuePair<string, FastProperty>(Prop.Name, new FastProperty(Prop, Instance));
             }
         }
 
         internal static FieldBoolean IsNull(this EmitBasic basic, LocalBuilder value)
         {
-            LocalBuilder assert = basic.DeclareLocal(typeof(Boolean));
+            LocalBuilder assert = basic.DeclareLocal(typeof(bool));
             basic.Emit(OpCodes.Ldloc_S, value);
             basic.Emit(OpCodes.Ldnull);
             basic.Emit(OpCodes.Ceq);
@@ -288,12 +288,12 @@ namespace BigCookieKit.Reflect
             return new FieldBoolean(assert, basic);
         }
 
-        internal static void ShowEx(String Message)
+        internal static void ShowEx(string Message)
         {
             throw new Exception(Message);
         }
 
-        internal static void ShowEx<T>(String Message) where T : Exception
+        internal static void ShowEx<T>(string Message) where T : Exception
         {
             throw (T)Activator.CreateInstance(typeof(T), Message);
         }
@@ -330,7 +330,7 @@ namespace BigCookieKit.Reflect
             return model;
         }
 
-        private static LocalBuilder MapToEntity(this EmitBasic basic, Object instance, Type type)
+        private static LocalBuilder MapToEntity(this EmitBasic basic, object instance, Type type)
         {
             if (instance == null) ManagerGX.ShowEx("entity is not null!");
             var ctor = type.GetConstructor(Type.EmptyTypes);

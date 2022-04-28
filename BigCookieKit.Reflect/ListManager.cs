@@ -25,9 +25,9 @@ namespace BigCookieKit.Reflect
             Call("RemoveAt", value);
         }
 
-        public CanCompute<Int32> GetCount()
+        public CanCompute<int> GetCount()
         {
-            return new CanCompute<Int32>(Call("get_Count").ReturnRef(), generator);
+            return new CanCompute<int>(Call("get_Count").ReturnRef(), generator);
         }
     }
 
@@ -52,9 +52,9 @@ namespace BigCookieKit.Reflect
             Call("RemoveAt", value);
         }
 
-        public CanCompute<Int32> GetCount()
+        public CanCompute<int> GetCount()
         {
-            return new CanCompute<Int32>(Call("get_Count").ReturnRef(), generator);
+            return new CanCompute<int>(Call("get_Count").ReturnRef(), generator);
         }
     }
 }

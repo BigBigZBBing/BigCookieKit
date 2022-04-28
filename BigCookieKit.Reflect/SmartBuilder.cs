@@ -9,7 +9,7 @@ namespace BigCookieKit.Reflect
 {
     public class SmartBuilder
     {
-        private String dllName;
+        private string dllName;
         private AssemblyName assmblyName;
         private AssemblyBuilder assemblyBuilder;
         private ModuleBuilder moduleBuilder;
@@ -22,11 +22,11 @@ namespace BigCookieKit.Reflect
         private MethodBuilder methodBuilder;
         private ILGenerator MainIL;
         private Type _dymaticType;
-        private Object _instance;
+        private object _instance;
 
         public object Instance { get => _instance; set => _instance = value; }
 
-        public SmartBuilder(String dllName)
+        public SmartBuilder(string dllName)
         {
             this.dllName = dllName;
             ModuleProcess();
@@ -51,12 +51,12 @@ namespace BigCookieKit.Reflect
 #endif
         }
 
-        public ClassStroke Class(String ClassName, ClassQualifier ClassType = ClassQualifier.Public)
+        public ClassStroke Class(string ClassName, ClassQualifier ClassType = ClassQualifier.Public)
         {
             return Class(ClassName, (TypeAttributes)ClassType);
         }
 
-        public ClassStroke Class(String ClassName, TypeAttributes ClassType)
+        public ClassStroke Class(string ClassName, TypeAttributes ClassType)
         {
             typeBuilder = moduleBuilder.DefineType(ClassName, ClassType);
 
@@ -87,24 +87,24 @@ namespace BigCookieKit.Reflect
             return new CtorStroke(constructorBuilder);
         }
 
-        public FieldStroke Field(String FieldName, Type Type, FieldQualifier FieldType = FieldQualifier.Public)
+        public FieldStroke Field(string FieldName, Type Type, FieldQualifier FieldType = FieldQualifier.Public)
         {
             return Field(FieldName, Type, (FieldAttributes)FieldType);
         }
 
-        public FieldStroke Field(String FieldName, Type Type, FieldAttributes Attr)
+        public FieldStroke Field(string FieldName, Type Type, FieldAttributes Attr)
         {
             fieldBuilder = typeBuilder.DefineField(FieldName, Type, Attr);
 
             return new FieldStroke(fieldBuilder, publicBuilder, staticBuilder);
         }
 
-        public PropertyStroke Property(String PropertyName, Type Type, PropertyQualifier PropertyType = PropertyQualifier.Public)
+        public PropertyStroke Property(string PropertyName, Type Type, PropertyQualifier PropertyType = PropertyQualifier.Public)
         {
             return Property(PropertyName, Type, (MethodAttributes)PropertyType);
         }
 
-        public PropertyStroke Property(String PropertyName, Type Type, MethodAttributes Attr)
+        public PropertyStroke Property(string PropertyName, Type Type, MethodAttributes Attr)
         {
             var fieldStroke = Field($"<{PropertyName}>k__BackingField", Type);
             fieldStroke.AddAttribute(typeof(CompilerGeneratedAttribute).GetConstructor(Type.EmptyTypes), 01, 00, 00, 00);
@@ -117,12 +117,12 @@ namespace BigCookieKit.Reflect
             return new PropertyStroke(propertyBuilder, fieldStroke);
         }
 
-        public MethodStroke Method(String MethodName, Type RetType = null, Type[] ParamTypes = null, MethodQualifier MethodType = MethodQualifier.Public)
+        public MethodStroke Method(string MethodName, Type RetType = null, Type[] ParamTypes = null, MethodQualifier MethodType = MethodQualifier.Public)
         {
             return Method(MethodName, RetType, ParamTypes, (MethodAttributes)MethodType);
         }
 
-        public MethodStroke Method(String MethodName, Type RetType, Type[] ParamTypes, MethodAttributes Attr)
+        public MethodStroke Method(string MethodName, Type RetType, Type[] ParamTypes, MethodAttributes Attr)
         {
             methodBuilder = typeBuilder.DefineMethod(
                 MethodName,
@@ -134,7 +134,7 @@ namespace BigCookieKit.Reflect
             return new MethodStroke(methodBuilder);
         }
 
-        internal void get_Item(String PropertyName, Type Type, MethodAttributes Attr)
+        internal void get_Item(string PropertyName, Type Type, MethodAttributes Attr)
         {
             methodBuilder = typeBuilder.DefineMethod(
                 "get_" + PropertyName,
@@ -159,7 +159,7 @@ namespace BigCookieKit.Reflect
             propertyBuilder.SetGetMethod(methodBuilder);
         }
 
-        internal void set_Item(String PropertyName, Type Type, MethodAttributes Attr)
+        internal void set_Item(string PropertyName, Type Type, MethodAttributes Attr)
         {
             methodBuilder = typeBuilder.DefineMethod(
                 "set_" + PropertyName,
@@ -218,7 +218,7 @@ namespace BigCookieKit.Reflect
             return FastDynamic.GetFastDynamic(Generation());
         }
 
-        public static T DynamicMethod<T>(String MethodName, Action<FuncGenerator> builder) where T : class
+        public static T DynamicMethod<T>(string MethodName, Action<FuncGenerator> builder) where T : class
         {
             var type = typeof(T);
 

@@ -30,7 +30,7 @@ namespace BigCookieKit.Reflect
 
         public FieldBoolean HasValue()
         {
-            LocalBuilder Has = DeclareLocal(typeof(Boolean));
+            LocalBuilder Has = DeclareLocal(typeof(bool));
             generator.Emit(OpCodes.Ldloca_S, instance);
             Emit(OpCodes.Call, HasValueInfo);
             generator.Emit(OpCodes.Stloc_S, Has);

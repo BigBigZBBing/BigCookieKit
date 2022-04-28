@@ -3,13 +3,13 @@ using System.Reflection.Emit;
 
 namespace BigCookieKit.Reflect
 {
-    public class FieldBoolean : FieldManager<Boolean>
+    public class FieldBoolean : FieldManager<bool>
     {
         internal FieldBoolean(LocalBuilder stack, ILGenerator il) : base(stack, il)
         {
         }
 
-        public static FieldBoolean operator ==(FieldBoolean field, Boolean value)
+        public static FieldBoolean operator ==(FieldBoolean field, bool value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
@@ -24,7 +24,7 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
 
-        public static FieldBoolean operator !=(FieldBoolean field, Boolean value)
+        public static FieldBoolean operator !=(FieldBoolean field, bool value)
         {
             return ManagerGX.Comparer(
                 ManagerGX.Comparer(field, value, OpCodes.Ceq),

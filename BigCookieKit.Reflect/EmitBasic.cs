@@ -9,7 +9,7 @@ namespace BigCookieKit.Reflect
     {
         internal ILGenerator generator;
 
-        internal Boolean tiggerPop;
+        internal bool tiggerPop;
 
         private Dictionary<Type, Delegate> emitMethod => new Dictionary<Type, Delegate>();
 
@@ -34,7 +34,7 @@ namespace BigCookieKit.Reflect
 
         public void BeginScope() => generator.BeginScope();
 
-        public void Emit(OpCode opcode, String str) => DispatchEmit(opcode, str);
+        public void Emit(OpCode opcode, string str) => DispatchEmit(opcode, str);
 
         public void Emit(OpCode opcode, FieldInfo field) => DispatchEmit(opcode, field);
 
@@ -44,21 +44,21 @@ namespace BigCookieKit.Reflect
 
         public void Emit(OpCode opcode, LocalBuilder local) => DispatchEmit(opcode, local);
 
-        public void Emit(OpCode opcode, Single arg) => DispatchEmit(opcode, arg);
+        public void Emit(OpCode opcode, float arg) => DispatchEmit(opcode, arg);
 
-        public void Emit(OpCode opcode, Byte arg) => DispatchEmit(opcode, arg);
+        public void Emit(OpCode opcode, byte arg) => DispatchEmit(opcode, arg);
 
-        public void Emit(OpCode opcode, SByte arg) => DispatchEmit(opcode, arg);
+        public void Emit(OpCode opcode, sbyte arg) => DispatchEmit(opcode, arg);
 
-        public void Emit(OpCode opcode, Int16 arg) => DispatchEmit(opcode, arg);
+        public void Emit(OpCode opcode, short arg) => DispatchEmit(opcode, arg);
 
-        public void Emit(OpCode opcode, Double arg) => DispatchEmit(opcode, arg);
+        public void Emit(OpCode opcode, double arg) => DispatchEmit(opcode, arg);
 
         public void Emit(OpCode opcode, MethodInfo meth) => DispatchEmit(opcode, meth);
 
-        public void Emit(OpCode opcode, Int32 arg) => DispatchEmit(opcode, arg);
+        public void Emit(OpCode opcode, int arg) => DispatchEmit(opcode, arg);
 
-        public void Emit(OpCode opcode, Int64 arg) => DispatchEmit(opcode, arg);
+        public void Emit(OpCode opcode, long arg) => DispatchEmit(opcode, arg);
 
         public void Emit(OpCode opcode, Type cls) => DispatchEmit(opcode, cls);
 
@@ -70,7 +70,7 @@ namespace BigCookieKit.Reflect
 
         public void MarkLabel(Label loc) => generator.MarkLabel(loc);
 
-        public LocalBuilder DeclareLocal(Type localType, Boolean pinned) => RedirectLocal(localType, pinned);
+        public LocalBuilder DeclareLocal(Type localType, bool pinned) => RedirectLocal(localType, pinned);
 
         public LocalBuilder DeclareLocal(Type localType) => RedirectLocal(localType);
 
@@ -120,7 +120,7 @@ namespace BigCookieKit.Reflect
         private void CheckOverLength(ref OpCode opcode)
         {
 #if NOTSHORTFORMAT
-            if (generator.ILOffset > Byte.MaxValue)
+            if (generator.ILOffset > byte.MaxValue)
             {
 #endif
             if (OpCodes.Stloc_S == opcode) opcode = OpCodes.Stloc;
@@ -149,7 +149,7 @@ namespace BigCookieKit.Reflect
 #endif
         }
 
-        private LocalBuilder RedirectLocal(Type localType, Boolean pinned = false)
+        private LocalBuilder RedirectLocal(Type localType, bool pinned = false)
         {
             var local = generator.DeclareLocal(localType, pinned);
             return local;

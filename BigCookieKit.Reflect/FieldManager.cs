@@ -31,19 +31,19 @@ namespace BigCookieKit.Reflect
 
         //public static implicit operator FieldDecimal(FieldManager<T> field) => new FieldDecimal(field.instance, field.generator);
 
-        public static implicit operator CanCompute<Byte>(FieldManager<T> field) => new CanCompute<Byte>(field.instance, field.generator);
+        public static implicit operator CanCompute<byte>(FieldManager<T> field) => new CanCompute<byte>(field.instance, field.generator);
 
-        public static implicit operator CanCompute<Int16>(FieldManager<T> field) => new CanCompute<Int16>(field.instance, field.generator);
+        public static implicit operator CanCompute<short>(FieldManager<T> field) => new CanCompute<short>(field.instance, field.generator);
 
-        public static implicit operator CanCompute<Int32>(FieldManager<T> field) => new CanCompute<Int32>(field.instance, field.generator);
+        public static implicit operator CanCompute<int>(FieldManager<T> field) => new CanCompute<int>(field.instance, field.generator);
 
-        public static implicit operator CanCompute<Int64>(FieldManager<T> field) => new CanCompute<Int64>(field.instance, field.generator);
+        public static implicit operator CanCompute<long>(FieldManager<T> field) => new CanCompute<long>(field.instance, field.generator);
 
-        public static implicit operator CanCompute<Single>(FieldManager<T> field) => new CanCompute<Single>(field.instance, field.generator);
+        public static implicit operator CanCompute<float>(FieldManager<T> field) => new CanCompute<float>(field.instance, field.generator);
 
-        public static implicit operator CanCompute<Double>(FieldManager<T> field) => new CanCompute<Double>(field.instance, field.generator);
+        public static implicit operator CanCompute<double>(FieldManager<T> field) => new CanCompute<double>(field.instance, field.generator);
 
-        public static implicit operator CanCompute<Decimal>(FieldManager<T> field) => new CanCompute<Decimal>(field.instance, field.generator);
+        public static implicit operator CanCompute<decimal>(FieldManager<T> field) => new CanCompute<decimal>(field.instance, field.generator);
     }
 
     public class FieldManager : VariableManager
@@ -61,17 +61,17 @@ namespace BigCookieKit.Reflect
             Output();
             if (identity.IsValueType)
             {
-                Emit(OpCodes.Box, typeof(Object));
+                Emit(OpCodes.Box, typeof(object));
             }
             else
             {
-                Emit(OpCodes.Castclass, typeof(Object));
+                Emit(OpCodes.Castclass, typeof(object));
             }
             temp.Input();
             return temp;
         }
 
-        public virtual MethodManager Call(String methodName, params LocalBuilder[] parameters)
+        public virtual MethodManager Call(string methodName, params LocalBuilder[] parameters)
         {
             return this.ReflectMethod(methodName, identity, parameters);
         }

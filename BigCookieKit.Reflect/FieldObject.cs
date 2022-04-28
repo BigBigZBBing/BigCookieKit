@@ -4,7 +4,7 @@ using System.Reflection.Emit;
 
 namespace BigCookieKit.Reflect
 {
-    public class FieldObject : FieldManager<Object>
+    public class FieldObject : FieldManager<object>
     {
         internal Type asidentity { get; set; }
 
@@ -35,7 +35,7 @@ namespace BigCookieKit.Reflect
 
         public FieldBoolean IsNull()
         {
-            LocalBuilder assert = DeclareLocal(typeof(Boolean));
+            LocalBuilder assert = DeclareLocal(typeof(bool));
             Output();
             Emit(OpCodes.Ldnull);
             Emit(OpCodes.Ceq);
@@ -179,12 +179,12 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        public override MethodManager Call(String methodName, params LocalBuilder[] parameters)
+        public override MethodManager Call(string methodName, params LocalBuilder[] parameters)
         {
             return this.ReflectMethod(methodName, asidentity, parameters);
         }
 
-        public static FieldBoolean operator ==(FieldObject field, Object value)
+        public static FieldBoolean operator ==(FieldObject field, object value)
         {
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
@@ -199,7 +199,7 @@ namespace BigCookieKit.Reflect
             return ManagerGX.Comparer(field, value, OpCodes.Ceq);
         }
 
-        public static FieldBoolean operator !=(FieldObject field, Object value)
+        public static FieldBoolean operator !=(FieldObject field, object value)
         {
             return ManagerGX.Comparer(
                ManagerGX.Comparer(field, value, OpCodes.Ceq),

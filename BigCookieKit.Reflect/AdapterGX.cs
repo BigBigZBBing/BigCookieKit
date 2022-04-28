@@ -12,11 +12,11 @@ namespace BigCookieKit.Reflect
             {
                 basic.Emit(OpCodes.Ldnull);
             }
-            else if (value.GetType() == typeof(String))
+            else if (value.GetType() == typeof(string))
             {
                 basic.Emit(OpCodes.Ldstr, Convert.ToString(value));
             }
-            else if (value.GetType() == typeof(Boolean))
+            else if (value.GetType() == typeof(bool))
             {
                 switch (Convert.ToBoolean(value))
                 {
@@ -25,61 +25,61 @@ namespace BigCookieKit.Reflect
                     default: throw new Exception("boolean to error!");
                 }
             }
-            else if (value.GetType() == typeof(SByte))
+            else if (value.GetType() == typeof(sbyte))
             {
                 basic.IntegerMap(Convert.ToSByte(value));
             }
-            else if (value.GetType() == typeof(Byte))
+            else if (value.GetType() == typeof(byte))
             {
-                basic.IntegerMap((SByte)Convert.ToByte(value));
+                basic.IntegerMap((sbyte)Convert.ToByte(value));
             }
-            else if (value.GetType() == typeof(Int16))
+            else if (value.GetType() == typeof(short))
             {
                 basic.IntegerMap(Convert.ToInt16(value));
             }
-            else if (value.GetType() == typeof(UInt16))
+            else if (value.GetType() == typeof(ushort))
             {
-                basic.IntegerMap((Int16)Convert.ToUInt16(value));
+                basic.IntegerMap((short)Convert.ToUInt16(value));
             }
-            else if (value.GetType() == typeof(Int32))
+            else if (value.GetType() == typeof(int))
             {
                 basic.IntegerMap(Convert.ToInt32(value));
             }
-            else if (value.GetType() == typeof(UInt32))
+            else if (value.GetType() == typeof(uint))
             {
-                basic.IntegerMap((Int32)Convert.ToUInt32(value));
+                basic.IntegerMap((int)Convert.ToUInt32(value));
             }
-            else if (value.GetType() == typeof(Int64))
+            else if (value.GetType() == typeof(long))
             {
                 basic.IntegerMap(Convert.ToInt64(value));
             }
-            else if (value.GetType() == typeof(UInt64))
+            else if (value.GetType() == typeof(ulong))
             {
-                basic.IntegerMap((Int64)Convert.ToUInt64(value));
+                basic.IntegerMap((long)Convert.ToUInt64(value));
             }
-            else if (value.GetType() == typeof(Single))
+            else if (value.GetType() == typeof(float))
             {
                 basic.Emit(OpCodes.Ldc_R4, Convert.ToSingle(value));
             }
-            else if (value.GetType() == typeof(Double))
+            else if (value.GetType() == typeof(double))
             {
                 basic.Emit(OpCodes.Ldc_R8, Convert.ToDouble(value));
             }
-            else if (value.GetType() == typeof(Decimal))
+            else if (value.GetType() == typeof(decimal))
             {
-                Int32[] bits = Decimal.GetBits(Convert.ToDecimal(value));
+                int[] bits = decimal.GetBits(Convert.ToDecimal(value));
                 basic.IntegerMap(bits[0]);
                 basic.IntegerMap(bits[1]);
                 basic.IntegerMap(bits[2]);
                 basic.Emit((bits[3] & 0x80000000) != 0 ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
                 basic.IntegerMap((bits[3] >> 16) & 0x7f);
-                basic.Emit(OpCodes.Newobj, typeof(Decimal)
-                    .GetConstructor(new Type[] { typeof(Int32), typeof(Int32), typeof(Int32), typeof(Boolean), typeof(Byte) }));
+                basic.Emit(OpCodes.Newobj, typeof(decimal)
+                    .GetConstructor(new Type[] { typeof(int), typeof(int), typeof(int), typeof(bool), typeof(byte) }));
             }
             else if (value.GetType() == typeof(DateTime))
             {
                 basic.Emit(OpCodes.Ldc_I8, Convert.ToDateTime(value).Ticks);
-                basic.Emit(OpCodes.Newobj, typeof(DateTime).GetConstructor(new Type[] { typeof(Int64) }));
+                basic.Emit(OpCodes.Newobj, typeof(DateTime).GetConstructor(new Type[] { typeof(long) }));
             }
             else if (value is Enum)
             {
@@ -95,13 +95,13 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        internal static void EmitValue(this EmitBasic basic, Object value, Type type)
+        internal static void EmitValue(this EmitBasic basic, object value, Type type)
         {
-            if (type == typeof(String))
+            if (type == typeof(string))
             {
                 basic.Emit(OpCodes.Ldstr, Convert.ToString(value));
             }
-            else if (type == typeof(Boolean))
+            else if (type == typeof(bool))
             {
                 switch (Convert.ToBoolean(value))
                 {
@@ -110,61 +110,61 @@ namespace BigCookieKit.Reflect
                     default: throw new Exception("boolean to error!");
                 }
             }
-            else if (type == typeof(SByte))
+            else if (type == typeof(sbyte))
             {
                 basic.IntegerMap(Convert.ToSByte(value));
             }
-            else if (type == typeof(Byte))
+            else if (type == typeof(byte))
             {
-                basic.IntegerMap((SByte)Convert.ToByte(value));
+                basic.IntegerMap((sbyte)Convert.ToByte(value));
             }
-            else if (type == typeof(Int16))
+            else if (type == typeof(short))
             {
                 basic.IntegerMap(Convert.ToInt16(value));
             }
-            else if (type == typeof(UInt16))
+            else if (type == typeof(ushort))
             {
-                basic.IntegerMap((Int16)Convert.ToUInt16(value));
+                basic.IntegerMap((short)Convert.ToUInt16(value));
             }
-            else if (type == typeof(Int32))
+            else if (type == typeof(int))
             {
                 basic.IntegerMap(Convert.ToInt32(value));
             }
-            else if (type == typeof(UInt32))
+            else if (type == typeof(uint))
             {
-                basic.IntegerMap((Int32)Convert.ToUInt32(value));
+                basic.IntegerMap((int)Convert.ToUInt32(value));
             }
-            else if (type == typeof(Int64))
+            else if (type == typeof(long))
             {
                 basic.IntegerMap(Convert.ToInt64(value));
             }
-            else if (type == typeof(UInt64))
+            else if (type == typeof(ulong))
             {
-                basic.IntegerMap((Int64)Convert.ToUInt64(value));
+                basic.IntegerMap((long)Convert.ToUInt64(value));
             }
-            else if (type == typeof(Single))
+            else if (type == typeof(float))
             {
                 basic.Emit(OpCodes.Ldc_R4, Convert.ToSingle(value));
             }
-            else if (type == typeof(Double))
+            else if (type == typeof(double))
             {
                 basic.Emit(OpCodes.Ldc_R8, Convert.ToDouble(value));
             }
-            else if (type == typeof(Decimal))
+            else if (type == typeof(decimal))
             {
-                Int32[] bits = Decimal.GetBits(Convert.ToDecimal(value));
+                int[] bits = decimal.GetBits(Convert.ToDecimal(value));
                 basic.IntegerMap(bits[0]);
                 basic.IntegerMap(bits[1]);
                 basic.IntegerMap(bits[2]);
                 basic.Emit((bits[3] & 0x80000000) != 0 ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
                 basic.IntegerMap((bits[3] >> 16) & 0x7f);
-                basic.Emit(OpCodes.Newobj, typeof(Decimal)
-                    .GetConstructor(new Type[] { typeof(Int32), typeof(Int32), typeof(Int32), typeof(Boolean), typeof(Byte) }));
+                basic.Emit(OpCodes.Newobj, typeof(decimal)
+                    .GetConstructor(new Type[] { typeof(int), typeof(int), typeof(int), typeof(bool), typeof(byte) }));
             }
             else if (type == typeof(DateTime))
             {
                 basic.Emit(OpCodes.Ldc_I8, Convert.ToDateTime(value).Ticks);
-                basic.Emit(OpCodes.Newobj, typeof(DateTime).GetConstructor(new Type[] { typeof(Int64) }));
+                basic.Emit(OpCodes.Newobj, typeof(DateTime).GetConstructor(new Type[] { typeof(long) }));
             }
             else
             {
@@ -172,7 +172,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        internal static void IntegerMap(this EmitBasic basic, Int64 value)
+        internal static void IntegerMap(this EmitBasic basic, long value)
         {
             switch (value)
             {
@@ -187,15 +187,15 @@ namespace BigCookieKit.Reflect
                 case 7: basic.Emit(OpCodes.Ldc_I4_7); break;
                 case 8: basic.Emit(OpCodes.Ldc_I4_8); break;
                 default:
-                    if (value < Int64.MinValue || value > Int64.MaxValue)
+                    if (value < long.MinValue || value > long.MaxValue)
                     {
                         ShowEx("IntegerMap 数值溢出");
                     }
-                    else if (value < Int32.MinValue || value > Int32.MaxValue)
+                    else if (value < int.MinValue || value > int.MaxValue)
                     {
                         basic.Emit(OpCodes.Ldc_I8, value);
                     }
-                    else if (value < SByte.MinValue || value > SByte.MaxValue)
+                    else if (value < sbyte.MinValue || value > sbyte.MaxValue)
                     {
                         basic.Emit(OpCodes.Ldc_I4, value);
                     }
@@ -209,55 +209,55 @@ namespace BigCookieKit.Reflect
 
         internal static void PopArray(this EmitBasic basic, Type type)
         {
-            if (type == typeof(String))
+            if (type == typeof(string))
             {
                 basic.Emit(OpCodes.Ldelem_Ref);
             }
-            else if (type == typeof(Boolean))
+            else if (type == typeof(bool))
             {
                 basic.Emit(OpCodes.Ldelem_I1);
             }
-            else if (type == typeof(SByte))
+            else if (type == typeof(sbyte))
             {
                 basic.Emit(OpCodes.Ldelem_I1);
             }
-            else if (type == typeof(Byte))
+            else if (type == typeof(byte))
             {
                 basic.Emit(OpCodes.Ldelem_I1);
             }
-            else if (type == typeof(Int16))
+            else if (type == typeof(short))
             {
                 basic.Emit(OpCodes.Ldelem_I2);
             }
-            else if (type == typeof(UInt16))
+            else if (type == typeof(ushort))
             {
                 basic.Emit(OpCodes.Ldelem_I2);
             }
-            else if (type == typeof(Int32))
+            else if (type == typeof(int))
             {
                 basic.Emit(OpCodes.Ldelem_I4);
             }
-            else if (type == typeof(UInt32))
+            else if (type == typeof(uint))
             {
                 basic.Emit(OpCodes.Ldelem_I4);
             }
-            else if (type == typeof(Int64))
+            else if (type == typeof(long))
             {
                 basic.Emit(OpCodes.Ldelem_I8);
             }
-            else if (type == typeof(UInt64))
+            else if (type == typeof(ulong))
             {
                 basic.Emit(OpCodes.Ldelem_I8);
             }
-            else if (type == typeof(Single))
+            else if (type == typeof(float))
             {
                 basic.Emit(OpCodes.Ldelem_R4);
             }
-            else if (type == typeof(Double))
+            else if (type == typeof(double))
             {
                 basic.Emit(OpCodes.Ldelem_R8);
             }
-            else if (type == typeof(Decimal))
+            else if (type == typeof(decimal))
             {
                 basic.Emit(OpCodes.Ldelem);
             }
@@ -269,55 +269,55 @@ namespace BigCookieKit.Reflect
 
         internal static void PushArray(this EmitBasic basic, Type type)
         {
-            if (type == typeof(String))
+            if (type == typeof(string))
             {
                 basic.Emit(OpCodes.Stelem_Ref);
             }
-            else if (type == typeof(Boolean))
+            else if (type == typeof(bool))
             {
                 basic.Emit(OpCodes.Stelem_I1);
             }
-            else if (type == typeof(SByte))
+            else if (type == typeof(sbyte))
             {
                 basic.Emit(OpCodes.Stelem_I1);
             }
-            else if (type == typeof(Byte))
+            else if (type == typeof(byte))
             {
                 basic.Emit(OpCodes.Stelem_I1);
             }
-            else if (type == typeof(Int16))
+            else if (type == typeof(short))
             {
                 basic.Emit(OpCodes.Stelem_I2);
             }
-            else if (type == typeof(UInt16))
+            else if (type == typeof(ushort))
             {
                 basic.Emit(OpCodes.Stelem_I2);
             }
-            else if (type == typeof(Int32))
+            else if (type == typeof(int))
             {
                 basic.Emit(OpCodes.Stelem_I4);
             }
-            else if (type == typeof(UInt32))
+            else if (type == typeof(uint))
             {
                 basic.Emit(OpCodes.Stelem_I4);
             }
-            else if (type == typeof(Int64))
+            else if (type == typeof(long))
             {
                 basic.Emit(OpCodes.Stelem_I8);
             }
-            else if (type == typeof(UInt64))
+            else if (type == typeof(ulong))
             {
                 basic.Emit(OpCodes.Stelem_I8);
             }
-            else if (type == typeof(Single))
+            else if (type == typeof(float))
             {
                 basic.Emit(OpCodes.Stelem_R4);
             }
-            else if (type == typeof(Double))
+            else if (type == typeof(double))
             {
                 basic.Emit(OpCodes.Stelem_R8);
             }
-            else if (type == typeof(Decimal))
+            else if (type == typeof(decimal))
             {
                 basic.Emit(OpCodes.Stelem);
             }

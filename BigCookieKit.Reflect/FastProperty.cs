@@ -10,17 +10,17 @@ namespace BigCookieKit.Reflect
 
         private PropertyGetterEmit getter;
 
-        public String PropertyName { get; private set; }
+        public string PropertyName { get; private set; }
 
         public Type PropertyType { get; private set; }
 
-        public Object Instance { get; private set; }
+        public object Instance { get; private set; }
 
         public MethodInfo GetMethod { get; private set; }
 
         public MethodInfo SetMethod { get; private set; }
 
-        public FastProperty(PropertyInfo propertyInfo, Object Instance = null)
+        public FastProperty(PropertyInfo propertyInfo, object Instance = null)
         {
             if (propertyInfo == null)
             {
@@ -48,7 +48,7 @@ namespace BigCookieKit.Reflect
             this.Instance = Instance;
         }
 
-        public void Set(Object value)
+        public void Set(object value)
         {
             if (Instance == null)
             {
@@ -57,7 +57,7 @@ namespace BigCookieKit.Reflect
             this.setter?.Invoke(Instance, value);
         }
 
-        public Object Get()
+        public object Get()
         {
             if (Instance == null)
             {
@@ -66,7 +66,7 @@ namespace BigCookieKit.Reflect
             return this.getter?.Invoke(Instance);
         }
 
-        public void Set(Object instance, Object value)
+        public void Set(object instance, object value)
         {
             if (instance == null)
             {
@@ -75,7 +75,7 @@ namespace BigCookieKit.Reflect
             this.setter?.Invoke(instance, value);
         }
 
-        public Object Get(Object instance)
+        public object Get(object instance)
         {
             if (instance == null)
             {
@@ -87,7 +87,7 @@ namespace BigCookieKit.Reflect
 
     internal class PropertyGetterEmit
     {
-        private readonly Func<Object, Object> getter;
+        private readonly Func<object, object> getter;
 
         public PropertyGetterEmit(PropertyInfo propertyInfo)
         {
@@ -99,19 +99,19 @@ namespace BigCookieKit.Reflect
             this.getter = CreateGetterEmit(propertyInfo);
         }
 
-        public Object Invoke(Object instance)
+        public object Invoke(object instance)
         {
             return getter?.Invoke(instance);
         }
 
-        private Func<Object, Object> CreateGetterEmit(PropertyInfo property)
+        private Func<object, object> CreateGetterEmit(PropertyInfo property)
         {
             if (property == null)
                 throw new ArgumentNullException("property");
 
             MethodInfo getMethod = property.GetGetMethod(true);
 
-            DynamicMethod dm = new DynamicMethod("PropertyGetter", typeof(Object), new Type[] { typeof(Object) }, property.DeclaringType, true);
+            DynamicMethod dm = new DynamicMethod("PropertyGetter", typeof(object), new Type[] { typeof(object) }, property.DeclaringType, true);
 
             ILGenerator il = dm.GetILGenerator();
 
@@ -131,13 +131,13 @@ namespace BigCookieKit.Reflect
 
             il.Emit(OpCodes.Ret);
 
-            return (Func<Object, Object>)dm.CreateDelegate(typeof(Func<Object, Object>));
+            return (Func<object, object>)dm.CreateDelegate(typeof(Func<object, object>));
         }
     }
 
     internal class PropertySetterEmit
     {
-        private readonly Action<Object, Object> setFunc;
+        private readonly Action<object, object> setFunc;
 
         public PropertySetterEmit(PropertyInfo propertyInfo)
         {
@@ -149,14 +149,14 @@ namespace BigCookieKit.Reflect
             this.setFunc = CreatePropertySetter(propertyInfo);
         }
 
-        private Action<Object, Object> CreatePropertySetter(PropertyInfo property)
+        private Action<object, object> CreatePropertySetter(PropertyInfo property)
         {
             if (property == null)
                 throw new ArgumentNullException("property");
 
             MethodInfo setMethod = property.GetSetMethod(true);
 
-            DynamicMethod dm = new DynamicMethod("PropertySetter", null, new Type[] { typeof(Object), typeof(Object) }, property.DeclaringType, true);
+            DynamicMethod dm = new DynamicMethod("PropertySetter", null, new Type[] { typeof(object), typeof(object) }, property.DeclaringType, true);
 
             ILGenerator il = dm.GetILGenerator();
 
@@ -180,7 +180,7 @@ namespace BigCookieKit.Reflect
 
             il.Emit(OpCodes.Ret);
 
-            return (Action<Object, Object>)dm.CreateDelegate(typeof(Action<Object, Object>));
+            return (Action<object, object>)dm.CreateDelegate(typeof(Action<object, object>));
         }
 
         private static void EmitCastToReference(ILGenerator il, Type type)
@@ -195,7 +195,7 @@ namespace BigCookieKit.Reflect
             }
         }
 
-        public void Invoke(Object instance, Object value)
+        public void Invoke(object instance, object value)
         {
             this.setFunc?.Invoke(instance, value);
         }
