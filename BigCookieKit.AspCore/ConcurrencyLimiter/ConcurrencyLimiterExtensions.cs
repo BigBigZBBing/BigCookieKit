@@ -41,11 +41,10 @@ namespace BigCookieKit.AspCore.ConcurrencyLimiter
         private readonly ILogger _logger;
         private static readonly ConcurrentDictionary<string, ActionLimter> _cacheQueue = new ConcurrentDictionary<string, ActionLimter>();
 
-        public ConcurrencyLimiterMiddleware(RequestDelegate nextDelegate, IConfiguration configuration, ILogger<ConcurrencyLimiterMiddleware> logger)
+        public ConcurrencyLimiterMiddleware(RequestDelegate nextDelegate, IConfiguration configuration)
         {
             _nextDelegate = nextDelegate;
             _configuration = configuration;
-            _logger = logger;
         }
 
         public Task Invoke(HttpContext httpContext)
