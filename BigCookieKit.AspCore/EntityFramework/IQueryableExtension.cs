@@ -15,6 +15,13 @@ namespace BigCookieKit.AspCore.EntityFramework
 {
     public static class IQueryableExtension
     {
+        /// <summary>
+        /// 根据查询模型来筛选
+        /// </summary>
+        /// <typeparam name="T">查询模型</typeparam>
+        /// <param name="source">子查询</param>
+        /// <param name="dto">查询模型</param>
+        /// <returns></returns>
         public static IQueryable<T> Where<T>(this IQueryable<T> source, object dto)
             where T : class
         {
@@ -52,6 +59,48 @@ namespace BigCookieKit.AspCore.EntityFramework
             return source;
         }
 
+        /// <summary>
+        /// 新增并保存
+        /// </summary>
+        /// <typeparam name="T">模型</typeparam>
+        /// <param name="context">上下文</param>
+        /// <param name="model">模型</param>
+        /// <returns></returns>
+        public static bool AddOrSave<T>(this DbContext context, T model) where T : DbModel
+        {
+            context.Set<T>().Add(model);
+            if (context.SaveChanges() > 0)
+                return true;
+            return false;
+        }
+
+        /// <summary>
+        /// 更新并保存
+        /// </summary>
+        /// <typeparam name="T">模型</typeparam>
+        /// <param name="context">上下文</param>
+        /// <param name="model">模型</param>
+        /// <returns></returns>
+        public static bool UpdateOrSave<T>(this DbContext context, T model) where T : UpdateModel
+        {
+            var entity = context.Set<T>().FirstOrDefault(x => x.Id == model.Id);
+            if (entity == null) return false;
+            model.CopyTo(entity);
+            context.Set<T>().Update(entity);
+            if (context.SaveChanges() > 0)
+                return true;
+            return false;
+        }
+
+        /// <summary>
+        /// 内存关联
+        /// </summary>
+        /// <typeparam name="T">目标类型</typeparam>
+        /// <typeparam name="T1">左类型</typeparam>
+        /// <typeparam name="T2">右类型</typeparam>
+        /// <param name="source">关联数据源</param>
+        /// <param name="selector">关联逻辑</param>
+        /// <returns></returns>
         public static IEnumerable<T> Select<T, T1, T2>(this IEnumerable<JoinSelect<T1, T2>> source, Func<T1, T2, T> selector)
             where T : class
             where T1 : class
