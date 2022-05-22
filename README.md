@@ -6,7 +6,7 @@
 
 替代表达式树 作为更高性能的解决方案
 
-##### BigCookieKit.Communication 高性能通信库
+##### BigCookieKit.Network 高性能通信库
 
 使用SEAE异步方式以及极简化结构实现通信
 
