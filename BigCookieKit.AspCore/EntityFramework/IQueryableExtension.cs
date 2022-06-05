@@ -15,14 +15,7 @@ namespace BigCookieKit.AspCore.EntityFramework
 {
     public static class IQueryableExtension
     {
-        /// <summary>
-        /// 根据查询模型来筛选
-        /// </summary>
-        /// <typeparam name="T">查询模型</typeparam>
-        /// <param name="source">子查询</param>
-        /// <param name="dto">查询模型</param>
-        /// <returns></returns>
-        public static IQueryable<T> Where<T>(this IQueryable<T> source, object dto)
+        public static IQueryable<T> WhereMeta<T>(this IQueryable<T> source, object dto)
             where T : class
         {
             var originProps = typeof(T).GetProperties().ToList();
@@ -57,6 +50,29 @@ namespace BigCookieKit.AspCore.EntityFramework
             }
 
             return source;
+        }
+
+        public static T FirstOrDefaultMeta<T>(this IQueryable<T> source, object dto)
+            where T : class
+        {
+            var originProps = typeof(T).GetProperties().ToList();
+            var props = dto.GetType().GetProperties().ToList();
+            if (dto is ApiPermission)
+            {
+                var permissionProps = typeof(ApiPermission).GetProperties();
+                props = props.Where(x => permissionProps.FirstOrDefault(r => r.Name == x.Name && r.PropertyType == x.PropertyType) == null).ToList();
+            }
+
+            props = props.Where(x => originProps.FirstOrDefault(r => r.Name == x.Name && r.PropertyType == x.PropertyType) != null).ToList();
+
+            foreach (var prop in props)
+            {
+                var value = prop.GetValue(dto);
+                if (value == null) continue;
+                source = Queryable.Where(source, AutoWhere<T>(prop, prop.GetValue(dto)));
+            }
+
+            return source.FirstOrDefault();
         }
 
         /// <summary>

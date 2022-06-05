@@ -26,46 +26,46 @@ namespace BigCookieKit.AspCore.Apm
         public static void UseApmCore<T>(this IApplicationBuilder app, Action<DbContextOptionsBuilder> builder)
             where T : ApmDbContext
         {
-            app.UseApmCore(new Dictionary<Type, Action<DbContextOptionsBuilder>>()
+            app.UseApmCore(options =>
             {
-                { typeof(T) , builder }
+                options.Add(typeof(T), builder);
             });
         }
 
-        public static void UseApmCore(this IApplicationBuilder app, Dictionary<Type, Action<DbContextOptionsBuilder>> builders)
+        public static void UseApmCore(this IApplicationBuilder app, Action<Dictionary<Type, Action<DbContextOptionsBuilder>>> builders)
         {
             app.UseMiddleware<ApmLoggerFilter>();
             app.SQLiteCheck();
             if (Snowflake.WorkId == null) Snowflake.WorkId = 0;
 
-            foreach (var builder in builders)
+            var options = new Dictionary<Type, Action<DbContextOptionsBuilder>>();
+            builders?.Invoke(options);
+
+            foreach (var option in options)
             {
-                var _config = GetContextOnConfiguring(builder.Key);
-                _config?.SetValue(null, new Action<DbContextOptionsBuilder>(options =>
+                EsureContextForApm(option.Key);
+                ApmDbContext._OnConfiguring.Add(option.Key, new Action<DbContextOptionsBuilder>(options =>
                 {
                     var loggerFactory = new LoggerFactory();
                     loggerFactory.AddProvider(new ApmEntityFrameworkLoggerProvider(null, app.ApplicationServices));
-                    builder.Value?.Invoke(options);
+                    option.Value?.Invoke(options);
                     options.UseLoggerFactory(loggerFactory);
                     options.EnableSensitiveDataLogging();
                 }));
             }
         }
 
-        private static PropertyInfo GetContextOnConfiguring(Type context)
+        private static void EsureContextForApm(Type context)
         {
             if (context != null)
             {
                 if (context != typeof(ApmDbContext))
                 {
-                    return GetContextOnConfiguring(context.BaseType);
+                    EsureContextForApm(context.BaseType);
                 }
-                else
-                {
-                    return context.GetProperty("_OnConfiguring");
-                }
+                return;
             }
-            return null;
+            throw new Exception("DbContext is not ApmDbContext!");
         }
 
         private static void SQLiteCheck(this IApplicationBuilder app)

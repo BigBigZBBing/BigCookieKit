@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
 using System;
+using System.Collections.Generic;
 
 namespace BigCookieKit.AspCore.Apm
 {
@@ -13,11 +14,11 @@ namespace BigCookieKit.AspCore.Apm
         {
         }
 
-        public static Action<DbContextOptionsBuilder> _OnConfiguring { get; set; }
+        public static Dictionary<Type, Action<DbContextOptionsBuilder>> _OnConfiguring = new Dictionary<Type, Action<DbContextOptionsBuilder>>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            _OnConfiguring?.Invoke(optionsBuilder);
+            _OnConfiguring[GetType()]?.Invoke(optionsBuilder);
             base.OnConfiguring(optionsBuilder);
         }
     }
