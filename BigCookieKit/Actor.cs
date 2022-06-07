@@ -10,69 +10,118 @@ namespace BigCookieKit
     public class Actor<T>
     {
         /// <summary>
-        /// 批处理块
+        /// 多批次处理块
         /// </summary>
         private BatchBlock<T> _batchBlock;
-        /// <summary>
-        /// 批处理执行块
-        /// </summary>
-        private ActionBlock<T[]> _actionBlock;
 
         /// <summary>
-        /// 基本构造函数
+        /// 多批次处理执行块
         /// </summary>
-        /// <param name="batchSize">每次处理的数据量</param>
-        /// <param name="action">执行委托方法</param>
-        /// <param name="boundedCapacity">最大处理的数据量 默认 int.MaxValue 2147483647</param>
-        /// <param name="maxDegreeOfParallelism">最大并行量 默认1</param>
-        /// <param name="timeTrigger">定时触发批处理 默认不处理， 设置大于0则处理，秒级别</param>
-        public Actor(int batchSize, Func<T[], Task> action, int boundedCapacity = int.MaxValue, int maxDegreeOfParallelism = 1)
+        private ActionBlock<T[]> _batchActionBlock;
+
+        /// <summary>
+        /// 单批次处理执行块
+        /// </summary>
+        private ActionBlock<T> _singleActionBlock;
+
+        /// <summary>
+        /// 批次处理的数量
+        /// </summary>
+        private int _batchSize = 1;
+
+        /// <summary>
+        /// 多批次的回调函数
+        /// </summary>
+        private Action<T[]> _batchAction;
+
+        /// <summary>
+        /// 单批次的回调函数
+        /// </summary>
+        private Action<T> _singleAction;
+
+        /// <summary>
+        /// 多批次细粒度处理量
+        /// </summary>
+        private int _boundedCapacity = int.MaxValue;
+
+        /// <summary>
+        /// 并行数量
+        /// </summary>
+        private int _maxDegreeOfParallelism = 1;
+
+        public Actor(Action<T[]> action, int batchSize, int boundedCapacity, int maxDegreeOfParallelism)
         {
-            _batchBlock = new BatchBlock<T>(batchSize, new GroupingDataflowBlockOptions() { BoundedCapacity = boundedCapacity });
-            _actionBlock = new ActionBlock<T[]>(data => action(data), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism });
-            _batchBlock.LinkTo(_actionBlock, new DataflowLinkOptions() { PropagateCompletion = true });
+            _batchAction = action;
+            _batchSize = batchSize;
+            _boundedCapacity = boundedCapacity;
+            _maxDegreeOfParallelism = maxDegreeOfParallelism;
+            RefreshBlock();
+        }
+
+        public Actor(Action<T> action)
+        {
+            _singleAction = action;
+            RefreshBlock();
+        }
+
+        public Actor(Action<T> action, int maxDegreeOfParallelism)
+        {
+            _singleAction = action;
+            _maxDegreeOfParallelism = maxDegreeOfParallelism;
+            RefreshBlock();
         }
 
         /// <summary>
-        /// Post 数据
+        /// 发送数据
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         public bool Post(T model)
         {
-            return _batchBlock.Post(model);
+            if (_batchAction != null)
+            {
+                return _batchBlock.Post(model);
+            }
+            else if (_singleAction != null)
+            {
+                return _singleActionBlock.Post(model);
+            }
+            else
+            {
+                throw new ArgumentNullException();
+            }
         }
 
         /// <summary>
-        /// 返回当前执行总数
+        /// 等待完成
         /// </summary>
-        /// <returns></returns>
-        public int GetBatchSum()
+        public void Complete()
         {
-            return _batchBlock.Receive().Count();
+            _batchBlock?.Complete();
+            _batchBlock?.Completion.Wait();
+            _batchActionBlock?.Complete();
+            _batchActionBlock?.Completion.Wait();
+            _singleActionBlock?.Complete();
+            _singleActionBlock?.Completion.Wait();
+            RefreshBlock();
         }
 
-        /// <summary>
-        /// 阻塞等待
-        /// </summary>
-        public void Complete(bool iswait = false)
+        private void RefreshBlock()
         {
-            _batchBlock.Complete();
-            _batchBlock.Completion.Wait();
-            _actionBlock.Complete();
-            if (iswait) _actionBlock.Completion.Wait();
-        }
-
-        /// <summary>
-        /// 阻塞等待
-        /// </summary>
-        /// <param name="time">毫秒</param>
-        public void Complete(int time)
-        {
-            _batchBlock.Complete();
-            _batchBlock.Completion.Wait();
-            _actionBlock.Complete();
-            if (time > 0) _actionBlock.Completion.Wait(time);
+            if (_batchAction != null)
+            {
+                _batchBlock = new BatchBlock<T>(_batchSize, new GroupingDataflowBlockOptions() { BoundedCapacity = _boundedCapacity });
+                _batchActionBlock = new ActionBlock<T[]>(data => _batchAction(data), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = _maxDegreeOfParallelism });
+                _batchBlock.LinkTo(_batchActionBlock, new DataflowLinkOptions() { PropagateCompletion = true });
+            }
+            else if (_singleAction != null)
+            {
+                _singleActionBlock = new ActionBlock<T>(data => _singleAction(data), new ExecutionDataflowBlockOptions { MaxDegreeOfParallelism = _maxDegreeOfParallelism });
+            }
+            else
+            {
+                throw new ArgumentNullException();
+            }
         }
     }
 }
