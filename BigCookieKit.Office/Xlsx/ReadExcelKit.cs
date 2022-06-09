@@ -328,7 +328,7 @@ namespace BigCookieKit.Office.Xlsx
             int colIndex = default;
             string dataType = default;
             string xfs = default;
-            xmlReadKit.XmlReadXlsx("sheetData", (node, attrs, content) =>
+            xmlReadKit.XmlReadCallBack("sheetData", (node, attrs, content) =>
                 {
                     switch (node)
                     {
@@ -436,7 +436,7 @@ namespace BigCookieKit.Office.Xlsx
             int colIndex = default;
             string dataType = default;
             string xfs = default;
-            xmlReadKit.XmlReadXlsx("sheetData", (node, attrs, content) =>
+            xmlReadKit.XmlReadCallBack("sheetData", (node, attrs, content) =>
             {
                 switch (node)
                 {
@@ -540,7 +540,7 @@ namespace BigCookieKit.Office.Xlsx
             int colIndex = default;
             string dataType = default;
             string xfs = default;
-            xmlReadKit.XmlReadXlsx("sheetData", (node, attrs, content) =>
+            xmlReadKit.XmlReadCallBack("sheetData", (node, attrs, content) =>
             {
                 switch (node)
                 {

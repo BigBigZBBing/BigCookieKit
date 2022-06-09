@@ -122,7 +122,7 @@ namespace BigCookieKit.XML
             return packet;
         }
 
-        public void XmlReadXlsx(string Node, Func<string, XmlAttribute[], string, bool> callback)
+        public void XmlReadCallBack(string Node, Func<string, XmlAttribute[], string, bool> Callback)
         {
             bool start = false;
             while (_read.Read())
@@ -133,9 +133,9 @@ namespace BigCookieKit.XML
                         if (_read.Name == Node) start = true;
                         if (start)
                         {
-                            if (!callback(_read.Name, XmlReadAttr(), null))
+                            if (!Callback(_read.Name, XmlReadAttr(), null))
                             {
-                                callback("end", null, null);
+                                Callback("end", null, null);
                                 return;
                             }
                         }
@@ -143,7 +143,7 @@ namespace BigCookieKit.XML
                     case XmlNodeType.Text:
                         if (start && _read.HasValue)
                         {
-                            if (!callback("text", null, _read.Value))
+                            if (!Callback("text", null, _read.Value))
                             {
                                 return;
                             }
@@ -152,7 +152,7 @@ namespace BigCookieKit.XML
                     case XmlNodeType.EndElement:
                         if (_read.Name == Node)
                         {
-                            callback("end", null, null);
+                            Callback("end", null, null);
                             return;
                         }
                         break;
