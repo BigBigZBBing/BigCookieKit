@@ -84,6 +84,7 @@ namespace BigCookie.Document.Controllers
 
             ViewBag.GroupUri = GroupUri;
             ViewBag.GroupInfo = GroupInfo;
+            ViewBag.Description = DocumentExtension._description;
             return View();
         }
 

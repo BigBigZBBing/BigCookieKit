@@ -13,11 +13,12 @@ html, body {
     min-width: 1200px;
 }
 
-/*.jdialog_win_box {
-    display: flex !important;
-    flex-direction: column;
+.description {
+    display: block;
+    width: 100%;
+    padding: 20px 20px 20px 20px;
+    color: #217dbb;
+    background-color: #fafafa;
+    border: 1px solid #ddd;
+    margin: 0 0 5px 0;
 }
-
-.jdialog_win_CBOX {
-    flex: 1;
-}*/

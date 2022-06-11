@@ -50,7 +50,9 @@ namespace UnitAspExample
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseDocumentUI();
+            app.UseDocumentUI(@"
+<div style='font-size:24pt;margin:0 0 10px 0;'>自动化接口文档</div>
+<a href='http://www.baidu.com'>http://www.baidu.com</a>");
 
             app.UseRouting();
 

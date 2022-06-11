@@ -21,6 +21,12 @@
 
 <body>
     <div class="container">
+        @if (!string.IsNullOrEmpty(ViewBag.Description))
+        {
+            <div class="description">
+                @Html.Raw(ViewBag.Description)
+            </div>
+        }
         @foreach (var group in GroupUri)
         {
             if (group.Value.Count == 0) continue;
@@ -61,6 +67,7 @@
     <script>
         (function ($) {
             var cards = $('.card-drop'),
+                callback = [],
                 width = 100;
 
             cards.each(function (index, item) {
@@ -76,6 +83,7 @@
                 });
 
                 function setClosed() {
+                    $(item).css('height', 60 + (li.length * 4));
                     li.each(function (index) {
                         $(this).css('top', (index + 1) * 4).css('width', width - (index + 1) * 0.5 + '%').css('margin-left', (index + 1) * 0.25 + '%');
                     });
@@ -85,8 +93,12 @@
 
                 toggler.on('mousedown', function () {
                     var $this = $(this);
+                    for (var i = 0; i < callback.length; i++) {
+                        if (callback[i].item != item) {
+                            callback[i].func();
+                        }
+                    }
                     if ($this.is('.active')) {
-                        $(item).css('height', 60 + (li.length * 4));
                         setClosed();
                     } else {
                         $this.addClass('active');
@@ -114,6 +126,7 @@
                 });
 
                 setClosed();
+                callback.push({ item: item, func: setClosed });
             });
         }(jQuery));
     </script>
