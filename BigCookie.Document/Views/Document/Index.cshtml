@@ -1,0 +1,122 @@
+﻿@using BigCookie.Document
+@{
+    Layout = null;
+    Dictionary<string, List<UriInfo>> GroupUri = ViewBag.GroupUri;
+    Dictionary<string, string> GroupInfo = ViewBag.GroupInfo;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="/document-card.css" rel="stylesheet" />
+    <link href="/document-ui.css" rel="stylesheet" />
+    <script src="/document-jquery.min.js" type="text/javascript"></script>
+    <script src="/JDialog/JDialog.js" type="text/javascript"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        @foreach (var group in GroupUri)
+        {
+            if (group.Value.Count == 0) continue;
+            <div class="card-drop">
+                <a class='toggle' href="#">
+                    <i class='fa fa-suitcase'></i>
+                    <span class='label-active'>
+                        <span style="font-size:20pt;">
+                            @group.Key
+                        </span>
+                        <span style="font-size:12pt;margin:0 10px;">
+                            @GroupInfo[group.Key]
+                        </span>
+                    </span>
+                </a>
+                <ul>
+                    @foreach (var item in group.Value)
+                    {
+                        <li>
+                            <a href="#" doc-uri="@item.Uri" doc-method="@item.Method">
+                                <span style="font-size: 10pt; padding: 3px 5px; background-color: skyblue; border-radius: 5px; margin: 0 5px; color: white;">
+                                    @item.Method
+                                </span>
+                                <span style="font-size: 10pt; margin: 0 5px;">
+                                    /@item.Uri
+                                </span>
+                                <span style="font-size: 10pt; margin: 0 5px;">
+                                    @item.Comment
+                                </span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+
+    <script>
+        (function ($) {
+            var cards = $('.card-drop'),
+                width = 100;
+
+            cards.each(function (index, item) {
+                var toggler = $(item).find('.toggle');
+                var links = $(item).find('ul>li>a');
+                var li = links.parent('li');
+                var count = links.length;
+
+                $(item).css('height', 60 + (li.length * 4));
+
+                li.each(function (i) {
+                    $(this).css('z-index', count - i);
+                });
+
+                function setClosed() {
+                    li.each(function (index) {
+                        $(this).css('top', (index + 1) * 4).css('width', width - (index + 1) * 0.5 + '%').css('margin-left', (index + 1) * 0.25 + '%');
+                    });
+                    li.addClass('closed');
+                    toggler.removeClass('active');
+                }
+
+                toggler.on('mousedown', function () {
+                    var $this = $(this);
+                    if ($this.is('.active')) {
+                        $(item).css('height', 60 + (li.length * 4));
+                        setClosed();
+                    } else {
+                        $this.addClass('active');
+                        li.removeClass('closed');
+                        li.each(function (index) {
+                            $(this).css('top', 60 * (index + 1)).css('width', '100%').css('margin-left', '0px');
+                        });
+                        $(item).css('height', 60 * (li.length + 1));
+                    }
+                });
+
+                links.on('click', function (e) {
+                    var uri = $(this).attr("doc-uri");
+                    var method = $(this).attr("doc-method");
+                    JDialog.open({
+                        title: "接口文档",
+                        effect: "zoomIn",
+                        height: 80,
+                        maxEnable: true,
+                        width: 1200,
+                        content:
+                            '<iframe frameborder="0" height="' + ($(window).height() * 0.8) + '" width="100%" src="/Document/Detail?Uri=' + uri + '&Method=' + method + '"></iframe>'
+                    });
+                    e.preventDefault;
+                });
+
+                setClosed();
+            });
+        }(jQuery));
+    </script>
+</body>
+
+</html>

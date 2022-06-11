@@ -1,0 +1,253 @@
+﻿@import url(https://fonts.googleapis.com/css?family=Roboto:300,500);
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font: inherit;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+html {
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+caption, th, td {
+    text-align: left;
+    font-weight: normal;
+    vertical-align: middle;
+}
+
+q, blockquote {
+    quotes: none;
+}
+
+    q:before, q:after, blockquote:before, blockquote:after {
+        content: "";
+        content: none;
+    }
+
+a img {
+    border: none;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, main, menu, nav, section, summary {
+    display: block;
+}
+
+* {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #ecf0f1;
+    overflow: hidden;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+header {
+    padding: 3.5rem 10%;
+    background-color: #fff;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+
+    header svg {
+        max-width: 50px;
+        display: inline-block;
+        fill: #1abc9c;
+        vertical-align: middle;
+    }
+
+    header h1, header h2, header p {
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    header h1 {
+        font-weight: 300;
+        color: #1abc9c;
+        letter-spacing: -0.2rem;
+        font-size: 4rem;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    header h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0;
+    }
+
+        header h2 span {
+            font-weight: 300;
+            display: inlie-block;
+            padding: 0 8px;
+            font-size: 80%;
+            color: #fff;
+            -moz-border-radius: 4px;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+        }
+
+            header h2 span.js {
+                background-color: #E4A128;
+            }
+
+            header h2 span.css {
+                background-color: #0070BB;
+            }
+
+            header h2 span.heart {
+                background-color: #EB304A;
+            }
+
+p {
+    line-height: 1.8;
+    text-align: left;
+    font-weight: 300;
+    font-size: 1.2rem;
+}
+
+.card-drop {
+    position: relative;
+    margin: 0 auto;
+    -moz-perspective: 800px;
+    -webkit-perspective: 800px;
+    perspective: 800px;
+    /*background: rgba(0, 0, 0, 0.1);*/
+}
+
+    .card-drop a {
+        display: block;
+        width: 100%;
+        padding: 20px 0 20px 20px;
+        height: 60px;
+        text-decoration: none;
+        color: #217dbb;
+        background-color: #fafafa;
+        border: 1px solid #ddd;
+        -moz-transition: all 0.3s ease-out;
+        -o-transition: all 0.3s ease-out;
+        -webkit-transition: all 0.3s ease-out;
+        transition: all 0.3s ease-out;
+    }
+
+    .card-drop > a.toggle {
+        position: relative;
+        z-index: 100;
+        -moz-backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        -moz-transform-style: preserve-3d;
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+        -moz-transform-origin: 50% 0%;
+        -ms-transform-origin: 50% 0%;
+        -webkit-transform-origin: 50% 0%;
+        transform-origin: 50% 0%;
+        -moz-transition: linear 0.1s;
+        -o-transition: linear 0.1s;
+        -webkit-transition: linear 0.1s;
+        transition: linear 0.1s;
+    }
+
+        .card-drop > a.toggle:active {
+            -moz-transform: rotateX(60deg);
+            -webkit-transform: rotateX(60deg);
+            transform: rotateX(60deg);
+        }
+
+            .card-drop > a.toggle:active:after {
+                -moz-transform: rotateX(180deg);
+                -webkit-transform: rotateX(180deg);
+                transform: rotateX(180deg);
+            }
+
+        .card-drop > a.toggle:before, .card-drop > a.toggle:after {
+            content: "";
+            position: absolute;
+        }
+
+        .card-drop > a.toggle:before {
+            right: 25px;
+            top: 50%;
+            margin-top: -2.5px;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid rgba(0, 0, 0, 0.8);
+        }
+
+        .card-drop > a.toggle.active:before {
+            transform: rotate(180deg);
+        }
+
+    .card-drop ul {
+        position: absolute;
+        height: 100%;
+        top: 0;
+        display: flex;
+        justify-content: right;
+        width: 100%;
+    }
+
+        .card-drop ul li {
+            margin: 0 auto;
+            -moz-transition: all, ease-out 0.3s;
+            -o-transition: all, ease-out 0.3s;
+            -webkit-transition: all, ease-out 0.3s;
+            transition: all, ease-out 0.3s;
+            position: absolute;
+            top: 0;
+            z-index: 0;
+            width: 100%;
+        }
+
+            .card-drop ul li a {
+                border-top: none;
+            }
+
+                .card-drop ul li a:hover {
+                    background-color: #4aa3df;
+                    color: #f3f9fd;
+                }
+
+            .card-drop ul li.active a {
+                color: #fff;
+                background-color: #258cd1;
+                cursor: default;
+            }
+
+            .card-drop ul li.closed a:hover {
+                cursor: default;
+                background-color: #3498db;
+            }

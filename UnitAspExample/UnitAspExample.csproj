@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\zbb58\source\repos\github\BigCookieKit\UnitAspExample\UnitAspExample.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BigCookie.Document\BigCookie.Document.csproj" />
+    <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
+  </ItemGroup>
+
+</Project>

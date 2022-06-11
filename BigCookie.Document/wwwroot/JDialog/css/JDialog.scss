@@ -1,0 +1,482 @@
+//去掉IE下点击会出现虚线框
+a,button {
+	outline:none;
+	blr:expression(this.onFocus=this.blur());
+
+	&:active {outline:none;}
+	&:visited {outline:none;}
+}
+
+body {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+	font-size: 14px;
+}
+
+//变量定义
+$lockZIndex:19891014;   //锁屏层的z-index
+$tipBoxHeight:54px; //提示框的高度
+$tipTextFontsize:16px; //提示框字体大小
+$tipTextColor:#404040;
+
+//定义动画特效
+.animated {
+	animation-duration: 0.3s;
+	animation-fill-mode: both;
+}
+
+@keyframes zoomIn {
+	from {
+		opacity: 0;
+		transform: scale3d(.3, .3, .3);
+	}
+
+	50% {
+		opacity: 1;
+	}
+}
+
+@keyframes zoomOut {
+	from {
+		opacity: 1;
+	}
+
+	50% {
+		opacity: 0;
+		transform: scale3d(.3, .3, .3);
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+
+@keyframes zoomInDown {
+	from {
+		opacity: 0;
+		transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0);
+		animation-timing-function: cubic-bezier(0.550, 0.055, 0.675, 0.190);
+	}
+
+	60% {
+		opacity: 1;
+		transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);
+		animation-timing-function: cubic-bezier(0.175, 0.885, 0.320, 1);
+	}
+}
+
+@keyframes bounceInDown {
+	from, 60%, 75%, 90%, to {
+		animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+	}
+
+	0% {
+		opacity: 0;
+		transform: translate3d(0, -3000px, 0);
+	}
+
+	60% {
+		opacity: 1;
+		transform: translate3d(0, 25px, 0);
+	}
+
+	75% {
+		transform: translate3d(0, -10px, 0);
+	}
+
+	90% {
+		transform: translate3d(0, 5px, 0);
+	}
+
+	to {
+		transform: none;
+	}
+}
+
+@keyframes shake {
+	from, to {
+		transform: translate3d(0, 0, 0);
+	}
+
+	10%, 30%, 50%, 70%, 90% {
+		transform: translate3d(-10px, 0, 0);
+	}
+
+	20%, 40%, 60%, 80% {
+		transform: translate3d(10px, 0, 0);
+	}
+}
+
+@keyframes flip {
+	from {
+		transform: perspective(400px) rotate3d(0, 1, 0, -360deg);
+		animation-timing-function: ease-out;
+	}
+
+	40% {
+		transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -190deg);
+		animation-timing-function: ease-out;
+	}
+
+	50% {
+		transform: perspective(400px) translate3d(0, 0, 150px) rotate3d(0, 1, 0, -170deg);
+		animation-timing-function: ease-in;
+	}
+
+	80% {
+		transform: perspective(400px) scale3d(.95, .95, .95);
+		animation-timing-function: ease-in;
+	}
+
+	to {
+		transform: perspective(400px);
+		animation-timing-function: ease-in;
+	}
+}
+
+@keyframes slideInDown {
+	from {
+		transform: translate3d(0, -100%, 0);
+		visibility: visible;
+	}
+
+	to {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+/* lock panel style */
+.lock_panel {
+	position:absolute;
+	z-index:$lockZIndex;
+	display:none;
+	left:0px; top:0px;
+}
+
+/* JDialog.tip style */
+.jtip_box {
+	position:absolute;
+	margin:auto;
+	z-index:$lockZIndex+1;
+	display:none;
+	height:$tipBoxHeight;
+	zoom:1; overflow:hidden;
+
+	.jtip_left_icon, .jtip_content, .jtip_right, .jtip_load_img {
+		float:left;
+		background:url(gb_tips.png) no-repeat;
+		height:$tipBoxHeight;
+		color:$tipTextColor;
+	}
+	.jtip_left_icon {width:46px;}
+	.jtip_ok  {background-position:-5px 0px;}
+	.jtip_error{background-position:-5px -108px;}
+	.jtip_warn {background-position:-5px -54px;}
+	.jtip_loading {background-position:-5px -54px; width:10px;}
+	.jtip_load_img {
+		background:url(gb_tips.png) repeat-x -5px -161px;
+		width:32px;
+	}
+	.jtip_loading_icon {
+		display:inline-block;
+		background:url(loader.gif) no-repeat center right;
+		background-size: 26px 26px;
+		width:32px;
+		height:$tipBoxHeight;
+	}
+
+	.jtip_content {
+		background:url(gb_tips.png) repeat-x -5px -161px;
+		line-height:$tipBoxHeight;
+		font-size:$tipTextFontsize;
+		color: $tipTextColor;
+		padding:0px 10px;
+	}
+
+	.jtip_right {background-position:left top; width:5px;}
+}
+
+/* JDialog.win styles */
+$contentBgColor:#ffffff; //内容框背景色
+$titleBgColor:#F8F8F8; //标题框背景色
+$winBorderColor:#dddddd; //窗口边框颜色
+$titleBorderColor:#eeeeee; //标题下边框颜色
+$titleFontsize:16px;
+$titleHeight:42px;  //标题高度
+
+/******************************************************************************
+window 弹窗样式
+*/
+.jdialog_win_box {
+	z-index:$lockZIndex+1;
+	position:absolute;
+	display: none;
+	zoom:1; overflow:hidden;
+
+	.jwindow-lock {
+		//border: 1px solid red;
+		position : absolute;
+		background: #ffffff url("loader.gif") no-repeat center center;
+		filter: alpha(opacity=5);
+		opacity: .5;
+
+	}
+
+	.jdialog_win_title_box {
+		box-sizing: content-box;
+		height: $titleHeight;
+		line-height: $titleHeight;
+
+		.jdialog_win_title {
+			text-align: left;
+			height: $titleHeight;
+			line-height: $titleHeight;
+			font-size: $titleFontsize;
+			cursor: default;
+
+		}
+
+		div {
+			box-sizing: content-box;
+			a {
+				box-sizing: content-box;
+			}
+		}
+	}
+}
+.box-shadow {
+	webkit-box-shadow: 0 5px 15px rgba(0,0,0,.5) !important;
+	box-shadow: 0 5px 15px rgba(0,0,0,.5) !important;
+	border: 1px solid #999 !important;
+	border: 1px solid rgba(0,0,0,.2) !important;
+	border-radius: 6px;
+	outline: 0;
+	background-clip: padding-box !important;
+}
+//默认皮肤样式
+.jdialog_win_default {
+	border:1px solid $winBorderColor;
+	-webkit-background-clip: content;
+	//box-shadow: 1px 1px 50px rgba(0,0,0,.3);
+	background-color: $contentBgColor;
+	-webkit-animation-fill-mode: both;
+	animation-fill-mode: both;
+	-webkit-animation-duration: .3s;
+	animation-duration: .3s;
+
+	border: 1px solid #B2B2B2;
+	border: 1px solid rgba(0,0,0,.3);
+	box-shadow: 1px 1px 5px rgba(0,0,0,.2);
+
+	.jdialog_win_title_box {
+		padding: 0 80px 0 10px;
+		border-bottom: 1px solid $titleBorderColor;
+		font-size: 14px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		background-color: $titleBgColor;
+		border-radius: 2px 2px 0 0;
+		position: relative;
+
+		//line 1 title styles
+		.jdialog_win_title {
+			cursor: move;
+			color: $tipTextColor;
+		}
+
+		//标题栏按钮
+		.jdialog_win_button {
+			position: absolute;
+			height:40px;
+			zoom:1; overflow:hidden;
+			top:5px; right: 5px;
+
+			a {
+				float:left;
+				background: url(bg-default.png) no-repeat;
+				width:24px;
+				height:20px;
+				margin:5px 2px 0;
+			}
+
+			.jdialog_win_max_button {
+				background-position:-25px -36px;
+				&:hover {background-position:-25px 3px;}
+			}
+			.jdialog_win_reduce_button {
+				background-position:-83px -36px;
+				&:hover {background-position:-83px 3px;}
+			}
+			.jdialog_win_close_button {
+				background-position:-53px -36px;
+				transition: none !important;
+				&:hover {background-position:-53px 3px;}
+			}
+		}
+	}
+
+	//line 2 content
+	.jdialog_win_CBOX {
+
+		zoom:1;
+		overflow-x: hidden;
+		overflow-y: auto;
+		padding: 10px;
+		background-color: $contentBgColor;
+
+		$iconWidth:50px;
+		.jdialog_win_icon {
+			float:left;
+			width:$iconWidth;
+			height:$iconWidth;
+			margin-right: 10px;
+			background:url(jdialog_confirm_icon_espresso.png) no-repeat;
+		}
+
+		.jdialog_win_icon_warn {
+			background-position: 0 0;
+		}
+		.jdialog_win_icon_ok {
+			background-position:-52px 0;
+		}
+		.jdialog_win_icon_edit {
+			background-position:-105px 0;
+		}
+		.jdialog_win_icon_bag {
+			background-position:-156px 0;
+		}
+		.jdialog_win_icon_ask {
+			background-position: -210px 0;
+		}
+		.jdialog_win_icon_minus {
+			background-position:-261px 0;
+		}
+		.jdialog_win_icon_italic {
+			background-position:-314px 0;
+		}
+		.jdialog_win_icon_unlock {
+			background-position: -367px 0;
+		}
+		.jdialog_win_icon_smile {
+			background-position: -419px 0;
+		}
+		.jdialog_win_icon_angry {
+			background-position: -471px 0;
+		}
+		.jdialog_win_icon_down {
+			background-position: -524px 0;
+		}
+		.jdialog_win_icon_remove {
+			background-position: -576px 0;
+		}
+		.jdialog_win_icon_msg {
+			background-position: -629px 0;
+		}
+		.jdialog_win_icon_mail {
+			background-position: -681px 0;
+		}
+
+		.jdialog_win_content {
+			text-align:left;
+			line-height:150%;
+			float:left;
+			font-size: $tipTextFontsize;
+		}
+	}
+
+	//line 3 button
+	.jdialog_win_button_container {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		text-align: right;
+		background:$contentBgColor;
+
+		.jdialog_win_buttonInner {
+			border-top: 1px solid #e5e5e5;
+			margin:auto;
+			text-align:right;
+			padding: 10px;
+
+			.btn {
+				font-size: 14px;
+				margin: 5px;
+				color: #fff;
+				display: inline-block;
+				padding: 6px 12px;
+				border-radius: 2px;
+				cursor: pointer;
+				text-decoration: none;
+
+				&:hover {
+					filter: alpha(opacity=80);
+					-webkit-box-shadow: none;
+					box-shadow: none;
+					opacity: .8;
+				}
+			}
+
+			.btn-primary {
+				border-color: #007bff;
+				background-color: #007bff;
+			}
+
+			.btn-success {
+				border-color: #28a745;
+				background-color: #28a745;
+			}
+
+			.btn-secondary {
+				border-color: #6c757d;
+				background-color: #6c757d;
+			}
+
+			.btn-danger {
+				border-color: #dc3545;
+				background-color: #dc3545;
+			}
+
+			.btn-warning {
+				border-color: #ffc107;
+				background-color: #ffc107;
+			}
+
+			.btn-info {
+				border-color: #17a2b8;
+				background-color: #17a2b8;
+			}
+
+			.btn-dark {
+				border-color: #343a40;
+				background-color: #343a40;
+			}
+
+		}
+	}
+
+}
+
+/******************************************
+ loader 加载器样式
+*/
+.loader-icon {
+	//border: 1px solid red;
+	position: absolute;
+	z-index: $lockZIndex + 1;
+	width: 80px;
+	height: 80px;
+	background-image: url("loader1.gif")
+}
+.loader-icon-1 {
+	background-position: -31px -4px;
+}
+.loader-icon-2 {
+	background-position: -33px -133px;
+}
+.loader-icon-3 {
+	background-position: -192px -4px;
+}
+.loader-icon-4 {
+	background-position: -71px -262px;
+}

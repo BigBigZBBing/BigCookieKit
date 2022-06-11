@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnitAspExample</name>
+    </assembly>
+    <members>
+        <member name="T:UnitAspExample.Controllers.HomeController">
+            <summary>
+            主页
+            </summary>
+        </member>
+        <member name="M:UnitAspExample.Controllers.HomeController.Index">
+            <summary>
+            默认API
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:UnitAspExample.Controllers.TestController">
+            <summary>
+            测试控制器
+            </summary>
+        </member>
+        <member name="M:UnitAspExample.Controllers.TestController.Index">
+            <summary>
+            测试接口
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:UnitAspExample.Controllers.UserAddDto.String1">
+            <summary>
+            测试注释
+            </summary>
+        </member>
+        <member name="P:UnitAspExample.Controllers.UserAddDto.Companys">
+            <summary>
+            所属的公司
+            </summary>
+        </member>
+        <member name="P:UnitAspExample.Controllers.UserCompany.Name">
+            <summary>
+            公司名称
+            </summary>
+        </member>
+        <member name="T:UnitAspExample.Controllers.UserController">
+            <summary>
+            用户管理
+            </summary>
+        </member>
+        <member name="M:UnitAspExample.Controllers.UserController.Index">
+            <summary>
+            用户列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UnitAspExample.Controllers.UserController.Add(UnitAspExample.Controllers.UserAddDto)">
+            <summary>
+            新增用户
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:UnitAspExample.Controllers.UserController.Update(System.Nullable{System.Int64},UnitAspExample.Controllers.UserAddDto)">
+            <summary>
+            更新用户
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
