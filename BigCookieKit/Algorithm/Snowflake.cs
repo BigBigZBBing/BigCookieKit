@@ -68,7 +68,9 @@ namespace BigCookieKit.Algorithm
             var work = _workId << 12;
             var timebit = _timeBit << 4;
 
+#pragma warning disable CS0675 // 在经符号扩展的操作数上使用了按位“或”运算符；请考虑首先强制转换为较小的无符号类型
             return time | work | timebit | _lastIndex;
+#pragma warning restore CS0675 // 在经符号扩展的操作数上使用了按位“或”运算符；请考虑首先强制转换为较小的无符号类型
         }
 
         private static long FullBit(long number, int bit)

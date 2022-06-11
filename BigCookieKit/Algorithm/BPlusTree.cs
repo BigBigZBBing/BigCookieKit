@@ -334,7 +334,9 @@ namespace BigCookieKit.Algorithm
         /// B+Tree叶子模型
         /// 设计为链式关系
         /// </summary>
+#pragma warning disable CS0659 // “BPlusTree<TK, TV>.BPlusLeaf”重写 Object.Equals(object o) 但不重写 Object.GetHashCode()
         public class BPlusLeaf
+#pragma warning restore CS0659 // “BPlusTree<TK, TV>.BPlusLeaf”重写 Object.Equals(object o) 但不重写 Object.GetHashCode()
         {
             internal BPlusLeaf() { }
 

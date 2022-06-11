@@ -303,25 +303,21 @@ namespace NUnitBigCookieKit
         /// Actor模型（并集线程）单元测试
         /// </summary>
         [Test]
-        public async Task ActorModelUnit()
+        public void ActorModelUnit()
         {
-            var batch = new Actor<string>(1, async strs =>
+            var batch = new Actor<ActorModel>(item =>
             {
-                foreach (var item in strs)
+                if ((int)item.Packet > 10)
                 {
-                    Console.WriteLine("生成Excel数据：{0}", item);
-                    await Task.Delay(500);
+                    Console.WriteLine("结束");
+                    return;
                 }
-                await Task.CompletedTask;
+                Console.WriteLine("生成Excel数据：{0}", item.Packet);
+                item.Actor.Post(new ActorModel() { Actor = item.Actor, Packet = (int)item.Packet + 1 });
             });
-            for (int i = 0; i < 6; i++)
-            {
-                Console.WriteLine("读取数据……");
-                await Task.Delay(500);
-                batch.Post($"数据行_{i + 1}");
-            }
-            batch.Complete(true);
-            Console.WriteLine("结束");
+            batch.Post(new ActorModel() { Actor = batch, Packet = 1 });
+            Console.WriteLine("Acotr结束");
+            Console.ReadKey();
         }
 
         /// <summary>
@@ -554,6 +550,13 @@ namespace NUnitBigCookieKit
         }
 
         #endregion
+
+        public class ActorModel
+        {
+            public Actor<ActorModel> Actor { get; set; }
+
+            public object Packet { get; set; }
+        }
 
         public class ListModel
         {

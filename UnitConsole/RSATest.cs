@@ -790,7 +790,7 @@ namespace UnitConsole
                 const int BlockSize = 1024;
                 // Make sure we don't run into a lot of "grow a little" by asking in 1k steps.
                 int blocks = checked(_offset + pendingCount + (BlockSize - 1)) / BlockSize;
-                byte[]? oldBytes = _buffer;
+                byte[] oldBytes = _buffer;
                 Array.Resize(ref _buffer, BlockSize * blocks);
 
                 if (oldBytes != null)
@@ -963,7 +963,7 @@ namespace UnitConsole
                 return Tag.Equals(other.Tag) && Offset == other.Offset && ItemType == other.ItemType;
             }
 
-            public override bool Equals([NotNullWhen(true)] object? obj) => obj is StackFrame other && Equals(other);
+            public override bool Equals([NotNullWhen(true)] object obj) => obj is StackFrame other && Equals(other);
 
             public override int GetHashCode()
             {
@@ -1482,7 +1482,7 @@ namespace UnitConsole
         ///   <see langword="false"/> if <paramref name="obj"/> is not an <see cref="Asn1Tag"/>,
         ///   <see cref="Equals(Asn1Tag)"/> otherwise.
         /// </returns>
-        public override bool Equals([NotNullWhen(true)] object? obj)
+        public override bool Equals([NotNullWhen(true)] object obj)
         {
             return obj is Asn1Tag tag && Equals(tag);
         }

@@ -16,10 +16,12 @@ namespace BigCookieKit.Resources
             return Asmb.GetManifestResourceStream(ResourcePath + "xlsx." + fileName);
         }
 
-        public static Stream GetXlsxResourceString(string fileName)
+        public static string GetXlsxResourceString(string fileName)
         {
             Assembly Asmb = Assembly.GetExecutingAssembly();
-            return Asmb.GetManifestResourceStream(ResourcePath + "xlsx." + fileName);
+            using Stream stream = Asmb.GetManifestResourceStream(ResourcePath + "xlsx." + fileName);
+            StreamReader sr = new StreamReader(stream);
+            return sr.ReadToEnd();
         }
     }
 }

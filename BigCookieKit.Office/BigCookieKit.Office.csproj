@@ -35,4 +35,8 @@
     <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Xls\" />
+  </ItemGroup>
+
 </Project>

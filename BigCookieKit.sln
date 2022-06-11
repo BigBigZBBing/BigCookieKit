@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.32112.339
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32510.428
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitConsole", "UnitConsole\UnitConsole.csproj", "{5A00CC08-F081-4D8E-94A1-FCB25A4CAF11}"
 EndProject
@@ -28,6 +28,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.Rpc", "BigCookieKit.Rpc\BigCookieKit.Rpc.csproj", "{1307136A-117B-456D-ACC8-6BF3C6CF5BA5}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.AspCore", "BigCookieKit.AspCore\BigCookieKit.AspCore.csproj", "{DF46411E-F89B-4E17-9B51-3ECC53B04D14}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookie.Document", "BigCookie.Document\BigCookie.Document.csproj", "{8336DC2B-F98C-41A0-A66E-4D69C1A0487A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitAspExample", "UnitAspExample\UnitAspExample.csproj", "{B9B63655-4300-452B-A063-955A16CAE0A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +91,14 @@ Global
 		{DF46411E-F89B-4E17-9B51-3ECC53B04D14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF46411E-F89B-4E17-9B51-3ECC53B04D14}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF46411E-F89B-4E17-9B51-3ECC53B04D14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8336DC2B-F98C-41A0-A66E-4D69C1A0487A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8336DC2B-F98C-41A0-A66E-4D69C1A0487A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8336DC2B-F98C-41A0-A66E-4D69C1A0487A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8336DC2B-F98C-41A0-A66E-4D69C1A0487A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9B63655-4300-452B-A063-955A16CAE0A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9B63655-4300-452B-A063-955A16CAE0A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9B63655-4300-452B-A063-955A16CAE0A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9B63655-4300-452B-A063-955A16CAE0A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -29,6 +29,7 @@
     <DefineConstants>NETCORE31</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>false</Optimize>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)|$(TargetFramework)'=='Release|AnyCPU|netcoreapp3.1'">
     <OutputPath>.\bin\Release\</OutputPath>

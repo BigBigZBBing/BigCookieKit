@@ -13,12 +13,11 @@ namespace BigCookieKit
     public static partial class Kit
     {
         /// <summary>
-        /// 获取枚举的Remark值
+        /// 获取枚举的Display值
         /// </summary>
         /// <typeparam name="TEnum">枚举类型</typeparam>
         /// <param name="em">枚举对象</param>
         /// <returns></returns>
-
         public static string ToDisplay<TEnum>(this TEnum em) where TEnum : Enum
         {
             Type type = em.GetType();
@@ -43,7 +42,6 @@ namespace BigCookieKit
         /// <typeparam name="T">实体类型</typeparam>
         /// <param name="Entity">实体对象</param>
         /// <returns></returns>
-
         public static bool ModelValidation<TEntity>(this TEntity Entity)
         {
             StringBuilder strBuilder = new StringBuilder();
@@ -100,7 +98,6 @@ namespace BigCookieKit
 
         #region 私有
 
-
         static bool BasicValidation<T>(FastProperty propertie, T attr, StringBuilder strBuilder) where T : BasicAttribute
         {
             if (attr != null && attr.Message != null)
@@ -132,7 +129,6 @@ namespace BigCookieKit
             return true;
         }
 
-
         static bool StringValidation(FastProperty propertie, StringRuleAttribute attr, StringBuilder strBuilder)
         {
             string Name = propertie.PropertyName;
@@ -154,7 +150,6 @@ namespace BigCookieKit
             }
             return true;
         }
-
 
         static bool NumericValidation(FastProperty propertie, NumericRuleAttribute attr, StringBuilder strBuilder)
         {
@@ -182,7 +177,6 @@ namespace BigCookieKit
             }
             return true;
         }
-
 
         static bool DecimalValidation(FastProperty propertie, DecimalRuleAttribute attr, StringBuilder strBuilder)
         {

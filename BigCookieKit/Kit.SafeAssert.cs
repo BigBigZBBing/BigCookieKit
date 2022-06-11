@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -227,6 +228,25 @@ namespace BigCookieKit
         }
 
         /// <summary>
+        /// 判断类型是否继承指定类型
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        public static bool IsInheritType(this Type type, Type inherit)
+        {
+            Type temp = type;
+            while (temp != null)
+            {
+                if (temp.BaseType == inherit)
+                {
+                    return true;
+                }
+                temp = temp.BaseType;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 判断是否为值类型
         /// </summary>
         /// <param name="obj">对象</param>
@@ -292,6 +312,48 @@ namespace BigCookieKit
         public static bool IsArray(this Object obj)
         {
             if (obj.GetType().IsArray)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 是否为数组
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        public static bool IsArray(this Type type)
+        {
+            if (type.IsArray)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 是否为集合
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
+        public static bool IsCollection(this Object obj)
+        {
+            if (obj is ICollection)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 是否为集合
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <returns></returns>
+        public static bool IsCollection(this Type type)
+        {
+            if (type.GetInterface("ICollection") != null)
             {
                 return true;
             }
