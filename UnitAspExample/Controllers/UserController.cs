@@ -41,6 +41,22 @@ namespace UnitAspExample.Controllers
     }
 
     /// <summary>
+    /// 用户响应模型
+    /// </summary>
+    public class UserResponse
+    {
+        /// <summary>
+        /// 返回的用户名
+        /// </summary>
+        public string UserName { get; set; } = "ZHANGBINGBIN";
+
+        /// <summary>
+        /// 是否为超级管理员
+        /// </summary>
+        public bool IsSuper { get; set; } = true;
+    }
+
+    /// <summary>
     /// 用户管理
     /// </summary>
     [Route("Management/[controller]")]
@@ -63,9 +79,9 @@ namespace UnitAspExample.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Add")]
-        public IActionResult Add(UserAddDto dto)
+        public ApiResponse Add(UserAddDto dto)
         {
-            return Ok();
+            return new ApiResponseSuccess();
         }
 
         /// <summary>
@@ -74,9 +90,9 @@ namespace UnitAspExample.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Update")]
-        public ApiResponse<object> Update(long? Id, UserAddDto dto)
+        public ApiResponse<UserResponse> Update(long? Id, UserAddDto dto)
         {
-            return new ApiResponseSuccess();
+            return new ApiResponseSuccess<UserResponse>(new UserResponse());
         }
     }
 }

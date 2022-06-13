@@ -60,12 +60,6 @@ namespace BigCookieKit.Standard
 
     public class ApiResponseSuccess<T> : ApiResponse<T>
     {
-
-        public ApiResponseSuccess(string message = "success!")
-        {
-            Message = message;
-        }
-
         public ApiResponseSuccess(T data, string message = "success!")
         {
             Data = data;

@@ -41,6 +41,21 @@
             公司名称
             </summary>
         </member>
+        <member name="T:UnitAspExample.Controllers.UserResponse">
+            <summary>
+            用户响应模型
+            </summary>
+        </member>
+        <member name="P:UnitAspExample.Controllers.UserResponse.UserName">
+            <summary>
+            返回的用户名
+            </summary>
+        </member>
+        <member name="P:UnitAspExample.Controllers.UserResponse.IsSuper">
+            <summary>
+            是否为超级管理员
+            </summary>
+        </member>
         <member name="T:UnitAspExample.Controllers.UserController">
             <summary>
             用户管理
