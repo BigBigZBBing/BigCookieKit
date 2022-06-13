@@ -74,7 +74,7 @@ namespace UnitAspExample.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("Update")]
-        public ApiResponse Update(long? Id, UserAddDto dto)
+        public ApiResponse<object> Update(long? Id, UserAddDto dto)
         {
             return new ApiResponseSuccess();
         }

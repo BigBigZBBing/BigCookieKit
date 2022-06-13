@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BigCookieKit.Standard
 {
-    public abstract class ApiResponse
+    public class ApiResponse
     {
         /// <summary>
         /// 状态码
@@ -33,7 +33,15 @@ namespace BigCookieKit.Standard
         public string Message { get; set; }
     }
 
-    public class ApiResponseSuccess : ApiResponse
+    public class ApiResponse<T> : ApiResponse
+    {
+        /// <summary>
+        /// 返回数据
+        /// </summary>
+        public new T Data { get; set; }
+    }
+
+    public class ApiResponseSuccess : ApiResponse<object>
     {
 
         public ApiResponseSuccess(string message = "success!")
@@ -50,7 +58,24 @@ namespace BigCookieKit.Standard
         public override HttpStatusCode Code { get; set; } = HttpStatusCode.OK;
     }
 
-    public class ApiPagerResponse : ApiResponse
+    public class ApiResponseSuccess<T> : ApiResponse<T>
+    {
+
+        public ApiResponseSuccess(string message = "success!")
+        {
+            Message = message;
+        }
+
+        public ApiResponseSuccess(T data, string message = "success!")
+        {
+            Data = data;
+            Message = message;
+        }
+
+        public override HttpStatusCode Code { get; set; } = HttpStatusCode.OK;
+    }
+
+    public class ApiPagerResponse : ApiResponse<object>
     {
         /// <summary>
         /// 数据总量
@@ -67,7 +92,24 @@ namespace BigCookieKit.Standard
         public override HttpStatusCode Code { get; set; } = HttpStatusCode.OK;
     }
 
-    public class ApiResponseFail : ApiResponse
+    public class ApiPagerResponse<T> : ApiResponse<T>
+    {
+        /// <summary>
+        /// 数据总量
+        /// </summary>
+        public long Total { get; set; }
+
+        public ApiPagerResponse(T data, long total, string message = "success!")
+        {
+            Data = data;
+            Total = total;
+            Message = message;
+        }
+
+        public override HttpStatusCode Code { get; set; } = HttpStatusCode.OK;
+    }
+
+    public class ApiResponseFail : ApiResponse<object>
     {
         public ApiResponseFail(string message = "fail!")
         {

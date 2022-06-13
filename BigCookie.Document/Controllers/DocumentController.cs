@@ -12,7 +12,9 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using System;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
+using BigCookieKit.Reflect;
+using System.Text.Json;
+using System.IO;
 
 namespace BigCookie.Document.Controllers
 {
@@ -97,16 +99,20 @@ namespace BigCookie.Document.Controllers
                 var ResponseBody = new List<BodyTable>();
                 var parameters = m_actions[Uri].GetParameters();
                 var returnParameter = m_actions[Uri].ReturnType;
+                object requestInstance = null;
                 if (parameters.Length > 0)
                 {
                     if (parameters.Length == 1 && parameters[0].ParameterType.IsCustomClass())
                     {
                         ParameterAnalytics(ReuqestBody, parameters[0].ParameterType);
+                        requestInstance = Activator.CreateInstance(parameters[0].ParameterType);
                     }
                     else
                     {
+                        Dictionary<string, object> JsonInstance = new Dictionary<string, object>();
                         foreach (var parameter in parameters)
                         {
+                            JsonInstance.Add(parameter.Name, Activator.CreateInstance(parameter.ParameterType));
                             var ParameterName = parameter.ParameterType.Name;
                             if (parameter.ParameterType.IsNullable())
                                 ParameterName = parameter.ParameterType.GetGenericArguments()[0].Name + "?";
@@ -141,6 +147,7 @@ namespace BigCookie.Document.Controllers
                                 });
                             }
                         }
+                        requestInstance = JsonInstance;
                     }
                 }
 
@@ -152,7 +159,9 @@ namespace BigCookie.Document.Controllers
                 ViewBag.Uri = "/" + Uri;
                 ViewBag.Method = Method;
                 ViewBag.RequestBody = ReuqestBody;
+                ViewBag.RequestJson = JsonSerializer.Serialize(requestInstance);
                 ViewBag.ResponseBody = ResponseBody;
+                ViewBag.ResponseJson = JsonSerializer.Serialize(Activator.CreateInstance(returnParameter));
                 return View();
             }
             return Content("<h1>生成文档异常!</h1>");

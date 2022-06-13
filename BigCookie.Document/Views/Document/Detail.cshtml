@@ -86,6 +86,15 @@
                 padding: 8px;
                 text-align: left;
             }
+
+        .json {
+            width: 780px;
+            border: 1px solid #ddd;
+            background-color: #fafafa;
+            resize: none;
+            padding: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 
@@ -121,8 +130,8 @@
     </div>
 
     <div class="request-body">
-        <span class="title">请求报文:</span>
-        <span></span>
+        <span class="title">请求报文示例:</span>
+        <textarea class="json" autoHeight id="requestJson" disabled></textarea>
     </div>
 
     <div class="request-body">
@@ -145,6 +154,36 @@
             }
         </table>
     </div>
+
+    <div class="request-body">
+        <span class="title">响应报文示例:</span>
+        <textarea class="json" autoHeight id="responseJson" disabled></textarea>
+    </div>
+
+    <script>
+        $(function () {
+            var requestJson = JSON.stringify(@Html.Raw(ViewBag.RequestJson), null, '    ');
+            $("#requestJson").text(requestJson);
+            var responseJson = JSON.stringify(@Html.Raw(ViewBag.ResponseJson), null, '    ');
+            $("#responseJson").text(responseJson);
+
+            $.fn.autoHeight = function () {
+                function autoHeight(elem) {
+                    elem.style.height = 'auto';
+                    elem.scrollTop = 0;
+                    elem.style.height = elem.scrollHeight + 'px';
+
+                }
+                this.each(function () {
+                    autoHeight(this);
+                    $(this).on('keyup', function () {
+                        autoHeight(this);
+                    });
+                });
+            }
+            $('textarea[autoHeight]').autoHeight();
+        })
+    </script>
 </body>
 
 </html>
