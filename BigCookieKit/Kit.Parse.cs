@@ -30,10 +30,20 @@ namespace BigCookieKit
                 return true;
             }
             //0,1转bool
-            if (type == typeof(bool) && (obj.Equals("0") || obj.Equals("1")))
+            if (type == typeof(bool))
             {
-                value = obj == "1" ? true : false;
-                return true;
+                if (obj.ToString().Equals("0") || obj.ToString().Equals("1"))
+                {
+                    value = obj.ToString() == "1" ? true : false;
+                    return true;
+                }
+                else if (bool.TryParse(obj.ToString(), out var temp))
+                {
+                    value = temp;
+                    return true;
+                }
+                value = false;
+                return false;
             }
             //获取类型的TryParse方法
             MethodInfo methodInfo = type.GetMethod("TryParse", new[] { typeof(string), type.MakeByRefType() });

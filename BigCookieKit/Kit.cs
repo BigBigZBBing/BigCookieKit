@@ -346,9 +346,12 @@ namespace BigCookieKit
         /// <returns></returns>
         public static string RulesFormat(this string value, params string[] paramters)
         {
-            for (int i = 0; i < paramters.Length; i++)
+            if (paramters != null)
             {
-                value = value.Replace($"{{{i}}}", paramters[i]);
+                for (int i = 0; i < paramters.Length; i++)
+                {
+                    value = value.Replace($"{{{i}}}", paramters[i]);
+                }
             }
             return value;
         }
