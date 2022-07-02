@@ -1,18 +1,24 @@
 using BigCookie.Document;
 
 using BigCookieKit;
+using BigCookieKit.AspCore.RouteSelector;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing.Matching;
 using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -21,6 +27,8 @@ namespace UnitAspExample
 {
     public class Startup
     {
+        public static IApplicationBuilder Application { get; set; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,11 +40,14 @@ namespace UnitAspExample
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddRouteSelector();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            Application = app;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

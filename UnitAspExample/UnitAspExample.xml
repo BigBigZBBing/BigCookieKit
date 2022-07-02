@@ -26,6 +26,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:UnitAspExample.Controllers.TestController.TestSelector">
+            <summary>
+            测试路由选择器
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:UnitAspExample.Controllers.UserAddDto.String1">
             <summary>
             测试注释

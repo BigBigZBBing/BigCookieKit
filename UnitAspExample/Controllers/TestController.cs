@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BigCookieKit.AspCore.RouteSelector;
+
+using Microsoft.AspNetCore.Mvc;
 
 using System;
 using System.Collections.Generic;
@@ -21,7 +23,21 @@ namespace UnitAspExample.Controllers
         [Route("Index")]
         public IActionResult Index()
         {
+            ViewBag.Data = "测试";
             return Ok("成功");
+        }
+
+        /// <summary>
+        /// 测试路由选择器
+        /// </summary>
+        /// <returns></returns>
+        [Route("TestSelector")]
+        public IActionResult TestSelector()
+        {
+            var dendpoint = HttpContext.RequestServices.MathEndpoint("/BigTest/Test/Index").Result;
+            var selectorResult = dendpoint.InvokeAsync(HttpContext).Result;
+            var data = selectorResult.ViewBag.Data;
+            return Ok("测试成功！");
         }
     }
 }
