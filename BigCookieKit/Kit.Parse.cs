@@ -32,11 +32,13 @@ namespace BigCookieKit
             //0,1转bool
             if (type == typeof(bool))
             {
+                //兼容Int类型和String类型
                 if (obj.ToString().Equals("0") || obj.ToString().Equals("1"))
                 {
                     value = obj.ToString() == "1" ? true : false;
                     return true;
                 }
+                //如果为True和False字符串
                 else if (bool.TryParse(obj.ToString(), out var temp))
                 {
                     value = temp;

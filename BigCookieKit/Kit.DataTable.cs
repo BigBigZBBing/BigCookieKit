@@ -22,14 +22,16 @@ namespace BigCookieKit
         /// <param name="value">值</param>
         public static void CellSetValue(this DataRow dr, string filed, object value)
         {
-            Type filedType = dr.Table.Columns[filed].DataType;
+            DataColumn dataColumn = dr.Table.Columns[filed];
+            Type filedType = dataColumn.DataType;
+            Type valueType = value.GetType();
             if (value == DBNull.Value || value == null)
             {
                 dr[filed] = DBNull.Value;
             }
             else
             {
-                if (value.GetType() != filedType)
+                if (valueType != filedType)
                 {
                     if (value.TryParse(filedType, out object temp))
                     {
@@ -37,6 +39,8 @@ namespace BigCookieKit
                     }
                     else
                     {
+                        dr.RowError = "CellSetValue is error!";
+                        dr.SetColumnError(dataColumn, $"valueType:{valueType.FullName} filedType:{filedType.FullName}");
                         dr[filed] = DBNull.Value;
                     }
                 }
@@ -146,5 +150,6 @@ namespace BigCookieKit
                 yield return model;
             }
         }
+
     }
 }
