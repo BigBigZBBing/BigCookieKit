@@ -261,6 +261,15 @@ namespace BigCookieKit
             return false;
         }
 
+        public static bool IsValue(this Type type)
+        {
+            if (type.IsValueType)
+            {
+                return true;
+            }
+            return false;
+        }
+
         /// <summary>
         /// 判断是否为结构体
         /// </summary>

@@ -518,6 +518,27 @@ namespace NUnitBigCookieKit
             var decrypt = provider.Decrypt(encrypt);
         }
 
+        [Test]
+        public void UnitDataTable()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Col1", typeof(string));
+            dt.Columns.Add("Col2", typeof(int));
+            dt.Columns.Add("Col3", typeof(ActorModel));
+
+            try
+            {
+                var ndr = dt.NewRow();
+                ndr.CellSetValue("Col1", null);
+                ndr.CellSetValue("Col2", null);
+                ndr.CellSetValue("Col3", 1);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         #region 性能比较单元测试
 
         [Test]

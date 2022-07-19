@@ -22,24 +22,31 @@ namespace BigCookieKit
         /// <param name="value">值</param>
         public static void CellSetValue(this DataRow dr, string filed, object value)
         {
+            if (!dr.Table.Columns.Contains(filed)) return;
+
             DataColumn dataColumn = dr.Table.Columns[filed];
             Type filedType = dataColumn.DataType;
-            Type valueType = value.GetType();
+            Type valueType = value?.GetType();
+
             if (value == DBNull.Value || value == null)
             {
                 dr[filed] = DBNull.Value;
             }
             else
             {
+                //如果字段类型和赋值类型不相同
                 if (valueType != filedType)
                 {
+                    //进行尝试转换
                     if (value.TryParse(filedType, out object temp))
                     {
                         dr[filed] = temp;
                     }
                     else
                     {
+                        //给数据行增加错误信息
                         dr.RowError = "CellSetValue is error!";
+                        //给数据列增加错误信息
                         dr.SetColumnError(dataColumn, $"valueType:{valueType.FullName} filedType:{filedType.FullName}");
                         dr[filed] = DBNull.Value;
                     }
@@ -151,5 +158,37 @@ namespace BigCookieKit
             }
         }
 
+        /// <summary>
+        /// 将源数据拷贝到目标结构的表格中
+        /// </summary>
+        /// <param name="source">数据源</param>
+        /// <param name="target">目标源</param>
+        public static void CopyRowToTarget(this DataTable source, DataTable target)
+        {
+            foreach (DataRow dr in source.Rows)
+            {
+                dr.CopyRowToTarget(target);
+            }
+        }
+
+        /// <summary>
+        /// 将源数据拷贝到目标结构的表格中
+        /// </summary>
+        /// <param name="sourceRow">数据行</param>
+        /// <param name="target">目标源</param>
+        public static void CopyRowToTarget(this DataRow sourceRow, DataTable target)
+        {
+            DataRow dr = sourceRow;
+            DataTable source = sourceRow.Table;
+            var ndr = target.NewRow();
+            foreach (DataColumn dc in target.Columns)
+            {
+                //如果目标源的列在数据源中不存在 则跳过
+                if (!source.Columns.Contains(dc.ColumnName)) continue;
+                //使用安全单元格赋值方案
+                ndr.CellSetValue(dc.ColumnName, dr[dc.ColumnName]);
+            }
+            target.Rows.Add(ndr);
+        }
     }
 }
