@@ -190,5 +190,16 @@ namespace BigCookieKit
             }
             target.Rows.Add(ndr);
         }
+
+        /// <summary>
+        /// 替换数据源列的数据结构
+        /// </summary>
+        /// <param name="dt">数据源</param>
+        public static void SetColumnDataType(this DataTable dt, string field, Type type)
+        {
+            DataTable ndt = dt.Clone();
+            ndt.Columns[field].DataType = type;
+            dt.CopyRowToTarget(ndt);
+        }
     }
 }
