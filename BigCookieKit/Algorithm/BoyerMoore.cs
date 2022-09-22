@@ -15,46 +15,9 @@ namespace BigCookieKit.Algorithm
         /// <returns></returns>
         public static int BoyerMooreFirstMatch(byte[] source, byte[] pattern, int offset = 0)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
-
-            var bads = new int[256];
-            var total = source.Length;
-            var length = pattern.Length;
-            var b_length = total - length;
-            var last = length - 1;
-
-            if (total == 0 || length == 0 || length > total) return -1;
-
-            for (var i = 0; i < 256; i++)
-            {
-                bads[i] = length;
-            }
-
-            for (var i = last; i >= 0; i--)
-            {
-                var pet = pattern[i];
-                for (int t = 0; t < i; t++)
-                {
-                    if (pet == pattern[t])
-                    {
-                        bads[pet] = length - t;
-                        break;
-                    }
-                }
-            }
-
-            while (offset <= b_length)
-            {
-                int i;
-                for (i = last; source[offset + i] == pattern[i]; i--)
-                {
-                    if (i == 0) return offset;
-                }
-                offset += bads[source[offset + i]];
-            }
-
-            return -1;
+            var ret = -1;
+            BoyerMooreMatch(source, pattern, offset, value => { ret = value; return false; });
+            return ret;
         }
 
         /// <summary>
@@ -66,46 +29,9 @@ namespace BigCookieKit.Algorithm
         /// <returns></returns>
         public static int BoyerMooreFirstMatch(char[] source, char[] pattern, int offset = 0)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
-
-            var bads = new int[256];
-            var total = source.Length;
-            var length = pattern.Length;
-            var b_length = total - length;
-            var last = length - 1;
-
-            if (total == 0 || length == 0 || length > total) return -1;
-
-            for (var i = 0; i < 256; i++)
-            {
-                bads[i] = length;
-            }
-
-            for (var i = last; i >= 0; i--)
-            {
-                var pet = pattern[i];
-                for (int t = 0; t < i; t++)
-                {
-                    if (pet == pattern[t])
-                    {
-                        bads[pet] = length - t;
-                        break;
-                    }
-                }
-            }
-
-            while (offset <= b_length)
-            {
-                int i;
-                for (i = last; source[offset + i] == pattern[i]; i--)
-                {
-                    if (i == 0) return offset;
-                }
-                offset += bads[source[offset + i]];
-            }
-
-            return -1;
+            var ret = -1;
+            BoyerMooreMatch(Encoding.Default.GetBytes(source), Encoding.Default.GetBytes(pattern), offset, value => { ret = value; return false; });
+            return ret;
         }
 
         /// <summary>
@@ -117,50 +43,8 @@ namespace BigCookieKit.Algorithm
         /// <returns></returns>
         public static int[] BoyerMooreMatchAll(byte[] source, byte[] pattern, int offset = 0)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
-
             List<int> res = new List<int>();
-            var bads = new int[256];
-            var total = source.Length;
-            var length = pattern.Length;
-            var b_length = total - length;
-            var last = length - 1;
-
-            if (total == 0 || length == 0 || length > total) return res.ToArray();
-
-            for (var i = 0; i < 256; i++)
-            {
-                bads[i] = length;
-            }
-
-            for (var i = last; i >= 0; i--)
-            {
-                var pet = pattern[i];
-                for (int t = 0; t < i; t++)
-                {
-                    if (pet == pattern[t])
-                    {
-                        bads[pet] = length - t;
-                        break;
-                    }
-                }
-            }
-
-            while (offset <= b_length)
-            {
-                int i;
-                for (i = last; source[offset + i] == pattern[i]; i--)
-                {
-                    if (i == 0)
-                    {
-                        res.Add(offset);
-                        break;
-                    }
-                }
-                offset += bads[source[offset + i]];
-            }
-
+            BoyerMooreMatch(source, pattern, offset, value => { res.Add(value); return true; });
             return res.ToArray();
         }
 
@@ -173,51 +57,141 @@ namespace BigCookieKit.Algorithm
         /// <returns></returns>
         public static int[] BoyerMooreMatchAll(char[] source, char[] pattern, int offset = 0)
         {
+            List<int> res = new List<int>();
+            BoyerMooreMatch(source, pattern, offset, value => { res.Add(value); return true; });
+            return res.ToArray();
+        }
+
+        private static void BoyerMooreMatch(char[] source, char[] pattern, int offset, Func<int, bool> callback)
+        {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (pattern == null) throw new ArgumentNullException(nameof(pattern));
 
-            List<int> res = new List<int>();
-            var bads = new int[256];
+            var map = new bool[256];
             var total = source.Length;
             var length = pattern.Length;
             var b_length = total - length;
             var last = length - 1;
 
-            if (total == 0 || length == 0 || length > total) return res.ToArray();
+            if (total == 0 || length == 0 || length > total) return;
 
-            for (var i = 0; i < 256; i++)
-            {
-                bads[i] = length;
-            }
-
-            for (var i = last; i >= 0; i--)
-            {
-                var pet = pattern[i];
-                for (int t = 0; t < i; t++)
-                {
-                    if (pet == pattern[t])
-                    {
-                        bads[pet] = length - t;
-                        break;
-                    }
-                }
-            }
+            //初始化字符是否需要匹配
+            for (int i = 0; i < length; i++)
+                map[pattern[i]] = true;
 
             while (offset <= b_length)
             {
-                int i;
-                for (i = last; source[offset + i] == pattern[i]; i--)
+                int start = 0;
+                int j = offset + last;
+
+                //判断字符是否在查询集合内 不存在则直接跳跃
+                if (map[source[j]])
                 {
-                    if (i == 0)
+                    bool ismath = false;
+                    int end;
+                    for (end = last; source[j] == pattern[end]; end--, j--)
                     {
-                        res.Add(offset);
-                        break;
+                        //如果全部相等则匹配成功
+                        if (end == 0)
+                        {
+                            ismath = true;
+                            break;
+                        }
                     }
+                    if (ismath)
+                    {
+                        if (!callback(offset))
+                            return;
+                        offset += last;
+                    }
+
+                    //首位开始比较
+                    bool isbad = false;
+                    while (start < end)
+                    {
+                        if (source[j] == pattern[start])
+                        {
+                            offset += end - start;
+                            isbad = true;
+                            break;
+                        }
+                        start++;
+                    }
+                    if (!isbad) offset += ++end;
                 }
-                offset += bads[source[offset + i]];
+                else
+                {
+                    offset += length;
+                }
             }
 
-            return res.ToArray();
+            return;
+        }
+
+        private static void BoyerMooreMatch(byte[] source, byte[] pattern, int offset, Func<int, bool> callback)
+        {
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (pattern == null) throw new ArgumentNullException(nameof(pattern));
+
+            var map = new bool[256];
+            var total = source.Length;
+            var length = pattern.Length;
+            var b_length = total - length;
+            var last = length - 1;
+
+            if (total == 0 || length == 0 || length > total) return;
+
+            //初始化字符是否需要匹配
+            for (int i = 0; i < length; i++)
+                map[pattern[i]] = true;
+
+            while (offset <= b_length)
+            {
+                int start = 0;
+                int end = last;
+                int j = offset + last;
+
+                //判断字符是否在查询集合内 不存在则直接跳跃
+                if (map[source[j]])
+                {
+                    bool ismath = false;
+                    for (end = last; source[j] == pattern[end]; end--, j--)
+                    {
+                        //如果全部相等则匹配成功
+                        if (end == 0)
+                        {
+                            ismath = true;
+                            break;
+                        }
+                    }
+                    if (ismath)
+                    {
+                        if (!callback(offset))
+                            return;
+                        offset += length;
+                    }
+
+                    //首位开始比较
+                    bool isbad = false;
+                    while (start < end)
+                    {
+                        if (source[j] == pattern[start])
+                        {
+                            offset += last - start;
+                            isbad = true;
+                            break;
+                        }
+                        start++;
+                    }
+                    if (!isbad) offset += ++end;
+                }
+                else
+                {
+                    offset += length;
+                }
+            }
+
+            return;
         }
     }
 }

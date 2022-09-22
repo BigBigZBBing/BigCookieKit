@@ -36,19 +36,23 @@ namespace UnitConsole
         {
             //BenchmarkRunner.Run<ReflectCompare>();
 
-            List<string> list = new List<string>();
-            for (int i = 0; i < 100; i++)
-            {
-                list.Add("测试" + i);
-            }
-            var result = list.Where(x => x == "测试55");
-            foreach (var item in result)
-            {
-                ;
-            }
             //RpcClient api = new RpcClient("127.0.0.1", 8888);
             //IApiContact api1 = api.GetInstance<IApiContact>();
             //api1.Test("name");
+
+            Actor<string> actor = new Actor<string>((items) =>
+            {
+                foreach (var item in items)
+                {
+                    Console.WriteLine("收到:" + item);
+                }
+            }, 10, int.MaxValue, 1);
+
+            for (int i = 0; i < 5; i++)
+            {
+                actor.Post(i.ToString());
+            }
+            actor.Complete();
 
             Console.ReadKey();
         }

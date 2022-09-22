@@ -17,10 +17,11 @@ namespace UnitBenchmark
         byte[] pettern_byte;
         char[] content_char;
         char[] pettern_char;
+        string content;
 
         public BoyerMooreBenchmark()
         {
-            string content = @"Configuration
+            content = @"Configuration
 Overview
 RabbitMQ comes with default built-in settings. Those can be entirely sufficient in some environment (e.g. development and QA). For all other cases, as well as production deployment tuning, there is a way to configure many things in the broker as well as plugins.
 
@@ -38,7 +39,9 @@ How to encrypt sensitive configuration values
 and more.
 
 Since configuration affects many areas of the system, including plugins, individual documentation guides dive deeper into what can be configured. Runtime Tuning is a companion to this guide that focuses on the configurable parameters in the runtime. Production Checklist is a related guide that outlines what settings will likely need tuning in most production environments.";
-            string pettern = "effective config";
+            //string pettern = "effective config";
+            //string pettern = "configuration";
+            string pettern = "config";
 
             content_byte = Encoding.Default.GetBytes(content);
             pettern_byte = Encoding.Default.GetBytes(pettern);
@@ -56,7 +59,8 @@ Since configuration affects many areas of the system, including plugins, individ
         [Benchmark]
         public void BoyerMooreChar()
         {
-            BoyerMoore.BoyerMooreFirstMatch(content_char, pettern_char);
+            var s1 = BoyerMoore.BoyerMooreFirstMatch(content_char, pettern_char);
+            var arr = BoyerMoore.BoyerMooreMatchAll(content_char, pettern_char);
         }
     }
 }
