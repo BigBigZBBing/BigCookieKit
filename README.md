@@ -1,6 +1,5 @@
 # BigCookieKit
-超级工具箱
-所有的经验积累库 包含的强大功能
+也是经验所得 哈哈哈
 
 ##### BigCookieKit.Reflect 高性能反射库
 
@@ -18,9 +17,24 @@
 
 仿造SequelizeORM的结构化结果方案
 
-##### BigCookieKit 工具箱
+##### BigCookieKit 工具类
 
-开发中的常用套件 工具件
+工具扩展：
+
+1. DataTable Safe
+2. Decimal Precision
+3. Type TryParse
+4. Actor
+5. Enum
+6. Ini
+7. Deep Copy
+8. Model Verify
+
+算法：
+
+1. BoyerMoore快速查询算法
+2. CRC算法
+
 
 
 ## BigCookieKit.Reflect反射库使用手册
