@@ -34,11 +34,14 @@ namespace BigCookieKit.File
                         continue;
                     }
 
-                    if (line.IndexOf("=") > -1)
+                    var frist = line.IndexOf("=");
+                    if (frist > -1)
                     {
-                        var kv = line.Split("=");
+                        var key = line.Substring(0, frist);
+                        var value = line.Substring(frist + 1);
+                        value = value.Replace("\\r", "\r").Replace("\\n", "\n");
                         var last = Sections.Last();
-                        last.Parameters.Add(new Parameter(kv[0], kv[1]));
+                        last.Parameters.Add(new Parameter(key, value));
                         continue;
                     }
                 }
@@ -107,13 +110,18 @@ namespace BigCookieKit.File
             set
             {
                 var node = Parameters.FirstOrDefault(x => x.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
+                var afterValue = value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    afterValue = value.Replace("\r", "\\r").Replace("\n", "\\n");
+                }
                 if (node == null)
                 {
-                    Parameters.Add(new Parameter(key, value));
+                    Parameters.Add(new Parameter(key, afterValue));
                     ToMap(this);
                     return;
                 }
-                node.Value = value;
+                node.Value = afterValue;
             }
         }
 

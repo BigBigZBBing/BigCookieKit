@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
+    <Folder Include="Jwt\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Jwt\" />
+    <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
   </ItemGroup>
 
 </Project>
