@@ -390,7 +390,24 @@ namespace BigCookieKit.Office.Xlsx
                                         if (dataType == "s")
                                             ndr[Columns[colIndex]] = sharedStrings[int.Parse(content)];
                                         else
-                                            ndr[Columns[colIndex]] = content;
+                                        {
+                                            var dc = dt.Columns[Columns[colIndex]];
+                                            if (content != null)
+                                            {
+                                                if (content.TryParse(dc.DataType, out var value))
+                                                {
+                                                    ndr[Columns[colIndex]] = value;
+                                                }
+                                                else
+                                                {
+                                                    ndr[Columns[colIndex]] = DBNull.Value;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                ndr[Columns[colIndex]] = DBNull.Value;
+                                            }
+                                        }
                                     }
                                 }
                                 isValue = false;
