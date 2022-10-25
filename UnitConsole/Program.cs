@@ -43,9 +43,6 @@ namespace UnitConsole
 
             GeneralFormatter general = new GeneralFormatter();
 
-            var tick = DateTime.Now.Ticks;
-            var t1 = DateTime.FromBinary(tick);
-
             //Actor<string> actor = new Actor<string>((items) =>
             //{
             //    foreach (var item in items)

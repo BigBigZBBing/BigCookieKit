@@ -357,6 +357,34 @@ namespace BigCookieKit
         }
 
         /// <summary>
+        /// 动态创建元组
+        /// </summary>
+        /// <param name="array">对象组</param>
+        /// <returns>元组基</returns>
+        public static ITuple CreateValueTuple(object[] array)
+        {
+            if (array.Length < 8)
+            {
+                string fullName = "System.ValueTuple`" + array.Length;
+                var typesMakeGeneric = array.Select(x => $"[{x.GetType().FullName}]");
+                fullName = $"{fullName}[{(string.Join(",", typesMakeGeneric))}]";
+                return (ITuple)Activator.CreateInstance(Type.GetType(fullName), array);
+            }
+            else
+            {
+                string fullName = "System.ValueTuple`8";
+                var splice = array[0..7];
+                var typesMakeGeneric = splice.Select(x => $"[{x.GetType().FullName}]").ToList();
+                var nextTuple = CreateValueTuple(array[7..]);
+                typesMakeGeneric.Add($"[{nextTuple.GetType().FullName}]");
+                fullName = $"{fullName}[{(string.Join(",", typesMakeGeneric))}]";
+                var merge = new List<object>(splice);
+                merge.Add(nextTuple);
+                return (ITuple)Activator.CreateInstance(Type.GetType(fullName), merge.ToArray());
+            }
+        }
+
+        /// <summary>
         /// 全局组件缓存
         /// </summary>
         public static partial class Cache
