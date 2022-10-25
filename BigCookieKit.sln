@@ -31,7 +31,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookieKit.AspCore", "Big
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BigCookie.Document", "BigCookie.Document\BigCookie.Document.csproj", "{8336DC2B-F98C-41A0-A66E-4D69C1A0487A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitAspExample", "UnitAspExample\UnitAspExample.csproj", "{B9B63655-4300-452B-A063-955A16CAE0A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitAspExample", "UnitAspExample\UnitAspExample.csproj", "{B9B63655-4300-452B-A063-955A16CAE0A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BigCookieKit.Serialization", "BigCookieKit.Serialization\BigCookieKit.Serialization.csproj", "{7D3C2F5D-57B6-43DB-A071-FF86F409A13A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,10 @@ Global
 		{B9B63655-4300-452B-A063-955A16CAE0A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9B63655-4300-452B-A063-955A16CAE0A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9B63655-4300-452B-A063-955A16CAE0A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D3C2F5D-57B6-43DB-A071-FF86F409A13A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D3C2F5D-57B6-43DB-A071-FF86F409A13A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D3C2F5D-57B6-43DB-A071-FF86F409A13A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D3C2F5D-57B6-43DB-A071-FF86F409A13A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

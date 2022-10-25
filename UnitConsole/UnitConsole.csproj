@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BigCookieKit.Rpc\BigCookieKit.Rpc.csproj" />
+    <ProjectReference Include="..\BigCookieKit.Serialization\BigCookieKit.Serialization.csproj" />
     <ProjectReference Include="..\BigCookieKit\BigCookieKit.csproj" />
   </ItemGroup>
 
