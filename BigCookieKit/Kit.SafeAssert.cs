@@ -197,6 +197,20 @@ namespace BigCookieKit
         }
 
         /// <summary>
+        /// 判断是否为引用类型
+        /// </summary>
+        /// <param name="obj">类型</param>
+        /// <returns></returns>
+        public static bool IsClass(this Type type)
+        {
+            if (type.IsClass)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 判断是否为自定义引用类型
         /// </summary>
         /// <param name="obj">对象</param>

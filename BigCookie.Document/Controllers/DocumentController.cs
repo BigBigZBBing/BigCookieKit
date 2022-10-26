@@ -161,7 +161,8 @@ namespace BigCookie.Document.Controllers
                 ViewBag.RequestBody = ReuqestBody;
                 ViewBag.RequestJson = JsonSerializer.Serialize(requestInstance);
                 ViewBag.ResponseBody = ResponseBody;
-                ViewBag.ResponseJson = JsonSerializer.Serialize(Activator.CreateInstance(returnParameter));
+                if (returnParameter.IsClass())
+                    ViewBag.ResponseJson = JsonSerializer.Serialize(Activator.CreateInstance(returnParameter));
                 return View();
             }
             return Content("<h1>生成文档异常!</h1>");

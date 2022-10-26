@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Reflection;
+using System.IO;
 
 namespace BigCookieKit.AspCore.RouteSelector
 {
@@ -45,9 +46,12 @@ namespace BigCookieKit.AspCore.RouteSelector
 
         public static async Task<SelectorEndpointResult> InvokeAsync(this Endpoint endpoint, HttpContext httpContext)
         {
+            using var stream = new MemoryStream();
+            httpContext.Response.Body = new MemoryStream();
             var dataTokens = endpoint.Metadata.GetMetadata<IDataTokensMetadata>();
+            var descriptor = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
             var routeData = new RouteData();
-            routeData.PushState(null, httpContext.Request.RouteValues, new RouteValueDictionary(dataTokens?.DataTokens));
+            routeData.PushState(null, new RouteValueDictionary(descriptor.RouteValues), new RouteValueDictionary(dataTokens?.DataTokens));
             var action = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>()!;
             var actionContext = new ActionContext(httpContext, routeData, action);
             IActionInvokerFactory invokerFactory = httpContext.RequestServices.GetRequiredService<IActionInvokerFactory>();
@@ -71,6 +75,33 @@ namespace BigCookieKit.AspCore.RouteSelector
             services.TryAddSingleton<EndpointSelector, DefaultEndpointSelector>();
             services.TryAddEnumerable(ServiceDescriptor.Singleton<MatcherPolicy, HttpMethodMatcherPolicy>());
             services.TryAddEnumerable(ServiceDescriptor.Singleton<MatcherPolicy, HostMatcherPolicy>());
+        }
+
+        public static string GetRoutePath(this Endpoint endpoint)
+        {
+            var descriptor = endpoint.Metadata.GetMetadata<ControllerActionDescriptor>();
+            if (descriptor != null)
+            {
+                if (descriptor.AttributeRouteInfo != null)
+                {
+                    if (!string.IsNullOrEmpty(descriptor.AttributeRouteInfo.Template))
+                    {
+                        return "/" + descriptor.AttributeRouteInfo.Template;
+                    }
+                }
+                else
+                {
+                    var Uri = "";
+                    if (descriptor.RouteValues.ContainsKey("area") && !string.IsNullOrEmpty(descriptor.RouteValues["area"]))
+                        Uri += "/" + descriptor.RouteValues["area"];
+                    if (descriptor.RouteValues.ContainsKey("controller") && !string.IsNullOrEmpty(descriptor.RouteValues["controller"]))
+                        Uri += "/" + descriptor.RouteValues["controller"];
+                    if (descriptor.RouteValues.ContainsKey("action") && !string.IsNullOrEmpty(descriptor.RouteValues["action"]))
+                        Uri += "/" + descriptor.RouteValues["action"];
+                    return Uri;
+                }
+            }
+            return null;
         }
     }
 
