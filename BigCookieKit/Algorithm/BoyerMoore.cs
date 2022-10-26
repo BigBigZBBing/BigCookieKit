@@ -62,6 +62,48 @@ namespace BigCookieKit.Algorithm
             return res.ToArray();
         }
 
+        /// <summary>
+        /// 博伊尔-摩尔算法匹配单次
+        /// </summary>
+        /// <param name="source">内容</param>
+        /// <param name="pattern">模式</param>
+        /// <param name="offset">初始偏移量</param>
+        /// <returns></returns>
+        public static int BoyerMooreFirstMatch(string source, string pattern, int offset = 0)
+        {
+            var s1 = Encoding.UTF8.GetBytes(source);
+            var p1 = Encoding.UTF8.GetBytes(pattern);
+            int pos = BoyerMooreFirstMatch(s1, p1, 0);
+            s1 = s1[pos..];
+            return source.Length - Encoding.UTF8.GetString(s1).Length;
+        }
+
+        /// <summary>
+        /// 博伊尔-摩尔算法匹配所有
+        /// </summary>
+        /// <param name="source">内容</param>
+        /// <param name="pattern">模式</param>
+        /// <param name="offset">初始偏移量</param>
+        /// <returns></returns>
+        public static int[] BoyerMooreMatchAll(string source, string pattern, int offset = 0)
+        {
+            var s1 = Encoding.UTF8.GetBytes(source);
+            var p1 = Encoding.UTF8.GetBytes(pattern);
+            List<int> res = new List<int>();
+            int pos;
+            do
+            {
+                pos = BoyerMooreFirstMatch(s1, p1, 0);
+                if (pos < 0) break;
+                s1 = s1[pos..];
+                res.Add(source.Length - Encoding.UTF8.GetString(s1).Length);
+                if (s1.Length <= pattern.Length) break;
+                s1 = s1[pattern.Length..];
+                if (s1.Length < pattern.Length) break;
+            } while (pos > -1);
+            return res.ToArray();
+        }
+
         private static void BoyerMooreMatch(char[] source, char[] pattern, int offset, Func<int, bool> callback)
         {
             if (source == null) throw new ArgumentNullException(nameof(source));

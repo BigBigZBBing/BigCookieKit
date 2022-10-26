@@ -20,6 +20,7 @@ using System.Security.Cryptography;
 using BigCookieKit;
 using BigCookieKit.Rpc;
 using System.Security.Claims;
+using BigCookieKit.Serialization.Binary;
 
 namespace UnitConsole
 {
@@ -40,19 +41,21 @@ namespace UnitConsole
             //IApiContact api1 = api.GetInstance<IApiContact>();
             //api1.Test("name");
 
-            Actor<string> actor = new Actor<string>((items) =>
-            {
-                foreach (var item in items)
-                {
-                    Console.WriteLine("收到:" + item);
-                }
-            }, 10, int.MaxValue, 1);
+            GeneralFormatter general = new GeneralFormatter();
 
-            for (int i = 0; i < 5; i++)
-            {
-                actor.Post(i.ToString());
-            }
-            actor.Complete();
+            //Actor<string> actor = new Actor<string>((items) =>
+            //{
+            //    foreach (var item in items)
+            //    {
+            //        Console.WriteLine("收到:" + item);
+            //    }
+            //}, 10, int.MaxValue, 1);
+
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    actor.Post(i.ToString());
+            //}
+            //actor.Complete();
 
             Console.ReadKey();
         }
