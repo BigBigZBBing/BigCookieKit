@@ -273,7 +273,7 @@ namespace BigCookieKit.Office.Xlsx
 
             var entry = zip.GetEntry($"xl/worksheets/{sheet}.xml");
 
-            DataTable dt = new DataTable();
+            DataTable dt = new DataTable(wookbooks[current.SheetIndex].SheetName);
             DataRow ndr = default;
             IDictionary<int, string> Columns = new Dictionary<int, string>();
 
