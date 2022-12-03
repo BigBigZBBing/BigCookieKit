@@ -32,6 +32,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:UnitAspExample.Controllers.TestController.Test2Selector(Microsoft.AspNetCore.Routing.EndpointDataSource)">
+            <summary>
+            测试路由描述符
+            </summary>
+            <returns></returns>
+        </member>
         <member name="P:UnitAspExample.Controllers.UserAddDto.String1">
             <summary>
             测试注释

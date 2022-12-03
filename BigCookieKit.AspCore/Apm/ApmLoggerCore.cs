@@ -8,6 +8,10 @@ using Microsoft.AspNetCore.Http;
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using System.Net.Http;
+using System.Reflection.Metadata;
+using System.Net;
+using System.Reflection.PortableExecutable;
 
 namespace BigCookieKit.AspCore.Apm
 {
@@ -51,13 +55,14 @@ namespace BigCookieKit.AspCore.Apm
                 var configuration = context.RequestServices.GetService<IConfiguration>();
                 var appName = configuration.GetSection("ApmLogger:AppName")?.Value;
                 var tarceId = context.Request.Headers["TraceId"];
+                var ipAddress = context.Connection.RemoteIpAddress.MapToIPv4()?.ToString();
 
                 if (con.State != ConnectionState.Open) con.Open();
                 var cmd = con.CreateCommand();
                 cmd.Connection = con;
                 cmd.CommandText = @"
-INSERT INTO TraceLogger(AppName,TraceId,TraceType,Message,Elapsed,ExecuteTime,IsSend)
-VALUES(@AppName,@TraceId,@TraceType,@Message,@Elapsed,@ExecuteTime,@IsSend);";
+INSERT INTO TraceLogger(AppName,TraceId,TraceType,Message,Elapsed,ExecuteTime,ExecuteAddress,IsSend)
+VALUES(@AppName,@TraceId,@TraceType,@Message,@Elapsed,@ExecuteTime,@ExecuteAddress,@IsSend);";
                 cmd.Parameters.Add(new SQLiteParameter("AppName", appName));
                 cmd.Parameters.Add(new SQLiteParameter("TraceId", tarceId));
                 cmd.Parameters.Add(new SQLiteParameter("TraceType", "api"));
@@ -71,6 +76,7 @@ VALUES(@AppName,@TraceId,@TraceType,@Message,@Elapsed,@ExecuteTime,@IsSend);";
                 }
                 cmd.Parameters.Add(new SQLiteParameter("Elapsed", $"{stopwatch.ElapsedMilliseconds}ms"));
                 cmd.Parameters.Add(new SQLiteParameter("ExecuteTime", DateTime.Now));
+                cmd.Parameters.Add(new SQLiteParameter("ExecuteAddress", ipAddress));
                 cmd.Parameters.Add(new SQLiteParameter("IsSend", false));
                 cmd.ExecuteNonQuery();
             }
@@ -111,20 +117,22 @@ VALUES(@AppName,@TraceId,@TraceType,@Message,@Elapsed,@ExecuteTime,@IsSend);";
                 var configuration = context.RequestServices.GetService<IConfiguration>();
                 var appName = configuration.GetSection("ApmLogger:AppName")?.Value;
                 var tarceId = context.Request.Headers["TraceId"];
+                var ipAddress = context.Connection.RemoteIpAddress.MapToIPv4()?.ToString();
                 var message = exception == null ? JsonSerializer.Serialize(values) : exception.Message;
 
                 if (con.State != ConnectionState.Open) con.Open();
                 var cmd = con.CreateCommand();
                 cmd.Connection = con;
                 cmd.CommandText = @"
-INSERT INTO TraceLogger(AppName,TraceId,TraceType,Message,Elapsed,ExecuteTime,IsSend)
-VALUES(@AppName,@TraceId,@TraceType,@Message,@Elapsed,@ExecuteTime,@IsSend);";
+INSERT INTO TraceLogger(AppName,TraceId,TraceType,Message,Elapsed,ExecuteTime,ExecuteAddress,IsSend)
+VALUES(@AppName,@TraceId,@TraceType,@Message,@Elapsed,@ExecuteTime,@ExecuteAddress,@IsSend);";
                 cmd.Parameters.Add(new SQLiteParameter("AppName", appName));
                 cmd.Parameters.Add(new SQLiteParameter("TraceId", tarceId));
                 cmd.Parameters.Add(new SQLiteParameter("TraceType", "db"));
                 cmd.Parameters.Add(new SQLiteParameter("Message", message));
                 cmd.Parameters.Add(new SQLiteParameter("Elapsed", $"{values["elapsed"]}ms"));
                 cmd.Parameters.Add(new SQLiteParameter("ExecuteTime", DateTime.Now));
+                cmd.Parameters.Add(new SQLiteParameter("ExecuteAddress", ipAddress));
                 cmd.Parameters.Add(new SQLiteParameter("IsSend", false));
                 cmd.ExecuteNonQuery();
             }
@@ -163,10 +171,15 @@ VALUES(@AppName,@TraceId,@TraceType,@Message,@Elapsed,@ExecuteTime,@IsSend);";
 
         private static string FormatApiResponseMessage(this HttpContext context)
         {
+            string body = string.Empty;
             context.Response.Body.Position = 0;
-            var reader = new StreamReader(context.Response.Body);
-            var body = reader.ReadToEndAsync().Result;
-            context.Response.Body.Position = 0;
+            if (!string.IsNullOrEmpty(context.Response.ContentType)
+                && context.Response.ContentType.Contains("application/json"))
+            {
+                var reader = new StreamReader(context.Response.Body);
+                body = reader.ReadToEndAsync().Result;
+                context.Response.Body.Position = 0;
+            }
             return body;
         }
     }

@@ -33,6 +33,10 @@ namespace BigCookieKit.Algorithm
             provider.Key = Key_Value;
         }
 
+        public string GetIV() => Convert.ToBase64String(provider.IV);
+
+        public string GetKey() => Convert.ToBase64String(provider.Key);
+
         public string Encrypt(string stringToEncrypt)
         {
             byte[] inputByteArray = encode.GetBytes(stringToEncrypt);

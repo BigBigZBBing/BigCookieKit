@@ -3,6 +3,7 @@ using BigCookieKit;
 using BigCookieKit.Algorithm;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -34,6 +35,11 @@ namespace BigCookieKit.AspCore.Apm
 
         public static void UseApmCore(this IApplicationBuilder app, Action<Dictionary<Type, Action<DbContextOptionsBuilder>>> builders)
         {
+            //反向代理的规范
+            var forwardHeader = new ForwardedHeadersOptions();
+            forwardHeader.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            app.UseForwardedHeaders(forwardHeader);
+
             app.UseMiddleware<ApmLoggerFilter>();
             app.SQLiteCheck();
             if (Snowflake.WorkId == null) Snowflake.WorkId = 0;
@@ -105,10 +111,11 @@ namespace BigCookieKit.AspCore.Apm
 CREATE TABLE TraceLogger (
     AppName TEXT,
     TraceId TEXT,
-    TraceType NUMERIC,
-    Message NUMERIC,
-    Elapsed NUMERIC,
+    TraceType TEXT,
+    Message TEXT,
+    Elapsed TEXT,
     ExecuteTime NUMERIC,
+    ExecuteAddress TEXT,
     IsSend NUMERIC
 );";
                 cmd.ExecuteNonQuery();
