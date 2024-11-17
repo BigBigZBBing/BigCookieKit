@@ -22,6 +22,7 @@ using System.Xml.Linq;
 using BigCookieKit.Algorithm;
 using System.Security.Cryptography;
 using BigCookieKit.Rpc;
+using BigCookieKit.Office.Csv;
 
 namespace NUnitBigCookieKit
 {
@@ -297,6 +298,13 @@ namespace NUnitBigCookieKit
                 //};
             });
             DataTable dt = excelKit.XmlReadDataTable();
+        }
+
+        [Test]
+        public void CsvReadDataTableUnit()
+        {
+            CsvKit csvKit = new CsvKit(@"C:\Users\zbb58\Desktop\testCsv.csv");
+            var dt = csvKit.ReadDataTable(false);
         }
 
         /// <summary>
